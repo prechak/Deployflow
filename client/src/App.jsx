@@ -1,14 +1,15 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { BrowserRouter } from "react-router-dom";
+import AuthenticatedApp from './pages/authenticated-app';
 
 function App() {
 
   return (
-    <>
-      <h1 className='text-Blue-700 text-Headline2 font-Headline2'>Hello</h1>
-    </>
+    <div>
+      <BrowserRouter>
+        <AuthenticatedApp />
+      </BrowserRouter>
+    </div>
   )
 }
 

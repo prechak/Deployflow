@@ -52,6 +52,11 @@ export default {
         Body3: "400",
         Body4: "400",
       },
+      screens: {
+        'sm': '375px',
+        'md': '768px',
+        'xl': '1440px',
+      },
     },
   },
   plugins: [],
