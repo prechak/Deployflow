@@ -33,6 +33,16 @@ app.get("/users", async (req, res) => {
   }
 });
 
+app.get("/courses", async (req, res) => {
+  let result;
+  try {
+    result = await client.query(`select * from courses`);
+    res.status(200).json(result.rows);
+  } catch {
+    res.status(500).json({ message: `Internal server error` });
+  }
+});
+
 app.post("/users/register", [userRegisterValidation], async (req, res) => {
   const newUser = { ...req.body };
   const query = `insert into users (fullname, age, educationalbackground, email, password, role)
@@ -46,10 +56,10 @@ app.post("/users/register", [userRegisterValidation], async (req, res) => {
     newUser.password,
     newUser.role,
   ];
-  //   console.log(newUser);
+  console.log(newUser);
   try {
     await client.query(query, values);
-    return res.status(200).json({ message: "Registration successful!" });
+    return res.status(201).json({ message: "Registration successful!" });
   } catch {
     return res.status(500).json({ message: `Internal Server Error` });
   }
