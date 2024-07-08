@@ -2,12 +2,12 @@ const userRegisterValidation = (req, res, next) => {
   //Fullname condition
   const nameRegex = /^[A-Za-z'-]+(?:\s[A-Za-z'-]+)*$/;
   if (!req.body.fullname) {
-    return res.status(400).json("Fullname is require.");
+    return res.status(400).json({ message: "Fullname is require." });
   }
   if (!nameRegex.test(req.body.fullname)) {
     return res
       .status(400)
-      .json("Special characters and numbers are not allowed.");
+      .json({ message: "Special characters and numbers are not allowed." });
   }
 
   //Age condition
@@ -19,7 +19,7 @@ const userRegisterValidation = (req, res, next) => {
     currentDate.getDate()
   );
   if (!req.body.age) {
-    return res.status(400).json("Age is require.");
+    return res.status(400).json({ message: "Age is require." });
   }
   if (isNaN(dateOfBirth)) {
     return res.status(400).json({ message: `Invalid date format for age.` });
@@ -30,7 +30,9 @@ const userRegisterValidation = (req, res, next) => {
       .json({ message: "Please provide a valid date of birth." });
   }
   if (dateOfBirth > minimumAge) {
-    return res.status(400).json({ message: "You must be at least 6 yearold" });
+    return res
+      .status(400)
+      .json({ message: "You must be at least 6 years old to register." });
   }
 };
 
