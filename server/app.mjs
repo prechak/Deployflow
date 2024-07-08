@@ -49,7 +49,7 @@ app.post("/users/register", [userRegisterValidation], async (req, res) => {
   //   console.log(newUser);
   try {
     await client.query(query, values);
-    return res.status(200).json({ message: "ok" });
+    return res.status(200).json({ message: "Registration successful!" });
   } catch {
     return res.status(500).json({ message: `Internal Server Error` });
   }
