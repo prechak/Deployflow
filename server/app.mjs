@@ -1,6 +1,8 @@
 import express from "express";
 import client from "./utils/db.mjs";
+import courseRouter from "./routes/course.mjs";
 import userRegisterValidation from "./middlewares/postuser.validation.mjs";
+import userRouter from "./routes/user.mjs";
 
 const app = express();
 app.use(express.json());
@@ -19,50 +21,12 @@ async function connect() {
 }
 connect();
 
+app.use("/courses", courseRouter);
+app.use("/users", userRouter);
+
+//Server connection test
 app.get("/test", (req, res) => {
   return res.json("Server API is working 🚀");
-});
-
-app.get("/users", async (req, res) => {
-  let result;
-  try {
-    result = await client.query(`select * from users`);
-    res.status(200).json(result.rows);
-  } catch {
-    res.status(500).json({ message: `Internal Server Error` });
-  }
-});
-
-app.get("/courses", async (req, res) => {
-  let result;
-  try {
-    result = await client.query(`select * from courses`);
-    res.status(200).json(result.rows);
-  } catch {
-    res.status(500).json({ message: `Internal server error` });
-  }
-});
-
-app.post("/users/register", [userRegisterValidation], async (req, res) => {
-  const newUser = { ...req.body };
-  const query = `insert into users (fullname, age, educationalbackground, email, password, role)
-                values($1, $2, $3, $4, $5, $6)
-                returning *`;
-  const values = [
-    newUser.fullname,
-    newUser.age,
-    newUser.educationalbackground,
-    newUser.email,
-    newUser.password,
-    newUser.role,
-  ];
-  console.log(newUser);
-  try {
-    await client.query(query, values);
-    return res.status(201).json({ message: "Registration successful!" });
-  } catch {
-    return res.status(500).json({ message: `Internal Server Error` });
-  }
 });
 
 app.listen(port, () => {
