@@ -1,4 +1,4 @@
-import arrow_back from "../../images/coursedetail/arrow_back.png";
+import arrow_back from "../../icons/coursedetail/arrow_back.png";
 import video from "../../images/coursedetail/video.png";
 import {
   Accordion,
@@ -8,7 +8,7 @@ import {
   AccordionIcon,
   Box,
 } from "@chakra-ui/react";
-import arrow_drop from "../../images/coursedetail/arrow_drop.png";
+import arrow_drop from "../../icons/coursedetail/arrow_drop.png";
 
 function SectionCourseDetail() {
   return (
@@ -239,7 +239,7 @@ function SectionCourseDetail() {
             </div>
           </article>
         </div>
-        <aside className="shadow-lg xl:w-[375px] xl:h-[449px] xl:block hidden sticky top-0 ml-[24px] mt-[40px]">
+        <aside className="shadow-lg xl:w-[375px] xl:h-[449px] xl:block hidden sticky top-[57px] ml-[24px] mt-[40px]">
           <div className="flex flex-col w-[309px] h-[95%] gap-[10px] mt-[11px] ml-[33px]">
             <h1 className="w-[309px] h-[21px] text-Orange-500 text-[14px] font-[400] ">
               Course
