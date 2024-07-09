@@ -1,7 +1,7 @@
 import othercoursepic1 from "../../images/coursedetail/othercoursepic1.png";
 import othercoursepic2 from "../../images/coursedetail/othercoursepic2.png";
-import othercourselesson1 from "../../images/coursedetail/othercourselesson1.png";
-import othercourselesson2 from "../../images/coursedetail/othercourselesson2.png";
+import othercourselesson1 from "../../icons/coursedetail/othercourselesson1.png";
+import othercourselesson2 from "../../icons/coursedetail/othercourselesson2.png";
 import othercoursepic3 from "../../images/coursedetail/othercoursepic3.png";
 
 function SectionOtherCourse() {

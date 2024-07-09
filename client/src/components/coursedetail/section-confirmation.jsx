@@ -1,5 +1,6 @@
-import arrow_back from "../../images/coursedetail/arrow_back.png";
+import arrow_back from "../../icons/coursedetail/arrow_back.png";
 import video from "../../images/coursedetail/video.png";
+import attachfile from "../../icons/coursedetail/attachfile.png";
 import {
   Accordion,
   AccordionItem,
@@ -8,9 +9,9 @@ import {
   AccordionIcon,
   Box,
 } from "@chakra-ui/react";
-import arrow_drop from "../../images/coursedetail/arrow_drop.png";
+import arrow_drop from "../../icons/coursedetail/arrow_drop.png";
 
-function UserSectionCourseDetail() {
+function UserSectionConfirmation() {
   return (
     <div>
       <section className="h-fit border-solid border-2 border-red-600 flex flex-row pt-[16px] pl-[16px] pr-[16px] xl:pl-[144px]">
@@ -32,7 +33,7 @@ function UserSectionCourseDetail() {
             </div>
           </header>
           <article>
-            <div className="w-[100%] h-fit mb-[70px] mt-[70px] xl:w-[739px] md:mt-[10px] xl:mt-[70px]">
+            <div className="w-[100%] h-fit mb-[30px] mt-[30px] xl:w-[739px] md:mt-[10px] xl:mt-[70px]">
               <h1 className="text-black text-Headline3 font-Headline3 mb-[5px] xl:text-Headline2 xl:font-Headline2">
                 Course Detail
               </h1>
@@ -71,7 +72,23 @@ function UserSectionCourseDetail() {
             </div>
           </article>
           <article>
-            <div className="h-[924px] mt-[15px] xl:w-[739px]">
+            <div className="flex flex-col justify-between w-[100%] sm:w-[343px] sm:h-[128px]">
+              <h1 className="text-Headline3 font-Headline3 text-black">
+                Attach File
+              </h1>
+              <div className="bg-Blue-100 rounded-[8px] w-[100%] sm:w-[343px] sm:h-[82px] flex items-center gap-[16px] pl-[16px]">
+                <img className="w-[50px] h-[50px]" src={attachfile}></img>
+                <div className="w-[144px] h-[46px]">
+                  <h1 className="text-Body2 font-Body2 text-black">
+                    Service Design.pdf
+                  </h1>
+                  <h1 className="text-Body4 font-Body4 text-Blue-400">68 mb</h1>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article>
+            <div className="h-[924px] mt-[25px] xl:w-[739px]">
               <h1 className="text-black text-Headline3 font-Headline3 xl:text-Headline2 xl:font-Headline2 xl:mb-[20px]">
                 Module Samples
               </h1>
@@ -239,12 +256,12 @@ function UserSectionCourseDetail() {
             </div>
           </article>
         </div>
-        <aside className="shadow-lg xl:w-[375px] xl:h-[449px] xl:block hidden sticky top-0 ml-[24px] mt-[40px]">
-          <div className="flex flex-col w-[309px] h-[95%] gap-[10px] mt-[11px] ml-[33px]">
+        <aside className="bg-white shadow-lg xl:w-[357px] xl:h-[373px] xl:block hidden sticky top-[58px] ml-[24px] mt-[40px] pl-[24px] pt-[32px]">
+          <div className="flex flex-col justify-between w-[309px] h-[309px]">
             <h1 className="w-[309px] h-[21px] text-Orange-500 text-[14px] font-[400] ">
               Course
             </h1>
-            <div className="w-[309px] h-[86px] mt-[10px]">
+            <div className="w-[309px] h-[86px]">
               <Accordion defaultIndex={[0]} allowMultiple>
                 <AccordionItem>
                   <h2>
@@ -270,15 +287,12 @@ function UserSectionCourseDetail() {
                 </AccordionItem>
               </Accordion>
             </div>
-            <div className="text-Gray-700 text-Headline3 font-Headline3 mb-[30px] mt-[10px]">
+            <div className="text-Gray-700 text-Headline3 font-Headline3 w-[309px] h-[30px]">
               THB 3,559.00
             </div>
-            <div className="border-solid border-t-[1px] border-Gray-400 flex flex-col justify-end gap-[16px] h-[176px] w-[309px]">
-              <button className="border-solid border-[1px] border-Orange-500 text-Orange-500 rounded-[12px] text-[12px] font-[700] text-center w-[309px] h-[60px]">
-                Get in Desire Course
-              </button>
-              <button className="border-solid border-[1px] border-Blue-500 bg-Blue-500 rounded-[12px] text-[12px] font-[700] text-white text-center w-[309px] h-[60px]">
-                Subscribe This Course
+            <div className="border-solid border-t-[1px] border-Gray-400 flex flex-col justify-end h-[100px] w-[309px] ">
+              <button className="border-solid border-[1px] border-Blue-500 bg-Blue-500 rounded-[12px] text-[16px] font-[700] text-white text-center w-[309px] h-[60px]">
+                Start Learning
               </button>
             </div>
           </div>
@@ -288,4 +302,4 @@ function UserSectionCourseDetail() {
   );
 }
 
-export default UserSectionCourseDetail;
+export default UserSectionConfirmation;
