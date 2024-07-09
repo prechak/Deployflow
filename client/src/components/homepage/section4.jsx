@@ -29,7 +29,11 @@ function section4() {
             alt=""
             className="absolute sm:pt-[190px] xl:hidden"
           />
-          <img src={vector2} alt="" className="sm:hidden xl:block xl:w-[592px] xl:h-[448.59px] xl:mr-[159px] xl:mt-[53px]"/>
+          <img
+            src={vector2}
+            alt=""
+            className="sm:hidden xl:block xl:w-[592px] xl:h-[448.59px] xl:mr-[159px] xl:mt-[53px]"
+          />
         </div>
       </section>
     </>

@@ -10,12 +10,12 @@ function HomePage() {
   return (
     <>
       <Navbarnonuser />
-      <Header/>
-      <Section/>
-      <Section2/>
-      <Section3/>
-      <Section4/>
-      <Footer/>
+      <Header />
+      <Section />
+      <Section2 />
+      <Section3 />
+      <Section4 />
+      <Footer />
     </>
   );
 }

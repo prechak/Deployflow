@@ -12,8 +12,8 @@ import vector1 from "/src/assets/icons/section1/vector1.png";
 function section1() {
   return (
     <>
-    <div className=" absolute">
-      <img src={ellipse} alt="" className="sm:pl-6 xl:hidden" />
+      <div className=" absolute">
+        <img src={ellipse} alt="" className="sm:pl-6 xl:hidden" />
       </div>
       <section className="flex justify-center items-center text-black sm:w-auto sm:h-[1428.63px] xl:w-auto xl:h-[1111px] ">
         <div className="box sm:w-[343px] sm:h-[1300.63px] xl:w-[1120px] xl:h-[780px] xl:flex xl:flex-col xl:justify-center xl:align-middle ">
@@ -96,7 +96,11 @@ function section1() {
         </div>
       </section>
       <div className="xl:flex xl:justify-end xl:relative">
-        <img src={ellipse3} alt="" className="xl:w-[85px] xl:mr-[122px] xl:block sm:hidden" />
+        <img
+          src={ellipse3}
+          alt=""
+          className="xl:w-[85px] xl:mr-[122px] xl:block sm:hidden"
+        />
       </div>
     </>
   );

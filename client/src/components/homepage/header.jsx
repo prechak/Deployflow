@@ -16,7 +16,11 @@ function Header() {
         alt=""
         className="absolute top-0 left-0 sm:mt-[74px] md:mt-[164px]"
       />
-      <img src={Vector1} alt="" className=" absolute xl:top-[161px] xl:left-[806px] xl:block md:hidden sm:hidden "/>
+      <img
+        src={Vector1}
+        alt=""
+        className=" absolute xl:top-[161px] xl:left-[806px] xl:block md:hidden sm:hidden "
+      />
       <div className="relative z-10 sm:w-[343px] sm:h-[270px]  sm:mt-14 md:p-0 md:mt-[165px] md:w-[643px] md:h-[370px] xl:p-0 xl:mt-[165px] xl:w-[643px] xl:h-[370px] xl:ml-[] xl:mr-[350px]">
         <h1 className="relative text-black z-10  sm:w-[343px] sm:text-4xl sm:font-medium md:text-[66px] md:font-Headline3 md:w-[643px] md:h-[166px] md:leading-tight xl:text-[66px] xl:font-Headline3 xl:w-[643px] xl:h-[166px] xl:leading-tight">
           Best Virtual Classroom Software
