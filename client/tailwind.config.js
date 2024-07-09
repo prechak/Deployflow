@@ -28,7 +28,7 @@ export default {
         },
         Orange: {
           100: "#FBAA1C",
-          200: "#F47E20",
+          500: "#F47E20",
         },
         Green: {
           100: "#2FAC8E",
