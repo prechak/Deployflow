@@ -10,9 +10,12 @@ import {
   Modal,
 } from "@chakra-ui/react";
 import arrow_drop from "../../icons/coursedetail/arrow_drop.png";
+<<<<<<< HEAD
 import React, { useState } from "react";
 import modal_vector from "../../icons/coursedetail/modal_vector.png";
 import { useNavigate } from "react-router-dom";
+=======
+>>>>>>> 6cac249 (feat: create file user-confirmation and user-coursedetail)
 
 function SectionCourseDetail() {
   const [modal, setModal] = useState(false);
@@ -249,6 +252,7 @@ function SectionCourseDetail() {
             </div>
           </article>
         </div>
+<<<<<<< HEAD
         <div>
           <aside
             className={`${
@@ -271,6 +275,32 @@ function SectionCourseDetail() {
                         </Box>
                       </AccordionButton>
                     </h2>
+=======
+        <aside className="shadow-lg xl:w-[375px] xl:h-[449px] xl:block hidden sticky top-[57px] ml-[24px] mt-[40px]">
+          <div className="flex flex-col w-[309px] h-[95%] gap-[10px] mt-[11px] ml-[33px]">
+            <h1 className="w-[309px] h-[21px] text-Orange-500 text-[14px] font-[400] ">
+              Course
+            </h1>
+            <div className="w-[309px] h-[86px] mt-[10px]">
+              <Accordion defaultIndex={[0]} allowMultiple>
+                <AccordionItem>
+                  <h2>
+                    <AccordionButton className="mb-[1px]">
+                      <Box as="span" flex="1" textAlign="left">
+                        <span className="text-black text-Headline3 font-Headline3">
+                          Service Design Essentials
+                        </span>
+                      </Box>
+                      <div>
+                        <img
+                          className="w-[24px] h-[24px]"
+                          src={arrow_drop}
+                        ></img>
+                      </div>
+                    </AccordionButton>
+                  </h2>
+                  <AccordionPanel pb={4}>
+>>>>>>> 6cac249 (feat: create file user-confirmation and user-coursedetail)
                     <p className="text-Body2 font-Body2 text-Gray-700">
                       Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
                     </p>
