@@ -1,13 +1,13 @@
 import { configDotenv } from "dotenv";
-import pkg from "pg";
+import * as pg from "pg";
 
 configDotenv();
 
-const { Client } = pkg;
+const { Pool } = pg.default;
 const { MY_USER, MY_PASSWORD, MY_HOSTNAME, MY_PORT, MY_DB } = process.env;
 
-const client = new Client({
+const connectionPool = new Pool({
   connectionString: `postgresql://${MY_USER}:${MY_PASSWORD}@${MY_HOSTNAME}:${MY_PORT}/${MY_DB}`,
 });
 
-export default client;
+export default connectionPool;

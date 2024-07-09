@@ -1,4 +1,4 @@
-import client from "../utils/db.mjs";
+import connectionPool from "../utils/db.mjs";
 import bcrypt from "bcrypt";
 
 const userRegisterValidation = async (req, res, next) => {
@@ -60,9 +60,10 @@ const userRegisterValidation = async (req, res, next) => {
     return res.status(400).json({ message: `Invalid email format` });
   }
 
-  const { rows } = await client.query(`select * from users where email = $1`, [
-    req.body.email,
-  ]);
+  const { rows } = await connectionPool.query(
+    `select * from users where email = $1`,
+    [req.body.email]
+  );
   if (rows.length > 0) {
     return res.status(409).json({ message: "Email already exists" });
   }

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import client from "../utils/db.mjs";
+import connectionPool from "../utils/db.mjs";
 import userRegisterValidation from "../middlewares/postuser.validation.mjs";
 
 const userRouter = Router();
@@ -7,7 +7,9 @@ const userRouter = Router();
 userRouter.get("/", async (req, res) => {
   let result;
   try {
-    result = await client.query(`select * from users`);
+    result = await connectionPool.query(
+      `select * from users order by userid asc`
+    );
     res.status(200).json(result.rows);
   } catch {
     res.status(500).json({ message: `Internal Server Error` });
@@ -29,7 +31,7 @@ userRouter.post("/register", [userRegisterValidation], async (req, res) => {
   ];
   console.log(newUser);
   try {
-    await client.query(query, values);
+    await connectionPool.query(query, values);
     return res.status(201).json({ message: "Registration successful!" });
   } catch {
     return res.status(500).json({ message: `Internal Server Error` });
