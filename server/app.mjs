@@ -2,6 +2,8 @@ import express from "express";
 import courseRouter from "./routes/course.mjs";
 import userRouter from "./routes/user.mjs";
 import connectionPool from "./utils/db.mjs";
+import dotenv from "dotenv";
+import cors from "cors";
 
 const app = express();
 app.use(express.json());
@@ -10,6 +12,9 @@ const port = 4000;
 
 //Connection test
 async function connect() {
+  app.use(cors());
+  dotenv.config();
+
   try {
     await connectionPool.connect();
     console.log("Connected to Supabase PostgreSQL database");
