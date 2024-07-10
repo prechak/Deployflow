@@ -1,6 +1,23 @@
+import React from "react";
+import { useAuth } from "../../contexts/authentication";
 
 
-function LoginAdmin() {
+
+function loginAdmin() {
+  const {email,
+    setEmail,
+    isLogin,
+    setIsLogin} = useAuth()
+
+    const logIn = (e) => {
+      e.preventDefualt()
+      isLogin(true)
+      setAuthUser({
+        name: {email}
+      })
+    }
+
+
   return (
     <div>
       <div className="bg-gradient-to-r from-blue-700 to-blue-400 h-screen overflow-hidden flex items-center justify-center">
@@ -53,4 +70,4 @@ function LoginAdmin() {
   );
 }
 
-export default LoginAdmin;
+export default loginAdmin;
