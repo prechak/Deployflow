@@ -2,6 +2,7 @@ import { Router } from "express";
 import connectionPool from "../utils/db.mjs";
 import userRegisterValidation from "../middlewares/postuser.validation.mjs";
 import loginValidation from "../middlewares/login.validation.mjs";
+
 import jwt from "jsonwebtoken";
 
 const userRouter = Router();
