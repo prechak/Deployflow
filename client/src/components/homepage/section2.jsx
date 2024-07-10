@@ -6,7 +6,7 @@ import people3 from "/src/assets/images/sm/section2/image3.png";
 function section2() {
   return (
     <>
-      <div className="body2 sm:flex sm:justify-center text-black">
+      <div className="body2 sm:flex sm:justify-center text-black ">
         <section className="sm:w-[343px] sm:h-[1538.59px] sm:px-[16px] sm:py-[64px] xl:w-[1440px] xl:h-[823px] xl:flex xl:flex-col xl:items-center ">
           <h1 className="sm:font-medium sm:text-[24px] sm:text-center xl:text-center xl:font-medium xl:text-4xl xl:flex-col xl:pt-[105px]">
             Our Professional Instructors
