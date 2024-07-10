@@ -1,6 +1,8 @@
 import { Router } from "express";
 import connectionPool from "../utils/db.mjs";
 import userRegisterValidation from "../middlewares/postuser.validation.mjs";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const userRouter = Router();
 
@@ -35,6 +37,47 @@ userRouter.post("/register", [userRegisterValidation], async (req, res) => {
     return res.status(201).json({ message: "Registration successful!" });
   } catch {
     return res.status(500).json({ message: `Internal Server Error` });
+  }
+});
+
+// login
+userRouter.post("/login", async (req, res) => {
+  console.log("SECRET_KEY: ", process.env.SECRET_KEY);
+  console.log("Request Body: ", req.body);
+  const { email, password } = req.body;
+
+  try {
+    console.log(`Attempting to log in with email: ${email}`);
+
+    const result = await connectionPool.query(
+      `SELECT * FROM users WHERE email = $1`,
+      [email]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Invalid email or password" });
+    }
+
+    const user = result.rows[0];
+
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    const token = jwt.sign(
+      { userId: user.userid, fullname: user.fullname, role: user.role },
+      process.env.SECRET_KEY,
+      { expiresIn: "900000" } // 15 minutes
+    );
+
+    return res.json({
+      message: "Login successful",
+      token: token,
+    });
+  } catch (error) {
+    console.error("Error during login:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
