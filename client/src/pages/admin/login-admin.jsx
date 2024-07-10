@@ -105,4 +105,4 @@ function LoginAdmin() {
   );
 }
 
-export default LoginAdmin;
+export default loginAdmin;

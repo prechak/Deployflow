@@ -1,3 +1,7 @@
+import course from "../../assets/image/course.png";
+import assingment from "../../assets/image/assignment.png";
+import logout from "../../assets/image/logout.png";
+
 function Sidebar() {
   return (
     <div>
@@ -13,14 +17,16 @@ function Sidebar() {
           </div>
           <div className="mt-20 h-[540px] flex flex-col items-start justify-start">
             <button className="w-full h-[56px] pl-8 font-small text-base md:text-sm lg:text-sm xl:text-sm text-left text-slate-500 hover:bg-gray-200">
-              Course
+              <img src={course} />Course
             </button>
             <button className="w-full h-[56px] pl-8 font-small text-base md:text-sm lg:text-sm xl:text-sm text-left text-slate-500 hover:bg-gray-200">
+              <img src={assingment} />
               Assignment
             </button>
           </div>
           <div className="mt-20">
             <button className="w-full h-[56px] pl-8 font-small text-base md:text-sm lg:text-sm xl:text-sm text-left text-slate-500 hover:bg-gray-200">
+              <img src={logout} />
               Log out
             </button>
           </div>
