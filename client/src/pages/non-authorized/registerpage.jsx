@@ -1,6 +1,6 @@
 import * as React from "react";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -21,25 +21,127 @@ function Register() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("Student");
 
+  // Error Message
+  const [errorMessage, setErrorMessage] = useState("");
+  const [fullnameError, setFullnameError] = useState("");
+  const [ageFormatError, setAgeFormatError] = useState("");
+  const [ageInvalidError, setAgeInvalidError] = useState("");
+  const [ageMinimumError, setAgeMinimumError] = useState("");
+  const [emailFormatError, setEmailFormatError] = useState("");
+  const [emailExistError, setEmailExistError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  // Success message
+  const [successMessage, setSuccessMessage] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Reset error message
+    setErrorMessage("");
+    setFullnameError("");
+    setAgeFormatError("");
+    setAgeInvalidError("");
+    setAgeMinimumError("");
+    setEmailFormatError("");
+    setEmailExistError("");
+    setPasswordError("");
+    setSuccessMessage("");
+
+    // All required field validation
+    if (
+      !fullname ||
+      !selectedDate ||
+      !educationalbackground ||
+      !email ||
+      !password
+    ) {
+      return setErrorMessage("All fields are required.");
+    }
+    /*
+    // Fullname condition
+    const nameRegex = /^[A-Za-z'-]+(?:\s[A-Za-z'-]+)*$/;
+    if (!nameRegex.test(fullname)) {
+      return setFullnameError(
+        `Special characters and numbers are not allowed.`
+      );
+    }
+
+    // Age condition
+    const dateOfBirth = new Date(selectedDate);
+    const currentDate = new Date();
+    const minimumAge = new Date(
+      currentDate.getFullYear() - 6,
+      currentDate.getMonth(),
+      currentDate.getDate()
+    );
+
+    if (isNaN(dateOfBirth)) {
+      return setAgeFormatError(`Invalid date format for age.`);
+    }
+
+    if (dateOfBirth > currentDate) {
+      return setAgeInvalidError(`Please provide a valid date of birth.`);
+    }
+    if (dateOfBirth > minimumAge) {
+      return setAgeMinimumError(
+        `You must be at least 6 years old to register.`
+      );
+    }
+
+    // Email condition
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return setEmailFormatError(`Invalid email format`);
+    }
+
+    // Password condition
+    if (password.length < 12) {
+      return setPasswordError(`Password must be longer than 12 characters.`);
+    }
+*/
     const values = {
       fullname,
       age: selectedDate.format("YYYY-MM-DD"),
       educationalbackground,
-      email,
+      email: email.toLowerCase(),
       password,
       role,
     };
 
-    console.log(values);
+    try {
+      const response = await axios.post(
+        `http://localhost:4000/users/register`,
+        values
+      );
 
-    const response = await axios.post(
-      `http://localhost:4000/users/register`,
-      values
-    );
-    console.log(response.status);
+      // If the request is successful
+      if (response.status === 201) {
+        setSuccessMessage(`Registration successful!`);
+        setErrorMessage("");
+      }
+      // console.log(response.data);
+    } catch (error) {
+      if (error.response && error.response.data) {
+        const { message } = error.response.data;
+
+        // General error message
+        setErrorMessage(message);
+
+        // Specific error messages
+        if (message.includes("fullname")) {
+          setFullnameError(message);
+        } else if (message.includes("age")) {
+          setAgeInvalidError(message);
+        } else if (message.includes("educationalbackground")) {
+          setEducationErrorMessage(message);
+        } else if (message.includes("email")) {
+          setEmailExistError(message);
+        } else if (message.includes("password")) {
+          setPasswordError(message);
+        }
+      }
+    }
   };
 
   return (
@@ -73,9 +175,10 @@ function Register() {
           </div>
         </nav>
       </section>
+      {/* Nav bar รอเอาของแก๊งมาใส่ */}
 
       <section className="flex flex-col flex-1 items-center mt-40 pb-40 max-[375px]:w-[80%]">
-        <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <div className="bg-white p-8 rounded-lg  w-full max-w-md">
           <h2 className="text-2xl font-semibold text-center text-blue-800 mb-6">
             Register to start learning!
           </h2>
@@ -98,6 +201,7 @@ function Register() {
                   setFullname(e.target.value);
                 }}
               />
+              {fullnameError && <p className="text-red-500">{fullnameError}</p>}
             </div>
             <div className="mb-4">
               <label
@@ -129,6 +233,15 @@ function Register() {
                   }}
                 />
               </LocalizationProvider>
+              {ageFormatError && (
+                <p className="text-red-500">{ageFormatError}</p>
+              )}
+              {ageInvalidError && (
+                <p className="text-red-500">{ageInvalidError}</p>
+              )}
+              {ageMinimumError && (
+                <p className="text-red-500">{ageMinimumError}</p>
+              )}
             </div>
             <div className="mb-4">
               <label
@@ -165,6 +278,12 @@ function Register() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
+              {emailFormatError && (
+                <p className="text-red-500">{emailFormatError}</p>
+              )}
+              {emailExistError && (
+                <p className="text-red-500">{emailExistError}</p>
+              )}
             </div>
             <div className="mb-4">
               <label
@@ -184,14 +303,19 @@ function Register() {
                   setPassword(e.target.value);
                 }}
               />
+              {passwordError && <p className="text-red-500">{passwordError}</p>}
             </div>
             <div>
               <button
                 type="submit"
-                className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="w-full bg-indigo-600 text-white py-2 px-4 mb-3 rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 Register
               </button>
+              {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+              {successMessage && (
+                <p className="mb-4 text-sm text-green-600">{successMessage}</p>
+              )}
             </div>
           </form>
           <p className="mt-6 text-center text-sm text-gray-600">
