@@ -4,8 +4,6 @@ import courseRouter from "./routes/course.mjs";
 import userRouter from "./routes/user.mjs";
 import connectionPool from "./utils/db.mjs";
 import dotenv from "dotenv";
-import cors from "cors";
-
 
 const app = express();
 app.use(express.json());
@@ -34,7 +32,6 @@ app.use("/users", userRouter);
 app.get("/test", (req, res) => {
   return res.json("Server API is working 🚀");
 });
-
 
 app.listen(port, () => {
   console.log(`Server is running at ${port} 🚀`);
