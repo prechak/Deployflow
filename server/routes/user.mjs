@@ -2,10 +2,6 @@ import { Router } from "express";
 import connectionPool from "../utils/db.mjs";
 import userRegisterValidation from "../middlewares/postuser.validation.mjs";
 import loginValidation from "../middlewares/login.validation.mjs";
-<<<<<<< HEAD
-=======
-
->>>>>>> 2272c6e (edit: add login middleware)
 import jwt from "jsonwebtoken";
 
 const userRouter = Router();
@@ -44,11 +40,7 @@ userRouter.post("/register", [userRegisterValidation], async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
 // user login
-=======
-// login
->>>>>>> 2272c6e (edit: add login middleware)
 userRouter.post("/login", [loginValidation], async (req, res) => {
   console.log("SECRET_KEY: ", process.env.SECRET_KEY);
   console.log("Request Body: ", req.body);
