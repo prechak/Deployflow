@@ -1,7 +1,8 @@
 import { Router } from "express";
 import connectionPool from "../utils/db.mjs";
 import userRegisterValidation from "../middlewares/postuser.validation.mjs";
-import bcrypt from "bcrypt";
+import loginValidation from "../middlewares/login.validation.mjs";
+
 import jwt from "jsonwebtoken";
 
 const userRouter = Router();
@@ -41,7 +42,7 @@ userRouter.post("/register", [userRegisterValidation], async (req, res) => {
 });
 
 // login
-userRouter.post("/login", async (req, res) => {
+userRouter.post("/login", [loginValidation], async (req, res) => {
   console.log("SECRET_KEY: ", process.env.SECRET_KEY);
   console.log("Request Body: ", req.body);
   const { email, password } = req.body;
@@ -59,12 +60,6 @@ userRouter.post("/login", async (req, res) => {
     }
 
     const user = result.rows[0];
-
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      return res.status(400).json({ message: "Invalid email or password" });
-    }
-
     const token = jwt.sign(
       { userId: user.userid, fullname: user.fullname, role: user.role },
       process.env.SECRET_KEY,
