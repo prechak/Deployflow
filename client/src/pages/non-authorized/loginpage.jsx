@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import NavbarNonUser from "../../components/homepage/navbar-nonuser";
 
 function Login() {
   const navigate = useNavigate();
@@ -40,16 +41,11 @@ function Login() {
 
   return (
     <>
-      <header className="fixed z-10 w-full flex justify-between items-center bg-white sm:px-8 px-4 py-2 md:py-4 border-b border-b-[#e6ebf4]">
-        <Link
-          to="/"
-          className="font-inter font-medium bg-[#6469ff] text-white px-4 py-2 rounded-md"
-        >
-          Test Navbar
-        </Link>
-      </header>
-      <div className="flex flex-col justify-center items-center h-screen w-screen bg-Gray-100 relative overflow-hidden">
-        <div className="absolute right-0 top-9 md:top-2 max-w-screen ">
+      <NavbarNonUser />
+
+      <div className="flex flex-col justify-center items-center h-screen  bg-Gray-100 relative overflow-hidden">
+        {/* Background */}
+        <div className="absolute right-0 top-9 md:top-2  ">
           <svg
             className="md:w-[133px] md:h-[500px]"
             width="33"
@@ -64,7 +60,7 @@ function Login() {
             />
           </svg>
         </div>
-        <div className="absolute left-0 bottom-0 max-w-screen md:left-[-2rem] ">
+        <div className="absolute left-0 bottom-0 n md:left-[-2rem] ">
           <svg
             className="md:w-[100px] md:h-[400px]"
             width="29"
@@ -79,7 +75,7 @@ function Login() {
             />
           </svg>
         </div>
-        <div className="absolute top-[370px] right-[6rem] md:top-[470px] md:right-10">
+        <div className="absolute top-[320px] right-[6rem] md:top-[470px] md:right-10">
           <svg
             className="md:w-[50px] md:h-auto stroke-[3px] md:stroke-[0.5px]"
             width="11"
@@ -111,7 +107,7 @@ function Login() {
             />
           </svg>
         </div>
-        <div className="absolute top-0 md:top-[15rem] md:left-[10rem]">
+        <div className="absolute -top-[10rem] md:top-[15rem] md:left-[10rem]">
           <svg
             width="23"
             height="23"
@@ -132,10 +128,10 @@ function Login() {
               stroke-linecap="round"
             />
           </svg>
-        </div>
-
+        </div>{" "}
+        {/* Background */}
         <form onSubmit={handleSubmit}>
-          <div className="flex flex-col gap-7 w-[22rem] md:pt-20 md:w-[30rem] md:gap-8 text-black">
+          <div className="flex flex-col gap-7 w-[22rem] md:w-[30rem] md:gap-8 text-black">
             <h1 className="text-[#22269E] text-3xl font-medium pb-2  md:text-4xl">
               Welcome back!
             </h1>
@@ -144,7 +140,7 @@ function Login() {
               <p>
                 <input
                   type="email"
-                  className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-300  block w-full p-3 "
+                  className="border border-gray-300 text-gray-900 text-sm rounded-lg outline-Orange-500 block w-full p-3 "
                   required
                   placeholder="Enter Email"
                   onChange={(e) => {
@@ -161,7 +157,7 @@ function Login() {
                 {" "}
                 <input
                   type="password"
-                  className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-300  block w-full p-3"
+                  className="border border-gray-300 text-gray-900 text-sm rounded-lg outline-Orange-500  block w-full p-3"
                   placeholder="Enter Password"
                   onChange={(e) => {
                     setPassword(e.target.value);
@@ -174,7 +170,7 @@ function Login() {
 
             <button
               type="submit"
-              className="text-white bg-Blue-500 font-medium rounded-xl text-sm w-full sm:w-auto px-4 py-4 text-center hover:bg-Blue-400  transition duration-250 ease-in-out"
+              className="text-white bg-Blue-500 font-medium rounded-xl text-sm w-full sm:w-auto px-4 py-4 text-center hover:bg-Blue-400 transition duration-250 ease-in-out "
             >
               Log in
             </button>
