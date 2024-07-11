@@ -44,59 +44,7 @@ const courseData = [
     lessons: 7,
     hours: 9,
     image: image4,
-  },
-  {
-    id: 5,
-    title: "Data Science Fundamentals",
-    description:
-      "Vivamus efficitur nisl in nisl rhoncus, sit amet venenatis odio tempor.",
-    lessons: 12,
-    hours: 15,
-    image: image5,
-  },
-  {
-    id: 6,
-    title: "Mobile App Development",
-    description: "Cras mattis risus eu nunc viverra, et varius ex cursus.",
-    lessons: 9,
-    hours: 10,
-    image: image6,
-  },
-  {
-    id: 7,
-    title: "Digital Marketing Strategies",
-    description:
-      "Phasellus nec risus ultricies, ultricies augue ac, feugiat quam.",
-    lessons: 8,
-    hours: 7,
-    image: image7,
-  },
-  {
-    id: 8,
-    title: "Photography Basics",
-    description:
-      "Donec feugiat augue id tortor tempor, sit amet elementum ante vehicula.",
-    lessons: 6,
-    hours: 5,
-    image: image8,
-  },
-  {
-    id: 9,
-    title: "Artificial Intelligence Essentials",
-    description:
-      "Integer pretium quam et justo sagittis, vel tincidunt est semper.",
-    lessons: 10,
-    hours: 12,
-    image: image9,
-  },
-  {
-    id: 10,
-    title: "UI Design Principles",
-    description: "Morbi nec nulla at lorem aliquet maximus.",
-    lessons: 7,
-    hours: 8,
-    image: image10,
-  },
+  }
 ];
 
 function Course() {
@@ -122,7 +70,7 @@ function Course() {
         <div className="sm:mt-8 sm:flex sm:justify-center">
           <input
             type="text"
-            className="sm:border sm:rounded-lg sm:px-4 sm:w-full sm:h-12 text-black xl:w-[357px]"
+            className="sm:border sm:rounded-lg sm:px-4 sm:w-[343px] sm:h-12 text-black xl:w-[357px]"
             value={searchCourse}
             onChange={handleChange}
             placeholder="Search courses..."
@@ -132,17 +80,17 @@ function Course() {
 
       <section
   id="course"
-  className="sm:w-full sm:h-auto sm:rounded-lg flex flex-wrap justify-center xl:w-[1119px] xl:flex xl:flex-wrap xl:justify-center xl:mx-auto"
+  className="sm:w-full sm:h-auto sm:rounded-lg flex flex-wrap justify-center xl:w-[1119px] xl:flex xl:flex-wrap xl:justify-center xl:pb-[187px] xl:mx-auto "
 >
   {filteredCourses.map((course) => (
     <div
       key={course.id}
-      className="sm:w-[343px] sm:h-[431px] sm:flex sm:flex-col items-center mb-8 mx-4 xl:w-[30%] border-2 border-black xl:mt-[60px] xl:rounded-xl xl:mb-5"
+      className="sm:w-[343px] sm:h-[431px] sm:flex sm:flex-col items-center mb-8 mx-4 xl:w-[30%] border-[1px] border-black xl:mt-[60px] xl:rounded-xl xl:mb-5"
     >
       <img
         src={course.image}
         alt=""
-        className="sm:w-[343px] sm:h-[240px] sm:object-cover"
+        className="sm:w-[343px] sm:h-[240px] sm:object-cover rounded-lg"
       />
       <div className="sm:w-[343px] sm:h-[191px] sm:p-4">
         <p className="sm:text-xs sm:font-medium text-Orange-500">

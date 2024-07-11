@@ -4,15 +4,15 @@ import image2 from "/src/assets/images/sm/section1/image2.png";
 import secure from "/src/assets/icons/section1/secure.png";
 import support from "/src/assets/icons/section1/support.png";
 import purely from "/src/assets/icons/section1/purely.png";
-import ellipse from "/src/assets/images/sm/section1/ellipse1.png";
-import ellipse2 from "/src/assets/images/sm/section1/ellipse2.png";
-import ellipse3 from "/src/assets/images/sm/section1/ellipse3.png";
-import x from "/src/assets/images/sm/section1/x1.png";
+import ellipse from "/src/assets/icons/section1/ellipse1.png";
+import ellipse2 from "/src/assets/icons/section1/ellipse2.png";
+import ellipse3 from "/src/assets/icons/section1/ellipse3.png";
+import vector1 from "/src/assets/icons/section1/vector1.png";
 
 function section1() {
   return (
     <>
-    <div>
+    <div className=" absolute">
       <img src={ellipse} alt="" className="sm:pl-6 xl:hidden" />
       </div>
       <section className="flex justify-center items-center text-black sm:w-auto sm:h-[1428.63px] xl:w-auto xl:h-[1111px] ">
