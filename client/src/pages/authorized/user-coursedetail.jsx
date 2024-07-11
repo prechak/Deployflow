@@ -1,18 +1,7 @@
 import SectionCourseDetail from "../../components/coursedetail/section-coursedetail";
 import SectionOtherCourse from "../../components/coursedetail/section-othercourse";
 import StickybarCoursedetail from "../../components/coursedetail/stickybar-coursedetail";
-import Modal from "../../components/coursedetail/modal";
-import UserSectionCourseDetail from "../../components/coursedetail/user-section-coursedetail";
-import UserSectionOtherCourse from "../../components/coursedetail/user-section-othercourse";
-import arrow_drop from "../../images/coursedetail/arrow_drop.png";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  Box,
-} from "@chakra-ui/react";
+
 
 function UserCoursedetail() {
   return (

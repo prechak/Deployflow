@@ -13,7 +13,7 @@ import ConfirmationCourse from "./authorized/user-confirmationcourse";
 import UserDesireCoursedetail from "./authorized/user-desirecoursedetail";
 import StartLearning from "./authorized/user-courselearning";
 import UserCoursedetail from "./authorized/user-coursedetail";
-import Register from "./non-authorized/registerpage";
+
 function AuthenticatedApp() {
   return (
     <div>
