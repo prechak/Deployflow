@@ -19,13 +19,13 @@ function StickybarCoursedetail() {
   const toggleCourse = () => {
     setIsCourseVisible(!isCoursevisible);
   };
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   return (
     <div>
       <footer className="flex items-center justify-center border-solid border-2 border-blue-700 shadow-md bg-white h-fit sticky bottom-0 xl:hidden">
-        <div className="flex flex-col items-center w-[93%] h-[80%] gap-[8px] p-[8px]">
-          <div className="sm:w-[343px] flex flex-col justify-between gap-3 pb-[8px] pt-[8px]">
+        <div className="flex flex-col items-center w-[100%] gap-[8px] p-[16px]">
+          <div className="w-[343px] flex flex-col sm:w-[100%] justify-between gap-3 pb-[8px] pt-[8px]">
             <h1
               className={`${
                 isCoursevisible ? "block" : "hidden"
@@ -54,14 +54,20 @@ function StickybarCoursedetail() {
                       </Box>
 <<<<<<< HEAD
                       <button onClick={toggleCourse}>
+<<<<<<< HEAD
 =======
                       <div>
 >>>>>>> 6cac249 (feat: create file user-confirmation and user-coursedetail)
+=======
+>>>>>>> 498807f (fix: client addjust width stickybar remove)
                         <img
                           className="w-[24px] h-[24px]"
                           src={arrow_drop}
                         ></img>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 498807f (fix: client addjust width stickybar remove)
                       </button>
                     </AccordionButton>
                   </h2>
@@ -72,6 +78,7 @@ function StickybarCoursedetail() {
                   >
                     Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
                   </h1>
+<<<<<<< HEAD
 =======
                       </div>
                     </AccordionButton>
@@ -80,6 +87,8 @@ function StickybarCoursedetail() {
                     Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
                   </AccordionPanel>
 >>>>>>> 6cac249 (feat: create file user-confirmation and user-coursedetail)
+=======
+>>>>>>> 498807f (fix: client addjust width stickybar remove)
                 </AccordionItem>
               </Accordion>
             </div>
@@ -88,14 +97,26 @@ function StickybarCoursedetail() {
             </div>
             <div className="flex flex-row gap-[8px] sticky">
 <<<<<<< HEAD
+<<<<<<< HEAD
               <button onClick={()=>{
                 navigate("/user/coursedetail/desire")
               }} className="border-solid border-[1px] border-Orange-500 text-Orange-500 rounded-[12px] p-[8px] text-[12px] font-[700] text-center w-[167px]">
+=======
+              <button
+                onClick={() => {
+                  navigate("/user/coursedetail/desire");
+                }}
+                className="border-solid border-[1px] border-Orange-500 text-Orange-500 rounded-[12px] p-[8px] text-[12px] font-[700] text-center w-[167px] sm:h-[34px]"
+              >
+>>>>>>> 498807f (fix: client addjust width stickybar remove)
                 Get in Desire Course
               </button>
-              <button onClick={()=>{
-                navigate("/modal")
-              }} className="border-solid border-[1px] border-Blue-500 bg-Blue-500 rounded-[12px] p-[8px] text-[12px] font-[700] text-white text-center w-[167px]">
+              <button
+                onClick={() => {
+                  navigate("/modal");
+                }}
+                className="border-solid border-[1px] border-Blue-500 bg-Blue-500 rounded-[12px] p-[8px] text-[12px] font-[700] text-white text-center w-[167px] sm:h-[34px]"
+              >
                 Subscribe This Course
               </button>
             </div>

@@ -1,7 +1,7 @@
 import SectionOtherCourse from "../../components/coursedetail/section-othercourse";
 import UserSectionConfirmation from "../../components/coursedetail/section-confirmation";
 import StickybarStartLearning from "../../components/coursedetail/stickybar-startlearning";
-
+import StickybarConfirmation from "../../components/coursedetail/stickybar-confirmation"; 
 
 function ConfirmationCourse() {
   return (
