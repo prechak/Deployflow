@@ -37,6 +37,7 @@ function LoginAdmin() {
     }
   };
 
+
   return (
     <>
       <section className="bg-blue-100 flex items-center justify-center min-h-screen">
@@ -105,4 +106,4 @@ function LoginAdmin() {
   );
 }
 
-export default loginAdmin;
+export default LoginAdmin;
