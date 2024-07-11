@@ -5,6 +5,7 @@ import HomePage from "./non-authorized/homepage";
 import LoginAdmin from "./admin/login-admin";
 import AddCourseAdmin from "./admin/addcourse-admin";
 import Register from "./non-authorized/registerpage";
+import UserProfile from "./authorized/user-profile";
 import Course from "./non-authorized/course";
 import Userhomepage from "./authorized/user-homepage";
 import Usercourse from "./authorized/user-course";
@@ -22,6 +23,7 @@ function AuthenticatedApp() {
         <Route path="/usercourse" element={<Usercourse />} />
         <Route path="/login/admin" element={<LoginAdmin />} />
         <Route path="/admin/addcourse/" element={<AddCourseAdmin />} />
+        <Route path="/user/profile/" element={<UserProfile />} />
       </Routes>
     </div>
   );
