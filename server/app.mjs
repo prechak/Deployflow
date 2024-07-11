@@ -1,11 +1,12 @@
 import express from "express";
+import cors from "cors";
 import courseRouter from "./routes/course.mjs";
 import userRouter from "./routes/user.mjs";
 import connectionPool from "./utils/db.mjs";
 
 const app = express();
 app.use(express.json());
-
+app.use(cors());
 const port = 4000;
 
 //Connection test
