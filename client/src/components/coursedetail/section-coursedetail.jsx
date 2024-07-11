@@ -11,11 +11,17 @@ import {
 } from "@chakra-ui/react";
 import arrow_drop from "../../icons/coursedetail/arrow_drop.png";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import React, { useState } from "react";
 import modal_vector from "../../icons/coursedetail/modal_vector.png";
 import { useNavigate } from "react-router-dom";
 =======
 >>>>>>> 6cac249 (feat: create file user-confirmation and user-coursedetail)
+=======
+import React, { useState } from "react";
+import modal_vector from "../../icons/coursedetail/modal_vector.png";
+import { useNavigate } from "react-router-dom";
+>>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
 
 function SectionCourseDetail() {
   const [modal, setModal] = useState(false);
@@ -253,6 +259,9 @@ function SectionCourseDetail() {
           </article>
         </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
         <div>
           <aside
             className={`${
@@ -275,6 +284,7 @@ function SectionCourseDetail() {
                         </Box>
                       </AccordionButton>
                     </h2>
+<<<<<<< HEAD
 =======
         <aside className="shadow-lg xl:w-[375px] xl:h-[449px] xl:block hidden sticky top-[57px] ml-[24px] mt-[40px]">
           <div className="flex flex-col w-[309px] h-[95%] gap-[10px] mt-[11px] ml-[33px]">
@@ -301,6 +311,8 @@ function SectionCourseDetail() {
                   </h2>
                   <AccordionPanel pb={4}>
 >>>>>>> 6cac249 (feat: create file user-confirmation and user-coursedetail)
+=======
+>>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
                     <p className="text-Body2 font-Body2 text-Gray-700">
                       Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
                     </p>

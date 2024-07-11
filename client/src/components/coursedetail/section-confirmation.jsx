@@ -11,15 +11,21 @@ import {
 } from "@chakra-ui/react";
 import arrow_drop from "../../icons/coursedetail/arrow_drop.png";
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
 import { useNavigate } from "react-router-dom";
 
 function UserSectionConfirmation() {
 const navigate = useNavigate();
 
+<<<<<<< HEAD
 =======
 
 function UserSectionConfirmation() {
 >>>>>>> 6cac249 (feat: create file user-confirmation and user-coursedetail)
+=======
+>>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
   return (
     <div>
       <section className="h-fit border-solid border-2 border-red-600 flex flex-row pt-[16px] pl-[16px] pr-[16px] xl:pl-[144px]">
@@ -42,10 +48,14 @@ function UserSectionConfirmation() {
           </header>
           <article>
 <<<<<<< HEAD
+<<<<<<< HEAD
             <div className="w-[100%] h-fit mb-[15px] mt-[15px] xl:w-[739px] md:mt-[10px] xl:mt-[70px] xl:mb-[70px]">
 =======
             <div className="w-[100%] h-fit mb-[30px] mt-[30px] xl:w-[739px] md:mt-[10px] xl:mt-[70px]">
 >>>>>>> 6cac249 (feat: create file user-confirmation and user-coursedetail)
+=======
+            <div className="w-[100%] h-fit mb-[15px] mt-[15px] xl:w-[739px] md:mt-[10px] xl:mt-[70px] xl:mb-[70px]">
+>>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
               <h1 className="text-black text-Headline3 font-Headline3 mb-[5px] xl:text-Headline2 xl:font-Headline2">
                 Course Detail
               </h1>
@@ -101,10 +111,14 @@ function UserSectionConfirmation() {
           </article>
           <article>
 <<<<<<< HEAD
+<<<<<<< HEAD
             <div className="h-[924px] mt-[70px] xl:w-[739px]">
 =======
             <div className="h-[924px] mt-[25px] xl:w-[739px]">
 >>>>>>> 6cac249 (feat: create file user-confirmation and user-coursedetail)
+=======
+            <div className="h-[924px] mt-[70px] xl:w-[739px]">
+>>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
               <h1 className="text-black text-Headline3 font-Headline3 xl:text-Headline2 xl:font-Headline2 xl:mb-[20px]">
                 Module Samples
               </h1>
@@ -288,12 +302,15 @@ function UserSectionConfirmation() {
                         </span>
                       </Box>
 <<<<<<< HEAD
+<<<<<<< HEAD
                     </AccordionButton>
                   </h2>
                   <p className="text-Body2 font-Body2 text-Gray-700">
                     Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
                   </p>
 =======
+=======
+>>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
                       <div>
                         <img
                           className="w-[24px] h-[24px]"
@@ -307,7 +324,10 @@ function UserSectionConfirmation() {
                       Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
                     </p>
                   </AccordionPanel>
+<<<<<<< HEAD
 >>>>>>> 6cac249 (feat: create file user-confirmation and user-coursedetail)
+=======
+>>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
                 </AccordionItem>
               </Accordion>
             </div>
@@ -316,12 +336,18 @@ function UserSectionConfirmation() {
             </div>
             <div className="border-solid border-t-[1px] border-Gray-400 flex flex-col justify-end h-[100px] w-[309px] ">
 <<<<<<< HEAD
+<<<<<<< HEAD
               <button onClick={()=>{
                 navigate("/user/startlearning")
               }} className="border-solid border-[1px] border-Blue-500 bg-Blue-500 rounded-[12px] text-[16px] font-[700] text-white text-center w-[309px] h-[60px]">
 =======
               <button className="border-solid border-[1px] border-Blue-500 bg-Blue-500 rounded-[12px] text-[16px] font-[700] text-white text-center w-[309px] h-[60px]">
 >>>>>>> 6cac249 (feat: create file user-confirmation and user-coursedetail)
+=======
+              <button onClick={()=>{
+                navigate("/user/startlearning")
+              }} className="border-solid border-[1px] border-Blue-500 bg-Blue-500 rounded-[12px] text-[16px] font-[700] text-white text-center w-[309px] h-[60px]">
+>>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
                 Start Learning
               </button>
             </div>
