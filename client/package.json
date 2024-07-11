@@ -13,13 +13,13 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/material": "^5.16.0",
-    "@mui/x-date-pickers": "^7.9.0",
-    "axios": "^1.7.2",
-    "dayjs": "^1.11.11",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.24.1",
+    "react-slick": "^0.30.2",
+    "react-spring": "^9.7.3",
     "shadcn-ui": "^0.8.0",
+    "slick-carousel": "^1.8.1",
     "swiper": "^11.1.4"
   },
   "devDependencies": {

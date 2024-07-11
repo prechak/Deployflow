@@ -8,7 +8,7 @@ function Header() {
   return (
     <>
       <section id="header" className="sm:w-full sm:h-[704px] bg-Blue-100 sm:flex sm:justify-center xl:h-[700px] xl:relative xl:align-middle">
-        <img src={Ellipse} alt="" className="absolute top-0 left-0 mt-[76px]" />
+        <img src={Ellipse} alt="" className="absolute top-0 left-0 sm:mt-[172px] md:mt-[164px]" />
         <div className="relative z-10 sm:px-4 sm:pt-14 md:p-0 md:mt-[165px] md:w-[643px] md:h-[370px] xl:p-0 xl:mt-[165px] xl:w-[643px] xl:h-[370px] xl:mr-[350px] ">
           <h1 className="relative text-black sm:text-4xl sm:font-medium md:text-[66px] md:font-Headline3 md:w-[643px] md:h-[166px] md:leading-tight xl:text-[66px] xl:font-Headline3 xl:w-[643px] xl:h-[166px] xl:leading-tight">
             Best Virtual Classroom Software
