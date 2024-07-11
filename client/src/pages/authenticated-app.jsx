@@ -10,6 +10,8 @@ import Userhomepage from "./authorized/user-homepage";
 import Usercourse from "./authorized/user-course";
 import Modal from "../components/coursedetail/modal";
 import ConfirmationCourse from "./authorized/user-confirmationcourse";
+import UserDesireCoursedetail from "./authorized/user-desirecoursedetail";
+import StartLearning from "./authorized/user-courselearning";
 
 function AuthenticatedApp() {
   return (
@@ -28,7 +30,6 @@ function AuthenticatedApp() {
         <Route path="/modal" element={<Modal />} />
         <Route path="/userhomepage" element={<Userhomepage />} />
         <Route path="/usercourse" element={<Usercourse />} />
-        <Route path="/user/coursedetail" element={<UserCoursedetail />} />
         <Route path="/login/admin" element={<LoginAdmin />} />
         <Route path="/admin/addcourse/" element={<AddCourseAdmin />} />
       </Routes>

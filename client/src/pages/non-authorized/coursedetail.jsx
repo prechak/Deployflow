@@ -11,9 +11,8 @@ function Coursedetail() {
         <footer className="border-solid border-2 border-purple-700 flex h-[805px]"></footer>
       </div>
       <div className="sticky bottom-0">
-      <StickybarCoursedetail />
+        <StickybarCoursedetail />
       </div>
-      
     </div>
   );
 }

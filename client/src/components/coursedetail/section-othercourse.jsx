@@ -3,8 +3,12 @@ import othercoursepic2 from "../../images/coursedetail/othercoursepic2.png";
 import othercourselesson1 from "../../icons/coursedetail/othercourselesson1.png";
 import othercourselesson2 from "../../icons/coursedetail/othercourselesson2.png";
 import othercoursepic3 from "../../images/coursedetail/othercoursepic3.png";
+import React,{useState, useEffect} from "react";
+
 
 function SectionOtherCourse() {
+ 
+
   return (
     <div>
       <section className="h-[1483px] border-solid border-2 border-green-700 bg-Gray-100 pl-[16px] pr-[16px] xl:h-[792px]">
