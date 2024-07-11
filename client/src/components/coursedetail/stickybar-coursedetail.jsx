@@ -40,10 +40,12 @@ const navigate = useNavigate();
                         </span>
                       </Box>
                       <button onClick={toggleCourse}>
+                      <div>
                         <img
                           className="w-[24px] h-[24px]"
                           src={arrow_drop}
                         ></img>
+                        </div>
                       </button>
                     </AccordionButton>
                   </h2>
@@ -54,6 +56,9 @@ const navigate = useNavigate();
                   >
                     Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
                   </h1>
+                  <AccordionPanel pb={4}>
+                    Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
+                  </AccordionPanel>
                 </AccordionItem>
               </Accordion>
             </div>

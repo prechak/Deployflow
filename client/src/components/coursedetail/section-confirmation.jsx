@@ -274,11 +274,19 @@ const navigate = useNavigate();
                           Service Design Essentials
                         </span>
                       </Box>
+                      <div>
+                        <img
+                          className="w-[24px] h-[24px]"
+                          src={arrow_drop}
+                        ></img>
+                      </div>
                     </AccordionButton>
                   </h2>
-                  <p className="text-Body2 font-Body2 text-Gray-700">
-                    Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
-                  </p>
+                  <AccordionPanel pb={4}>
+                    <p className="text-Body2 font-Body2 text-Gray-700">
+                      Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
+                    </p>
+                  </AccordionPanel>
                 </AccordionItem>
               </Accordion>
             </div>

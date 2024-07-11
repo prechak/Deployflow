@@ -13,6 +13,10 @@ function Coursedetail() {
       <div className="sticky bottom-0">
         <StickybarCoursedetail />
       </div>
+      <div className="sticky bottom-0">
+      <StickybarCoursedetail />
+      </div>
+      
     </div>
   );
 }
