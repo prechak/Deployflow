@@ -2,7 +2,6 @@ import { Router } from "express";
 import connectionPool from "../utils/db.mjs";
 import userRegisterValidation from "../middlewares/postuser.validation.mjs";
 import loginValidation from "../middlewares/login.validation.mjs";
-
 import jwt from "jsonwebtoken";
 
 const userRouter = Router();
@@ -41,11 +40,11 @@ userRouter.post("/register", [userRegisterValidation], async (req, res) => {
   }
 });
 
-// login
+// user login
 userRouter.post("/login", [loginValidation], async (req, res) => {
   console.log("SECRET_KEY: ", process.env.SECRET_KEY);
   console.log("Request Body: ", req.body);
-  const { email, password } = req.body;
+  const { email } = req.body;
 
   try {
     console.log(`Attempting to log in with email: ${email}`);
@@ -59,6 +58,7 @@ userRouter.post("/login", [loginValidation], async (req, res) => {
       return res.status(404).json({ message: "Invalid email or password" });
     }
 
+    // generate token
     const user = result.rows[0];
     const token = jwt.sign(
       { userId: user.userid, fullname: user.fullname, role: user.role },
@@ -66,7 +66,7 @@ userRouter.post("/login", [loginValidation], async (req, res) => {
       { expiresIn: "900000" } // 15 minutes
     );
 
-    return res.json({
+    return res.status(200).json({
       message: "Login successful",
       token: token,
     });

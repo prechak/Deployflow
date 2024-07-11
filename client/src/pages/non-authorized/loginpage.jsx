@@ -1,17 +1,43 @@
+import * as React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 function Login() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const [state, setState] = useState({
+    loading: null,
+    error: null,
+    user: null,
+  });
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Email:", email);
     console.log("Password:", password);
-    setEmail("");
-    setPassword("");
+    try {
+      const result = await axios.post(
+        "http://localhost:4000/users/login",
+        { email, password } // Pass email and password as object
+      );
+
+      const token = result.data.token;
+      localStorage.setItem("token", token);
+
+      const userDataFromToken = jwtDecode(token);
+      setState({ ...state, user: userDataFromToken });
+      navigate("/");
+    } catch (error) {
+      setState({ ...state, error: error.message });
+    }
   };
+
   return (
     <>
       <header className="fixed z-10 w-full flex justify-between items-center bg-white sm:px-8 px-4 py-2 md:py-4 border-b border-b-[#e6ebf4]">
