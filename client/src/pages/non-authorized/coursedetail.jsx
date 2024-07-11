@@ -1,19 +1,23 @@
 import SectionCourseDetail from "../../components/coursedetail/section-coursedetail";
 import SectionOtherCourse from "../../components/coursedetail/section-othercourse";
 import StickybarCoursedetail from "../../components/coursedetail/stickybar-coursedetail";
+import Navbarnonuser from "../../components/homepage/navbar-nonuser"
+import Section4 from "../../components/homepage/section4";
+import Footer from "../../components/homepage/footer";
+
 function Coursedetail() {
   return (
     <div>
-      <nav className="border-solid border-2 border-purple-700 bg-slate-400 h-[56px] sticky top-0"></nav>
+      <nav className="sticky top-0 bg-white z-10">
+        <Navbarnonuser />
+      </nav>
       <SectionCourseDetail />
       <SectionOtherCourse />
-      <div>
-        <footer className="border-solid border-2 border-purple-700 flex h-[805px]"></footer>
-      </div>
+      <Section4 />
+      <Footer />
       <div className="sticky bottom-0">
-      <StickybarCoursedetail />
+        <StickybarCoursedetail />
       </div>
-      
     </div>
   );
 }

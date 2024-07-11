@@ -10,18 +10,9 @@ import {
   Modal,
 } from "@chakra-ui/react";
 import arrow_drop from "../../icons/coursedetail/arrow_drop.png";
-<<<<<<< HEAD
-<<<<<<< HEAD
 import React, { useState } from "react";
 import modal_vector from "../../icons/coursedetail/modal_vector.png";
 import { useNavigate } from "react-router-dom";
-=======
->>>>>>> 6cac249 (feat: create file user-confirmation and user-coursedetail)
-=======
-import React, { useState } from "react";
-import modal_vector from "../../icons/coursedetail/modal_vector.png";
-import { useNavigate } from "react-router-dom";
->>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
 
 function SectionCourseDetail() {
   const [modal, setModal] = useState(false);
@@ -30,9 +21,30 @@ function SectionCourseDetail() {
   };
   const navigate = useNavigate();
 
+  const [isCoursevisible2, setIsCourseVisible2] = useState(false);
+  const toggleCourse2 = () => {
+    setIsCourseVisible2(!isCoursevisible2);
+  };
+  const [isCoursevisible3, setIsCourseVisible3] = useState(false);
+  const toggleCourse3 = () => {
+    setIsCourseVisible3(!isCoursevisible3);
+  };
+  const [isCoursevisible4, setIsCourseVisible4] = useState(false);
+  const toggleCourse4 = () => {
+    setIsCourseVisible4(!isCoursevisible4);
+  };
+  const [isCoursevisible5, setIsCourseVisible5] = useState(false);
+  const toggleCourse5 = () => {
+    setIsCourseVisible5(!isCoursevisible5);
+  };
+  const [isCoursevisible6, setIsCourseVisible6] = useState(false);
+  const toggleCourse6 = () => {
+    setIsCourseVisible6(!isCoursevisible6);
+  };
+
   return (
     <div>
-      <section className="h-fit border-solid border-2 border-red-600 flex flex-row pt-[16px] pl-[16px] pr-[16px] xl:pl-[144px]">
+      <section className="h-fit flex flex-row pt-[16px] pl-[16px] pr-[16px] xl:pl-[144px]">
         <div className={`${modal ? "opacity-25" : "opacity-100"}`}>
           <header className="w-[100%] h-[261.5px] md:h-[450px] xl:h-[500px] flex justify-center xl:justify-start xl:w-[739px]">
             <div className="flex flex-col">
@@ -107,12 +119,12 @@ function SectionCourseDetail() {
                             Introduction
                           </span>
                         </Box>
-                        <div>
+                        <button>
                           <img
                             className="w-[24px] h-[24px]"
                             src={arrow_drop}
                           ></img>
-                        </div>
+                        </button>
                       </AccordionButton>
                     </h2>
                     <AccordionPanel pb={4}>
@@ -145,17 +157,17 @@ function SectionCourseDetail() {
                             Service Design Theories and Principles
                           </span>
                         </Box>
-                        <div>
+                        <button onClick={toggleCourse2}>
                           <img src={arrow_drop}></img>
-                        </div>
+                        </button>
                       </AccordionButton>
                     </h2>
-                    <AccordionPanel pb={4}>
+                    <p className={`${isCoursevisible2 ? "block" : "hidden"}`}>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                       sed do eiusmod tempor incididunt ut labore et dolore magna
                       aliqua. Ut enim ad minim veniam, quis nostrud exercitation
                       ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    </AccordionPanel>
+                    </p>
                   </AccordionItem>
 
                   <AccordionItem className=" h-fit">
@@ -169,17 +181,17 @@ function SectionCourseDetail() {
                             Understanding Users and Finding Opportunities
                           </span>
                         </Box>
-                        <div>
+                        <button onClick={toggleCourse3}>
                           <img src={arrow_drop}></img>
-                        </div>
+                        </button>
                       </AccordionButton>
                     </h2>
-                    <AccordionPanel pb={4}>
+                    <p className={`${isCoursevisible3 ? "block" : "hidden"}`}>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                       sed do eiusmod tempor incididunt ut labore et dolore magna
                       aliqua. Ut enim ad minim veniam, quis nostrud exercitation
                       ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    </AccordionPanel>
+                    </p>
                   </AccordionItem>
 
                   <AccordionItem className="h-fit">
@@ -193,17 +205,17 @@ function SectionCourseDetail() {
                             Identifying and Validating Opportunities for Design
                           </span>
                         </Box>
-                        <div>
+                        <button onClick={toggleCourse4}>
                           <img src={arrow_drop}></img>
-                        </div>
+                        </button>
                       </AccordionButton>
                     </h2>
-                    <AccordionPanel pb={4}>
+                    <p className={`${isCoursevisible4 ? "block" : "hidden"}`}>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                       sed do eiusmod tempor incididunt ut labore et dolore magna
                       aliqua. Ut enim ad minim veniam, quis nostrud exercitation
                       ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    </AccordionPanel>
+                    </p>
                   </AccordionItem>
 
                   <AccordionItem className="h-fit">
@@ -217,17 +229,17 @@ function SectionCourseDetail() {
                             Prototyping
                           </span>
                         </Box>
-                        <div>
+                        <button onClick={toggleCourse5}>
                           <img src={arrow_drop}></img>
-                        </div>
+                        </button>
                       </AccordionButton>
                     </h2>
-                    <AccordionPanel pb={4}>
+                    <p className={`${isCoursevisible5 ? "block" : "hidden"}`}>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                       sed do eiusmod tempor incididunt ut labore et dolore magna
                       aliqua. Ut enim ad minim veniam, quis nostrud exercitation
                       ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    </AccordionPanel>
+                    </p>
                   </AccordionItem>
 
                   <AccordionItem className="h-fit">
@@ -241,32 +253,28 @@ function SectionCourseDetail() {
                             Course Summary
                           </span>
                         </Box>
-                        <div>
+                        <button onClick={toggleCourse6}>
                           <img src={arrow_drop}></img>
-                        </div>
+                        </button>
                       </AccordionButton>
                     </h2>
-                    <AccordionPanel pb={4}>
+                    <p className={`${isCoursevisible6 ? "block" : "hidden"}`}>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                       sed do eiusmod tempor incididunt ut labore et dolore magna
                       aliqua. Ut enim ad minim veniam, quis nostrud exercitation
                       ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    </AccordionPanel>
+                    </p>
                   </AccordionItem>
                 </Accordion>
               </div>
             </div>
           </article>
         </div>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
         <div>
           <aside
             className={`${
               modal ? "opacity-25" : "opacity-100"
-            } shadow-lg xl:w-[375px] xl:h-[449px] xl:block hidden sticky top-[57px] ml-[24px] mt-[40px]`}
+            } shadow-lg xl:w-[375px] xl:h-[449px] xl:block hidden sticky top-[105px] ml-[24px] mt-[40px]`}
           >
             <div className="flex flex-col w-[309px] h-[95%] gap-[10px] mt-[11px] ml-[33px]">
               <h1 className="w-[309px] h-[21px] text-Orange-500 text-[14px] font-[400] ">
@@ -284,35 +292,6 @@ function SectionCourseDetail() {
                         </Box>
                       </AccordionButton>
                     </h2>
-<<<<<<< HEAD
-=======
-        <aside className="shadow-lg xl:w-[375px] xl:h-[449px] xl:block hidden sticky top-[57px] ml-[24px] mt-[40px]">
-          <div className="flex flex-col w-[309px] h-[95%] gap-[10px] mt-[11px] ml-[33px]">
-            <h1 className="w-[309px] h-[21px] text-Orange-500 text-[14px] font-[400] ">
-              Course
-            </h1>
-            <div className="w-[309px] h-[86px] mt-[10px]">
-              <Accordion defaultIndex={[0]} allowMultiple>
-                <AccordionItem>
-                  <h2>
-                    <AccordionButton className="mb-[1px]">
-                      <Box as="span" flex="1" textAlign="left">
-                        <span className="text-black text-Headline3 font-Headline3">
-                          Service Design Essentials
-                        </span>
-                      </Box>
-                      <div>
-                        <img
-                          className="w-[24px] h-[24px]"
-                          src={arrow_drop}
-                        ></img>
-                      </div>
-                    </AccordionButton>
-                  </h2>
-                  <AccordionPanel pb={4}>
->>>>>>> 6cac249 (feat: create file user-confirmation and user-coursedetail)
-=======
->>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
                     <p className="text-Body2 font-Body2 text-Gray-700">
                       Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
                     </p>

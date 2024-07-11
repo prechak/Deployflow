@@ -11,9 +11,9 @@ function SectionOtherCourse() {
 
   return (
     <div>
-      <section className="h-[1483px] border-solid border-2 border-green-700 bg-Gray-100 pl-[16px] pr-[16px] xl:h-[792px]">
+      <section className="h-[1410px] bg-Gray-100 pl-[16px] pr-[16px] xl:h-[792px]">
         <div className=" flex flex-col items-center w-[100%] xl:mt-[121px]">
-          <h1 className=" text-black text-Headline3 font-Headline3 mt-4 mb-6 xl:text-Headline2 xl:font-Headline2 xl:mb-[40px]">
+          <h1 className=" text-black text-Headline3 font-Headline3 mt-4 xl:mt-[140px]  mb-6 xl:text-Headline2 xl:font-Headline2 xl:mb-[40px]">
             Other Interesting Course
           </h1>
           <div className="flex flex-col xl:flex-row xl:w-[1119px] justify-between">

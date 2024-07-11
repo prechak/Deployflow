@@ -10,25 +10,35 @@ import {
   Box,
 } from "@chakra-ui/react";
 import arrow_drop from "../../icons/coursedetail/arrow_drop.png";
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
 import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 
 function UserSectionConfirmation() {
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-<<<<<<< HEAD
-=======
-
-function UserSectionConfirmation() {
->>>>>>> 6cac249 (feat: create file user-confirmation and user-coursedetail)
-=======
->>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
+  const [isCoursevisible2, setIsCourseVisible2] = useState(false);
+  const toggleCourse2 = () => {
+    setIsCourseVisible2(!isCoursevisible2);
+  };
+  const [isCoursevisible3, setIsCourseVisible3] = useState(false);
+  const toggleCourse3 = () => {
+    setIsCourseVisible3(!isCoursevisible3);
+  };
+  const [isCoursevisible4, setIsCourseVisible4] = useState(false);
+  const toggleCourse4 = () => {
+    setIsCourseVisible4(!isCoursevisible4);
+  };
+  const [isCoursevisible5, setIsCourseVisible5] = useState(false);
+  const toggleCourse5 = () => {
+    setIsCourseVisible5(!isCoursevisible5);
+  };
+  const [isCoursevisible6, setIsCourseVisible6] = useState(false);
+  const toggleCourse6 = () => {
+    setIsCourseVisible6(!isCoursevisible6);
+  };
   return (
     <div>
-      <section className="h-fit border-solid border-2 border-red-600 flex flex-row pt-[16px] pl-[16px] pr-[16px] xl:pl-[144px]">
+      <section className="h-fit flex flex-row pt-[16px] pl-[16px] pr-[16px] xl:pl-[144px]">
         <div>
           <header className="w-[100%] h-[261.5px] md:h-[450px] xl:h-[500px] flex justify-center xl:justify-start xl:w-[739px]">
             <div className="flex flex-col">
@@ -47,15 +57,7 @@ function UserSectionConfirmation() {
             </div>
           </header>
           <article>
-<<<<<<< HEAD
-<<<<<<< HEAD
             <div className="w-[100%] h-fit mb-[15px] mt-[15px] xl:w-[739px] md:mt-[10px] xl:mt-[70px] xl:mb-[70px]">
-=======
-            <div className="w-[100%] h-fit mb-[30px] mt-[30px] xl:w-[739px] md:mt-[10px] xl:mt-[70px]">
->>>>>>> 6cac249 (feat: create file user-confirmation and user-coursedetail)
-=======
-            <div className="w-[100%] h-fit mb-[15px] mt-[15px] xl:w-[739px] md:mt-[10px] xl:mt-[70px] xl:mb-[70px]">
->>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
               <h1 className="text-black text-Headline3 font-Headline3 mb-[5px] xl:text-Headline2 xl:font-Headline2">
                 Course Detail
               </h1>
@@ -110,15 +112,7 @@ function UserSectionConfirmation() {
             </div>
           </article>
           <article>
-<<<<<<< HEAD
-<<<<<<< HEAD
             <div className="h-[924px] mt-[70px] xl:w-[739px]">
-=======
-            <div className="h-[924px] mt-[25px] xl:w-[739px]">
->>>>>>> 6cac249 (feat: create file user-confirmation and user-coursedetail)
-=======
-            <div className="h-[924px] mt-[70px] xl:w-[739px]">
->>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
               <h1 className="text-black text-Headline3 font-Headline3 xl:text-Headline2 xl:font-Headline2 xl:mb-[20px]">
                 Module Samples
               </h1>
@@ -173,17 +167,17 @@ function UserSectionConfirmation() {
                             Service Design Theories and Principles
                           </span>
                         </Box>
-                        <div>
+                        <button onClick={toggleCourse2}>
                           <img src={arrow_drop}></img>
-                        </div>
+                        </button>
                       </AccordionButton>
                     </h2>
-                    <AccordionPanel pb={4}>
+                    <p className={`${isCoursevisible2 ? "block" : "hidden"}`}>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                       sed do eiusmod tempor incididunt ut labore et dolore magna
                       aliqua. Ut enim ad minim veniam, quis nostrud exercitation
                       ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    </AccordionPanel>
+                    </p>
                   </AccordionItem>
 
                   <AccordionItem className=" h-fit">
@@ -197,17 +191,17 @@ function UserSectionConfirmation() {
                             Understanding Users and Finding Opportunities
                           </span>
                         </Box>
-                        <div>
+                        <button onClick={toggleCourse3}>
                           <img src={arrow_drop}></img>
-                        </div>
+                        </button>
                       </AccordionButton>
                     </h2>
-                    <AccordionPanel pb={4}>
+                    <p className={`${isCoursevisible3 ? "block" : "hidden"}`}>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                       sed do eiusmod tempor incididunt ut labore et dolore magna
                       aliqua. Ut enim ad minim veniam, quis nostrud exercitation
                       ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    </AccordionPanel>
+                    </p>
                   </AccordionItem>
 
                   <AccordionItem className="h-fit">
@@ -221,17 +215,17 @@ function UserSectionConfirmation() {
                             Identifying and Validating Opportunities for Design
                           </span>
                         </Box>
-                        <div>
+                        <button onClick={toggleCourse4}>
                           <img src={arrow_drop}></img>
-                        </div>
+                        </button>
                       </AccordionButton>
                     </h2>
-                    <AccordionPanel pb={4}>
+                    <p className={`${isCoursevisible4 ? "block" : "hidden"}`}>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                       sed do eiusmod tempor incididunt ut labore et dolore magna
                       aliqua. Ut enim ad minim veniam, quis nostrud exercitation
                       ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    </AccordionPanel>
+                    </p>
                   </AccordionItem>
 
                   <AccordionItem className="h-fit">
@@ -245,17 +239,17 @@ function UserSectionConfirmation() {
                             Prototyping
                           </span>
                         </Box>
-                        <div>
+                        <button onClick={toggleCourse5}>
                           <img src={arrow_drop}></img>
-                        </div>
+                        </button>
                       </AccordionButton>
                     </h2>
-                    <AccordionPanel pb={4}>
+                    <p className={`${isCoursevisible5 ? "block" : "hidden"}`}>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                       sed do eiusmod tempor incididunt ut labore et dolore magna
                       aliqua. Ut enim ad minim veniam, quis nostrud exercitation
                       ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    </AccordionPanel>
+                    </p>
                   </AccordionItem>
 
                   <AccordionItem className="h-fit">
@@ -269,17 +263,17 @@ function UserSectionConfirmation() {
                             Course Summary
                           </span>
                         </Box>
-                        <div>
+                        <button onClick={toggleCourse6}>
                           <img src={arrow_drop}></img>
-                        </div>
+                        </button>
                       </AccordionButton>
                     </h2>
-                    <AccordionPanel pb={4}>
+                    <p className={`${isCoursevisible6 ? "block" : "hidden"}`}>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                       sed do eiusmod tempor incididunt ut labore et dolore magna
                       aliqua. Ut enim ad minim veniam, quis nostrud exercitation
                       ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    </AccordionPanel>
+                    </p>
                   </AccordionItem>
                 </Accordion>
               </div>
@@ -291,7 +285,7 @@ function UserSectionConfirmation() {
             <h1 className="w-[309px] h-[21px] text-Orange-500 text-[14px] font-[400] ">
               Course
             </h1>
-            <div className="w-[309px] h-[86px]">
+            <div className="w-[309px] h-[86px] mt-[10px]">
               <Accordion defaultIndex={[0]} allowMultiple>
                 <AccordionItem>
                   <h2>
@@ -301,33 +295,11 @@ function UserSectionConfirmation() {
                           Service Design Essentials
                         </span>
                       </Box>
-<<<<<<< HEAD
-<<<<<<< HEAD
                     </AccordionButton>
                   </h2>
                   <p className="text-Body2 font-Body2 text-Gray-700">
                     Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
                   </p>
-=======
-=======
->>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
-                      <div>
-                        <img
-                          className="w-[24px] h-[24px]"
-                          src={arrow_drop}
-                        ></img>
-                      </div>
-                    </AccordionButton>
-                  </h2>
-                  <AccordionPanel pb={4}>
-                    <p className="text-Body2 font-Body2 text-Gray-700">
-                      Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
-                    </p>
-                  </AccordionPanel>
-<<<<<<< HEAD
->>>>>>> 6cac249 (feat: create file user-confirmation and user-coursedetail)
-=======
->>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
                 </AccordionItem>
               </Accordion>
             </div>
@@ -335,19 +307,12 @@ function UserSectionConfirmation() {
               THB 3,559.00
             </div>
             <div className="border-solid border-t-[1px] border-Gray-400 flex flex-col justify-end h-[100px] w-[309px] ">
-<<<<<<< HEAD
-<<<<<<< HEAD
-              <button onClick={()=>{
-                navigate("/user/startlearning")
-              }} className="border-solid border-[1px] border-Blue-500 bg-Blue-500 rounded-[12px] text-[16px] font-[700] text-white text-center w-[309px] h-[60px]">
-=======
-              <button className="border-solid border-[1px] border-Blue-500 bg-Blue-500 rounded-[12px] text-[16px] font-[700] text-white text-center w-[309px] h-[60px]">
->>>>>>> 6cac249 (feat: create file user-confirmation and user-coursedetail)
-=======
-              <button onClick={()=>{
-                navigate("/user/startlearning")
-              }} className="border-solid border-[1px] border-Blue-500 bg-Blue-500 rounded-[12px] text-[16px] font-[700] text-white text-center w-[309px] h-[60px]">
->>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
+              <button
+                onClick={() => {
+                  navigate("/user/startlearning");
+                }}
+                className="border-solid border-[1px] border-Blue-500 bg-Blue-500 rounded-[12px] text-[16px] font-[700] text-white text-center w-[309px] h-[60px]"
+              >
                 Start Learning
               </button>
             </div>

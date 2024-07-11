@@ -20,14 +20,9 @@ function StickybarRemoveDesire() {
   const navigate = useNavigate();
   return (
     <div>
-      <footer className="bg-white flex items-center justify-center border-solid border-2 border-blue-700 shadow-md h-fit sticky bottom-0 xl:hidden">
-<<<<<<< HEAD
+      <footer className="bg-white flex items-center justify-center shadow-md h-fit sticky bottom-0 xl:hidden">
         <div className="flex flex-col items-center w-[100%] gap-[8px] p-[16px]">
           <div className="w-[343px] flex flex-col sm:w-[100%] justify-between gap-3 pb-[8px] pt-[8px]">
-=======
-        <div className="flex flex-col justify-center items-center w-[100%] sm:w-[375px] h-[80%] p-[8px] ">
-          <div className="sm:w-[343px] flex flex-col justify-between gap-3 pb-[8px] pt-[8px]">
->>>>>>> fa2e03abb2c956d00619e69d622c0a24d9d1c5ac
             <h1
               className={`${
                 isCoursevisible ? "block" : "hidden"

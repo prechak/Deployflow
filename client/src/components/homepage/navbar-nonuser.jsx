@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import logo from "/src/assets/icons/logo.png";
 
-function navbarnonuser() {
+function Navbarnonuser() {
   return (
     <>
       <div className="navbar">
@@ -34,4 +34,4 @@ function navbarnonuser() {
   );
 }
 
-export default navbarnonuser;
+export default Navbarnonuser;

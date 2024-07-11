@@ -1,15 +1,17 @@
 import SectionCourseDetail from "../../components/coursedetail/section-coursedetail";
 import SectionDesireCourseDetail from "../../components/coursedetail/section-desire-coursedetail";
 import StickybarRemoveDesire from "../../components/coursedetail/stickybar-removedesire";
+import NavbarUser from "../../components/homepage/navbar-user";
+import Footer from "../../components/homepage/footer";
 
 function UserDesireCoursedetail() {
   return (
     <div>
-      <nav className="border-solid border-2 border-purple-700 bg-blue-500 h-[56px] sticky top-0"></nav>
+      <nav className="sticky top-0 bg-white z-10">
+        <NavbarUser />
+      </nav>
       <SectionDesireCourseDetail />
-      <div>
-        <footer className="border-solid border-2 border-purple-700 flex h-[272px]"></footer>
-      </div>
+      <Footer />
       <div className="sticky bottom-0">
       <StickybarRemoveDesire />
       </div>
