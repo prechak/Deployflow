@@ -20,11 +20,13 @@ function navbarnonuser() {
               Our Courses
             </h1>
             </Link>
-            <button className="bg-Blue-500 cursor-pointer sm:my-[8px] sm:rounded-xl md:py-[18px] xl:py-[18px] ">
-              <span className="text-white sm:my-[8px] sm:mx-[16px] md:font-bold md:text-center md:text-base md:px-[16px] xl:font-bold xl:text-center xl:text-base xl:px-[16px]">
+            <Link to="/userhomepage" className="bg-Blue-500 cursor-pointer sm:my-[8px] sm:rounded-xl md:py-[18px] xl:py-[18px]">
+            <button className=" justify-center align-middle sm:pt-1 md:pt-0 xl:p-0">
+              <span className="text-white sm:my-[8px]  sm:mx-[16px] md:font-bold md:text-center md:text-base md:px-[16px] xl:font-bold xl:text-center xl:text-base xl:px-[16px]">
                 Log in
               </span>
             </button>
+            </Link>
           </div>
         </section>
       </div>
