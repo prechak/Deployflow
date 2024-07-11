@@ -103,7 +103,7 @@ function Course() {
   const [searchCourse, setSearchCourse] = useState("");
 
   const handleChange = (event) => {
-    setSearchCourse(event.target.value);
+    setSearchCourse(event.target.value);  
   };
 
   const filteredCourses = courseData.filter((course) => {
