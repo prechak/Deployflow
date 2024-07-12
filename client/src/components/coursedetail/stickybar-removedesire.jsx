@@ -1,15 +1,6 @@
 import React, { useState } from "react";
 import arrow_drop from "../../icons/coursedetail/arrow_drop.png";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  Box,
-} from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-
 
 function StickybarRemoveDesire() {
   const [isCoursevisible, setIsCourseVisible] = useState(false);
@@ -31,32 +22,28 @@ function StickybarRemoveDesire() {
               Course
             </h1>
             <div>
-              <Accordion defaultIndex={[0]} allowMultiple>
-                <AccordionItem>
-                  <h2>
-                    <AccordionButton>
-                      <Box as="span" flex="1" textAlign="left">
-                        <span className="text-black text-Body2 font-Body2">
-                          Service Design Essentials
-                        </span>
-                      </Box>
-                      <button onClick={toggleCourse}>
-                        <img
-                          className="w-[24px] h-[24px]"
-                          src={arrow_drop}
-                        ></img>
-                      </button>
-                    </AccordionButton>
-                  </h2>
+              <div>
+                <div>
+                  <div className="flex flex-row justify-between">
+                    <div>
+                      <span className="text-black text-Body2 font-Body2">
+                        Service Design Essentials
+                      </span>
+                    </div>
+                    <button onClick={toggleCourse}>
+                      <img className="w-[24px] h-[24px]" src={arrow_drop}></img>
+                    </button>
+                  </div>
+
                   <h1
                     className={`${
                       isCoursevisible ? "block" : "hidden"
-                    } pt-[8px]`}
+                    } pt-[8px] text-Gray-700 text-Body4 font-Body4`}
                   >
                     Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
                   </h1>
-                </AccordionItem>
-              </Accordion>
+                </div>
+              </div>
             </div>
             <div className="text-Gray-700 text-Body2 font-Body2">
               THB 3,559.00
@@ -65,9 +52,12 @@ function StickybarRemoveDesire() {
               <button className="border-solid border-[1px] border-Orange-500 rounded-[12px] text-[12px] font-[700] text-Orange-500 sm:w-[180px] sm:h-[34px]">
                 Remove from Desire Course
               </button>
-              <button onClick={()=>{
-                navigate("/modal")
-              }} className="border-solid border-[1px] bg-Blue-500 rounded-[12px] text-[12px] font-[700] text-white sm:w-[155px] sm:h-[34px]">
+              <button
+                onClick={() => {
+                  navigate("/modal");
+                }}
+                className="border-solid border-[1px] bg-Blue-500 rounded-[12px] text-[12px] font-[700] text-white sm:w-[155px] sm:h-[34px]"
+              >
                 Subscribe This Course
               </button>
             </div>

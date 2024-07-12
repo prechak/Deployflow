@@ -1,7 +1,7 @@
 import SectionCourseDetail from "../../components/coursedetail/section-coursedetail";
 import SectionOtherCourse from "../../components/coursedetail/section-othercourse";
 import StickybarCoursedetail from "../../components/coursedetail/stickybar-coursedetail";
-import Navbarnonuser from "../../components/homepage/navbar-nonuser"
+import Navbarnonuser from "../../components/homepage/navbar-nonuser";
 import Section4 from "../../components/homepage/section4";
 import Footer from "../../components/homepage/footer";
 

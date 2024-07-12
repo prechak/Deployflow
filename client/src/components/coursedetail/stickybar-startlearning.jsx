@@ -1,13 +1,5 @@
 import React, { useState } from "react";
 import arrow_drop from "../../icons/coursedetail/arrow_drop.png";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  Box,
-} from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 function StickybarStartLearning() {
@@ -30,32 +22,24 @@ function StickybarStartLearning() {
               Course
             </h1>
             <div>
-              <Accordion defaultIndex={[0]} allowMultiple>
-                <AccordionItem>
-                  <h2>
-                    <AccordionButton>
-                      <Box as="span" flex="1" textAlign="left">
-                        <span className="text-black text-Body2 font-Body2">
-                          Service Design Essentials
-                        </span>
-                      </Box>
-                      <button onClick={toggleCourse}>
-                        <img
-                          className="w-[24px] h-[24px]"
-                          src={arrow_drop}
-                        ></img>
-                      </button>
-                    </AccordionButton>
-                  </h2>
-                  <h1
-                    className={`${
-                      isCoursevisible ? "block" : "hidden"
-                    } pt-[8px]`}
-                  >
-                    Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
-                  </h1>
-                </AccordionItem>
-              </Accordion>
+              <div className="flex flex-row justify-between">
+                <div>
+                  <span className="text-black text-Body2 font-Body2">
+                    Service Design Essentials
+                  </span>
+                </div>
+                <button onClick={toggleCourse}>
+                  <img className="w-[24px] h-[24px]" src={arrow_drop}></img>
+                </button>
+              </div>
+
+              <h1
+                className={`${
+                  isCoursevisible ? "block" : "hidden"
+                } pt-[8px] text-Gray-700 text-Body4 font-Body4`}
+              >
+                Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
+              </h1>
             </div>
             <div className="text-Gray-700 text-Body2 font-Body2">
               THB 3,559.00

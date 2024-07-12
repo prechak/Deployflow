@@ -13,7 +13,7 @@ function UserDesireCoursedetail() {
       <SectionDesireCourseDetail />
       <Footer />
       <div className="sticky bottom-0">
-      <StickybarRemoveDesire />
+        <StickybarRemoveDesire />
       </div>
     </div>
   );

@@ -3,7 +3,7 @@ import cors from "cors";
 import courseRouter from "./routes/course.mjs";
 import userRouter from "./routes/user.mjs";
 import connectionPool from "./utils/db.mjs";
-
+import dotenv from "dotenv";
 
 const app = express();
 app.use(express.json());
@@ -12,6 +12,9 @@ const port = 4000;
 
 //Connection test
 async function connect() {
+  app.use(cors());
+  dotenv.config();
+
   try {
     await connectionPool.connect();
     console.log("Connected to Supabase PostgreSQL database");
@@ -29,7 +32,6 @@ app.use("/users", userRouter);
 app.get("/test", (req, res) => {
   return res.json("Server API is working 🚀");
 });
-
 
 app.listen(port, () => {
   console.log(`Server is running at ${port} 🚀`);
