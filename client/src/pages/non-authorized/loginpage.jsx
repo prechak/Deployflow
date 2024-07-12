@@ -35,7 +35,7 @@ function Login() {
       setState({ ...state, user: userDataFromToken });
       navigate("/");
     } catch (error) {
-      setState({ ...state, error: error.message });
+      setState({ ...state, error: "Incorrect email or password" });
     }
   };
 
@@ -167,6 +167,9 @@ function Login() {
                 />
               </p>
             </div>
+            {state.error && (
+              <div className="text-red-500 text-sm">{state.error}</div>
+            )}
 
             <button
               type="submit"
