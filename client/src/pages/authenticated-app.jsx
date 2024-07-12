@@ -14,6 +14,7 @@ import UserDesireCoursedetail from "./authorized/user-desirecoursedetail";
 import StartLearning from "./authorized/user-courselearning";
 import UserCoursedetail from "./authorized/user-coursedetail";
 import UserProfile from "./authorized/user-profile";
+import CourseListAdmin from "./admin/courselist";
 
 function AuthenticatedApp() {
   return (
