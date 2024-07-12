@@ -1,23 +1,26 @@
-import SectionCourseDetail from "../../components/coursedetail/section-coursedetail";
 import SectionOtherCourse from "../../components/coursedetail/section-othercourse";
-import StickybarCoursedetail from "../../components/coursedetail/stickybar-coursedetail";
+import UserSectionConfirmation from "../../components/coursedetail/section-confirmation";
+import StickybarStartLearning from "../../components/coursedetail/stickybar-startlearning";
 import NavbarUser from "../../components/homepage/navbar-user";
 import Footer from "../../components/homepage/footer";
 
-function UserCoursedetail() {
+function ConfirmationCourse() {
   return (
     <div>
       <nav className="sticky top-0 bg-white z-10">
         <NavbarUser />
       </nav>
-      <SectionCourseDetail />
-      <SectionOtherCourse />
+      <UserSectionConfirmation />
+      <div className="xl:hidden">
+        <SectionOtherCourse />
+      </div>
       <Footer />
       <div className="sticky bottom-0">
-        <StickybarCoursedetail />
+        <StickybarStartLearning />
       </div>
     </div>
   );
 }
 
-export default UserCoursedetail;
+export default ConfirmationCourse;
+

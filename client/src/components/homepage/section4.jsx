@@ -2,7 +2,7 @@ import React from "react";
 import vector1 from "/src/assets/images/sm/section4/vector1.png";
 import vector2 from "/src/assets/images/sm/section4/vector2.png";
 
-function section4() {
+function Section4() {
   const gradientStyle = {
     background: "linear-gradient(270.94deg, #5697FF 7.78%, #2558DD 73.86%)",
   };
@@ -36,4 +36,4 @@ function section4() {
   );
 }
 
-export default section4;
+export default Section4;

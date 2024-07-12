@@ -1,23 +1,22 @@
 import SectionCourseDetail from "../../components/coursedetail/section-coursedetail";
-import SectionOtherCourse from "../../components/coursedetail/section-othercourse";
-import StickybarCoursedetail from "../../components/coursedetail/stickybar-coursedetail";
+import SectionDesireCourseDetail from "../../components/coursedetail/section-desire-coursedetail";
+import StickybarRemoveDesire from "../../components/coursedetail/stickybar-removedesire";
 import NavbarUser from "../../components/homepage/navbar-user";
 import Footer from "../../components/homepage/footer";
 
-function UserCoursedetail() {
+function UserDesireCoursedetail() {
   return (
     <div>
       <nav className="sticky top-0 bg-white z-10">
         <NavbarUser />
       </nav>
-      <SectionCourseDetail />
-      <SectionOtherCourse />
+      <SectionDesireCourseDetail />
       <Footer />
       <div className="sticky bottom-0">
-        <StickybarCoursedetail />
+      <StickybarRemoveDesire />
       </div>
     </div>
   );
 }
 
-export default UserCoursedetail;
+export default UserDesireCoursedetail;

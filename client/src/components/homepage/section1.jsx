@@ -9,7 +9,7 @@ import ellipse2 from "/src/assets/icons/section1/ellipse2.png";
 import ellipse3 from "/src/assets/icons/section1/ellipse3.png";
 import vector1 from "/src/assets/icons/section1/vector1.png";
 
-function section1() {
+function Section1() {
   return (
     <>
     <div className=" absolute">
@@ -102,4 +102,4 @@ function section1() {
   );
 }
 
-export default section1;
+export default Section1;

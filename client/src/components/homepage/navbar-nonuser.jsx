@@ -2,11 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import logo from "/src/assets/icons/logo.png";
 
-function navbarnonuser() {
+function Navbarnonuser() {
   return (
     <>
       <div className="navbar">
-        <section className="navbar items-center sm:w-auto sm:h-[56px] sm:flex sm:flex-row sm:justify-between md:w-full md:h-[88px] md:flex md:flex-row md:justify-between xl:w-full xl:h-[88px] xl:flex xl:flex-row xl:justify-between ">
+        <section className="navbar items-center sm:w-auto sm:h-[56px] sm:flex sm:flex-row sm:justify-between md:w-full md:h-[88px] md:flex md:flex-row md:justify-between xl:w-full xl:h-[88px] xl:flex xl:flex-row xl:justify-between " style={{ boxShadow: "2px 2px 12px 0px rgba(64, 50, 133, 0.12)" }} >
           <Link to="/">
             <img
               src={logo}
@@ -34,4 +34,4 @@ function navbarnonuser() {
   );
 }
 
-export default navbarnonuser;
+export default Navbarnonuser;
