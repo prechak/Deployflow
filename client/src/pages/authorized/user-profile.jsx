@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import Navbarnonuser from "../../components/homepage/navbar-user";
-import Footer from "../../components/homepage/footer";
 
 function UserProfile() {
   const [img, setImg] = useState({
@@ -87,12 +85,20 @@ function UserProfile() {
       </div>
       {/* Background  */}
 
-      {<Navbarnonuser />}
-      <header className="text-black font-medium text-Headline3 pt-[3rem] md:text-Headline2 md:pb-[3rem] flex flex-col justify-center items-center">
+      <div className="fixed mb-10 z-10 w-full flex justify-between items-center bg-Gray-400 sm:px-8 px-4 py-2 md:py-4 border-b border-b-[#e6ebf4]">
+        <Link
+          to="/"
+          className="font-inter font-medium bg-[#6469ff] text-white px-4 py-2 rounded-md"
+        >
+          Test Navbar
+        </Link>
+      </div>
+      <header className="text-black font-medium text-Headline3 pt-[7.5rem] md:text-Headline2 md:pb-[3rem] md:pt-[9.5rem]  flex flex-col justify-center items-center">
         Profile
       </header>
+
       <form
-        className="flex flex-col md:flex-row justify-center items-center md:gap-[3rem] md:mr-[2rem] md:-ml-[8rem] mb-[14rem]"
+        className="flex flex-col md:flex-row justify-center items-center md:gap-[3rem] md:mr-[2rem] md:-ml-[8rem] "
         onSubmit={handleSubmit}
       >
         <div className="relative object-fit flex md:flex-row">
@@ -209,8 +215,6 @@ function UserProfile() {
           </button>
         </div>
       </form>
-
-      {<Footer />}
     </>
   );
 }
