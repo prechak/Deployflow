@@ -1,4 +1,3 @@
-import SectionCourseDetail from "../../components/coursedetail/section-coursedetail";
 import SectionDesireCourseDetail from "../../components/coursedetail/section-desire-coursedetail";
 import StickybarRemoveDesire from "../../components/coursedetail/stickybar-removedesire";
 import NavbarUser from "../../components/homepage/navbar-user";
