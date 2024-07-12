@@ -130,7 +130,7 @@ function Login() {
           </svg>
         </div>{" "}
         {/* Background */}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className=" z-50 bg-Gray-100 ">
           <div className="flex flex-col gap-7 w-[22rem] md:w-[30rem] md:gap-8 text-black">
             <h1 className="text-[#22269E] text-3xl font-medium pb-2  md:text-4xl">
               Welcome back!
