@@ -13,6 +13,9 @@ const port = 4000;
 
 //Connection test
 async function connect() {
+  app.use(cors());
+  dotenv.config();
+
   try {
     await connectionPool.connect();
     console.log("Connected to Supabase PostgreSQL database");

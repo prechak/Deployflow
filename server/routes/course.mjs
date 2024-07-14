@@ -15,4 +15,23 @@ courseRouter.get("/", async (req, res) => {
   }
 });
 
+courseRouter.get("/:id", async (req, res) => {
+  const coursesId = req.params.id;
+  let result;
+  try {
+    result = await connectionPool.query(
+      `select * from courses
+      where courseid=$1`,
+      [coursesId]
+    );
+  } catch {
+    return res.status(404).json({
+      message: "Not Found: Course not found",
+    });
+  }
+  return res.status(200).json({
+    data: result.rows[0],
+  });
+});
+
 export default courseRouter;
