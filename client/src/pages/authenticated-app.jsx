@@ -8,6 +8,7 @@ import Register from "./non-authorized/registerpage";
 import Course from "./non-authorized/course";
 import Userhomepage from "./authorized/user-homepage";
 import Usercourse from "./authorized/user-course";
+import UserMycourse from "./authorized/user-mycourse";
 
 function AuthenticatedApp() {
   return (
@@ -22,6 +23,7 @@ function AuthenticatedApp() {
         <Route path="/usercourse" element={<Usercourse />} />
         <Route path="/login/admin" element={<LoginAdmin />} />
         <Route path="/admin/addcourse/" element={<AddCourseAdmin />} />
+        <Route path="/user/my_course/" element={<UserMycourse />} />
       </Routes>
     </div>
   );
