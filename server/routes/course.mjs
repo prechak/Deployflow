@@ -34,4 +34,10 @@ courseRouter.get("/:id", async (req, res) => {
   });
 });
 
+
+
+//*Edit course admin*//
+
+
+
 export default courseRouter;

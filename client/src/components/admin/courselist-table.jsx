@@ -10,7 +10,7 @@ function CourseListTable() {
 
   useEffect(() => {
     axios
-      .get("https://www.melivecode.com/api/users")
+      .get("http://localhost:4000/courses")
       .then((res) => {
         setUsers(res.data);
       })
@@ -37,22 +37,22 @@ function CourseListTable() {
         <tbody>
           {users.map((item, index) => (
             <tr key={index} className="w-[1120px] h-[88px]">
-              <td className="w-[48px]">{item.id}</td>
+              <td className="w-[48px]">{item.courseid}</td>
               <td className="w-[96px]">
                 <img
-                  src={item.avatar}
+                  src={item.imagefile}
                   alt="avatar"
                   style={{ width: "64px", height: "47px" }}
                 />
               </td>
-              <td className="w-[268px] text-left">{item.fname}</td>
-              <td className="w-[105px] text-left">{item.lname}</td>
-              <td className="w-[105px] text-left">{item.username}</td>
+              <td className="w-[268px] text-left">{item.coursename}</td>
+              <td className="w-[105px] text-left">{item.lesson}</td>
+              <td className="w-[105px] text-left">{item.price}</td>
               <td className="w-[188px] text-left"></td>
               <td className="w-[188px] text-left"></td>
               <td className="w-[120px] text-left">
                 <button><Link to=""><img src={bin} /></Link></button>
-                <button><Link to="/admin/addcourse"><img src={edit} /></Link></button>
+                <button><Link to={`/admin/editcourse/${item.courseid}`}><img src={edit} /></Link></button>
               </td>
             </tr>
           ))}
