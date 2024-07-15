@@ -45,9 +45,15 @@ function Section3() {
         Our Graduates
       </h1>
       <div className="sm:mt-8 md:flex md:items-center md:justify-center md:mt-[60px] xl:flex xl:items-center xl:justify-center xl:mt-[60px]">
-        <Slider {...settings} className="sm:rounded-lg sm:w-[296px] sm:h-[534px] md:w-[737.76px] md:h-[311.33px] xl:w-[737.76px] xl:h-[311.33px]">
+        <Slider
+          {...settings}
+          className="sm:rounded-lg sm:w-[296px] sm:h-[534px] md:w-[737.76px] md:h-[311.33px] xl:w-[737.76px] xl:h-[311.33px]"
+        >
           {people.map((person, index) => (
-            <div key={index} className="sm:w-[296px] sm:h-[534px] md:w-[578.78px] md:h-[309.48px] md:flex md:justify-center md:items-center xl:w-[578.78px] xl:h-[309.48px] xl:flex xl:justify-center xl:items-center bg-Blue-100 md:bg-white xl:bg-white rounded-lg">
+            <div
+              key={index}
+              className="sm:w-[296px] sm:h-[534px] md:w-[578.78px] md:h-[309.48px] md:flex md:justify-center md:items-center xl:w-[578.78px] xl:h-[309.48px] xl:flex xl:justify-center xl:items-center bg-Blue-100 md:bg-white xl:bg-white rounded-lg"
+            >
               <div className="sm:flex sm:flex-col sm:items-center sm:justify-center md:flex md:flex-row md:items-center md:justify-center xl:full md:h-[311.33px] xl:flex xl:flex-row xl:items-center xl:justify-center xl:full xl:h-[311.33px] ">
                 <img
                   src={person.image}

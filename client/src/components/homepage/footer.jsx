@@ -4,9 +4,9 @@ import fb from "/src/assets/icons/footer/fb.png";
 import ig from "/src/assets/icons/footer/ig.png";
 import tw from "/src/assets/icons/footer/tw.png";
 
-function Footer() {
+function footer() {
   return (
-    <footer className="sm:w-full sm:h-[272px] bg-blue-900 flex items-center justify-center">
+    <footer className="sm:w-full sm:h-[272px] bg-Blue-700 flex items-center justify-center">
       <div className="sm:w-[343px] sm:h-[208px] sm:mt-8 xl:flex xl:w-[1120px] xl:h-[48px] xl:flex-row xl:items-center xl:justify-between">
         <img src={logo} alt="" />
 
@@ -29,4 +29,4 @@ function Footer() {
   );
 }
 
-export default Footer;
+export default footer;

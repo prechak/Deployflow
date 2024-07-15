@@ -2,7 +2,7 @@ import React from "react";
 import vector1 from "/src/assets/images/sm/section4/vector1.png";
 import vector2 from "/src/assets/images/sm/section4/vector2.png";
 
-function Section4() {
+function section4() {
   const gradientStyle = {
     background: "linear-gradient(270.94deg, #5697FF 7.78%, #2558DD 73.86%)",
   };
@@ -29,11 +29,15 @@ function Section4() {
             alt=""
             className="absolute sm:pt-[190px] xl:hidden"
           />
-          <img src={vector2} alt="" className="sm:hidden xl:block xl:w-[592px] xl:h-[448.59px] xl:mr-[159px] xl:mt-[53px]"/>
+          <img
+            src={vector2}
+            alt=""
+            className="sm:hidden xl:block xl:w-[592px] xl:h-[448.59px] xl:mr-[159px] xl:mt-[53px]"
+          />
         </div>
       </section>
     </>
   );
 }
 
-export default Section4;
+export default section4;
