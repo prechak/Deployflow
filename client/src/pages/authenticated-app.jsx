@@ -15,6 +15,9 @@ import StartLearning from "./authorized/user-courselearning";
 import UserCoursedetail from "./authorized/user-coursedetail";
 import UserProfile from "./authorized/user-profile";
 import CourseListAdmin from "./admin/courselist";
+import EditCourse from "./admin/editcourse";
+import AddSubLesson from "./admin/add-sublesson";
+
 
 function AuthenticatedApp() {
   return (
@@ -40,8 +43,12 @@ function AuthenticatedApp() {
         <Route path="/usercourse" element={<Usercourse />} />
         <Route path="/login/admin" element={<LoginAdmin />} />
         <Route path="/admin/courselist" element={<CourseListAdmin />}/>
-        <Route path="/admin/addcourse/" element={<AddCourseAdmin />} />
+
         <Route path="/user/profile" element={<UserProfile />} />
+        <Route path="/admin/addcourse" element={<AddCourseAdmin />} />
+        <Route path="/admin/editcourse" element={<EditCourse />} />
+        <Route path="/admin/addsublesson" element={<AddSubLesson />} />
+
       </Routes>
     </div>
   );

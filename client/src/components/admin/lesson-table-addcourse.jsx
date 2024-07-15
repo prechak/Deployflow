@@ -10,8 +10,8 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Avatar from '@mui/material/Avatar';
-import Link from '@mui/material/Link';
+import Avatar from "@mui/material/Avatar";
+import Link from "@mui/material/Link";
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
@@ -51,12 +51,12 @@ export default function CourseAddLesson() {
               </Box>
               <Box>
                 <Link href="/admin/addcourse">
-                <Button
-                  className="w-[171px] h-[60px] ml-8 bg-slate-800"
-                  variant="contained"
-                >
-                  + Add Lesson
-                </Button>
+                  <Button
+                    className="w-[171px] h-[60px] ml-8 bg-slate-800"
+                    variant="contained"
+                  >
+                    + Add Lesson
+                  </Button>
                 </Link>
               </Box>
             </Box>
@@ -83,9 +83,9 @@ export default function CourseAddLesson() {
                       </TableCell>
                       <TableCell align="center">
                         <Box display="flex" justifyContent="center">
-                            <Avatar alt={row.username} src={row.avatar} />
+                          <Avatar alt={row.username} src={row.avatar} />
                         </Box>
-                        </TableCell>
+                      </TableCell>
                       <TableCell align="right">{row.fname}</TableCell>
                       <TableCell align="right">{row.lname}</TableCell>
                       <TableCell align="right">{row.username}</TableCell>

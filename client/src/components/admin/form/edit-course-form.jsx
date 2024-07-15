@@ -1,7 +1,9 @@
-import upload from "../../assets/image/upload.png";
+import upload from "../../../assets/image/upload.png";
+import Uplaodvideo from "../../../assets/image/Uploadvideo.png"
+import UploadPic from "../../../assets/image/UplaodPic.png"
 
 
-function AddCourseFrom() {
+function EditCourseFrom() {
   return (
     <div className="mx-8 w-[1120px] h-[1521px] bg-white rounded-md border-2">
       <div className=" mx-8 p-8">
@@ -10,7 +12,7 @@ function AddCourseFrom() {
             <label className="w-full h-[24px] text-black">Course name *</label>
             <input
               className="w-full h-[48px] bg-white  text-black border-2 rounded-md"
-              placeholder="     Place Holder"
+              value=" Service Design Essential"
             />
           </div>
           <div className="w-[920px] h-[76px][] flex flex-row gap-8 mt-8 ">
@@ -20,7 +22,7 @@ function AddCourseFrom() {
               </label>
               <input
                 className="w-full h-[48px] bg-white text-black border-2 rounded-md"
-                placeholder="       Place Holder"
+                value="3,559.00"
               />
             </div>
             <div>
@@ -29,7 +31,7 @@ function AddCourseFrom() {
               </label>
               <input
                 className="w-full h-[48px] bg-white  text-black border-2 rounded-md"
-                placeholder="   Place Holder"
+                value="6 Hours"
               />
             </div>
           </div>
@@ -39,7 +41,7 @@ function AddCourseFrom() {
             </label>
             <input
               className="w-full h-[72px] bg-white  text-black border-2 rounded-md"
-              placeholder="     Place Holder"
+              value="Lorem ipsum dolor sit amet"
             />
           </div>
 
@@ -49,18 +51,18 @@ function AddCourseFrom() {
             </label>
             <input
               className="w-full h-[192px] bg-white  text-black border-2 rounded-md"
-              placeholder="     Place Holder"
+              value="Lorem ipsum dolor sit amet. Est blanditiis minima eum aliquid illum ut ipsa dolorem! Aut possimus voluptates eum vitae placeat aut similique dolores nam cumque consequuntur aut accusantium repellendus ut ipsa harum. Quo mollitia iure ex voluptatem dolorum et quidem error est magni nobis quo voluptatem labore ut deserunt beatae. Aut esse odit aut facere consequatur vel deleniti dolorem et facere labore in similique modi."
             />
           </div>
 
           <div className="my-10 gap-8 ">
             <label className="w-full h-[24px] text-black ">Cover image *</label>
             <label
-              className="r w-[240PX] h-[240PX] px-4  bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
+              className="r w-[240PX] h-[240PX] px-4  bg-white rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
               id="drop"
             >
               <span>
-                <img src={upload} />
+                <img src={UploadPic} />
               </span>
               <input
                 type="file"
@@ -76,11 +78,11 @@ function AddCourseFrom() {
               Video Trailer *
             </label>
             <label
-              className="r w-[240PX] h-[240PX] px-4  bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
+              className="r w-[240PX] h-[240PX] px-4  bg-white rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
               id="drop"
             >
               <span>
-                <img src={upload} />
+                <img src={Uplaodvideo} />
               </span>
               <input
                 type="file"
@@ -117,4 +119,4 @@ function AddCourseFrom() {
   );
 }
 
-export default AddCourseFrom;
+export default EditCourseFrom;

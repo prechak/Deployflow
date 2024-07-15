@@ -1,4 +1,4 @@
-import Lesson from "../../components/admin/lesson-courselist-table-header";
+import CourseListTable from "../../components/admin/courselist-table";
 import NavbarCourseList from "../../components/admin/navbar/navbar-courselist";
 import Sidebar from "../../components/admin/sidebar";
 import { Outlet } from "react-router-dom";
@@ -13,7 +13,7 @@ function CourseListAdmin() {
         </div>
         <div className="p-4">{<Outlet />}</div>
         <main className="p-4">
-          <Lesson />
+          <CourseListTable />
         </main>
       </div>
     </div>
