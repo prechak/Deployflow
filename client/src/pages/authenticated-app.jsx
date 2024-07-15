@@ -27,7 +27,7 @@ function AuthenticatedApp() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/courselist" element={<Course />} />
-        <Route path="/coursedetail" element={<Coursedetail />} />
+        <Route path="/coursedetail/:Id" element={<Coursedetail />} />
         <Route path="/user/coursedetail" element={<UserCoursedetail />} />
         <Route
           path="/user/confirmationcourse"

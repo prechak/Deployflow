@@ -1,12 +1,24 @@
 import arrow_back from "../../icons/coursedetail/arrow_back.png";
 import video from "../../images/coursedetail/video.png";
 import arrow_drop from "../../icons/coursedetail/arrow_drop.png";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import modal_vector from "../../icons/coursedetail/modal_vector.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 function SectionCourseDetail() {
   const [modal, setModal] = useState(false);
+  const [coursedetail, setCoursedetail] = useState({});
+  const params = useParams();
+  const getCourses = async () => {
+    const result = await axios.get("http://localhost:4000/courses/" + params.Id)
+    setCoursedetail(result.data.data)
+  }
+  useEffect(()=>{
+    getCourses()
+    },[])
+
+
   const toggleModal = () => {
     setModal(!modal);
   };
@@ -320,16 +332,16 @@ function SectionCourseDetail() {
                 <div>
                   <div className="mb-[1px]">
                     <span className="text-black text-Headline3 font-Headline3">
-                      Service Design Essentials
+                      {coursedetail.coursename}
                     </span>
                   </div>
                   <p className="text-Body2 font-Body2 text-Gray-700">
-                    Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
+                  {coursedetail.description}
                   </p>
                 </div>
               </div>
               <div className="text-Gray-700 text-Headline3 font-Headline3 mb-[30px] mt-[10px]">
-                THB 3,559.00
+                THB {coursedetail.price}.00
               </div>
               <div className="border-solid border-t-[1px] border-Gray-400 flex flex-col justify-end gap-[16px] h-[176px] w-[309px]">
                 <button

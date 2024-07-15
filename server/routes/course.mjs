@@ -25,12 +25,15 @@ courseRouter.get("/:id", async (req, res) => {
       [coursesId]
     );
   } catch {
+    return res.status(500).json({ message: "Server could not read course because database connection" });
+  }
+  if (!result.rows[0]) {
     return res.status(404).json({
-      message: "Not Found: Course not found",
+      message: "Server could not find a requested course",
     });
   }
   return res.status(200).json({
-    data: result.rows[0],
+    data: result.rows,
   });
 });
 
