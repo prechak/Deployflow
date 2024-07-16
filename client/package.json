@@ -13,6 +13,7 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "@heroicons/react": "^2.1.5",
 =======
 <<<<<<< HEAD
@@ -20,6 +21,8 @@
     "@mui/icons-material": "^5.16.1",
 >>>>>>> 33fb72d (feat: add course learning page)
 >>>>>>> f02454a (feat: add course learning page)
+=======
+>>>>>>> eab725f (commit before rebase)
     "@mui/material": "^5.16.1",
     "@mui/x-date-pickers": "^7.9.0",
     "@supabase/supabase-js": "^2.44.4",
