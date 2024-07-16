@@ -2,19 +2,19 @@ import * as React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 import NavbarNonUser from "../../components/homepage/navbar-nonuser";
+import { useAuth } from "../../contexts/authentication";
 
 function Login() {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { login } = useAuth();
 
   const [state, setState] = useState({
     loading: null,
-    error: null,
+    error: "",
     user: null,
   });
 
@@ -22,20 +22,16 @@ function Login() {
     e.preventDefault();
     console.log("Email:", email);
     console.log("Password:", password);
+    setState({ ...state, loading: true, error: "" });
     try {
-      const result = await axios.post(
-        "http://localhost:4000/users/login",
-        { email, password } // Pass email and password as object
-      );
-
-      const token = result.data.token;
-      localStorage.setItem("token", token);
-
-      const userDataFromToken = jwtDecode(token);
-      setState({ ...state, user: userDataFromToken });
-      navigate("/");
+      const user = await login({ email, password });
+      setState({ ...state, loading: false, user });
     } catch (error) {
-      setState({ ...state, error: "Incorrect email or password" });
+      setState({
+        ...state,
+        loading: false,
+        error: "Incorrect email or password",
+      });
     }
   };
 
@@ -174,8 +170,9 @@ function Login() {
             <button
               type="submit"
               className="text-white bg-Blue-500 font-medium rounded-xl text-sm w-full sm:w-auto px-4 py-4 text-center hover:bg-Blue-400 transition duration-250 ease-in-out "
+              disabled={state.loading}
             >
-              Log in
+              {state.loading ? "Logging in..." : "Log in"}
             </button>
             <p className="pt-6 text-black">
               Don't have an account?{" "}
