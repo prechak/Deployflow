@@ -5,10 +5,15 @@ import HomePage from "./non-authorized/homepage";
 import LoginAdmin from "./admin/login-admin";
 import AddCourseAdmin from "./admin/addcourse-admin";
 import Register from "./non-authorized/registerpage";
-import UserProfile from "./authorized/user-profile";
 import Course from "./non-authorized/course";
 import Userhomepage from "./authorized/user-homepage";
 import Usercourse from "./authorized/user-course";
+import Modal from "../components/coursedetail/modal";
+import ConfirmationCourse from "./authorized/user-confirmationcourse";
+import UserDesireCoursedetail from "./authorized/user-desirecoursedetail";
+import StartLearning from "./authorized/user-courselearning";
+import UserCoursedetail from "./authorized/user-coursedetail";
+import UserProfile from "./authorized/user-profile";
 
 function AuthenticatedApp() {
   return (
@@ -34,7 +39,7 @@ function AuthenticatedApp() {
         <Route path="/usercourse" element={<Usercourse />} />
         <Route path="/login/admin" element={<LoginAdmin />} />
         <Route path="/admin/addcourse/" element={<AddCourseAdmin />} />
-        <Route path="/user/profile/" element={<UserProfile />} />
+        <Route path="/user/profile" element={<UserProfile />} />
       </Routes>
     </div>
   );
