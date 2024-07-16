@@ -8,6 +8,7 @@ import iconDesire from "/src/assets/icons/icon-desire.png";
 import iconHomework from "/src/assets/icons/icon-homework.png";
 import iconLogout from "/src/assets/icons/icon-logout.png";
 import Usercourse from "../../pages/authorized/user-course";
+import { useAuth } from "../../contexts/authentication";
 
 function Navbarnonuser() {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,6 +17,8 @@ function Navbarnonuser() {
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  const { logout } = useAuth();
 
   // const handleLogout = () => {
   //   history.push("/homepage");
@@ -98,14 +101,14 @@ function Navbarnonuser() {
                     <img src={iconDesire} alt="" className="pr-[12px]" />
                     My Desire Courses
                   </Link>
-                  <Link
-                    to="/"
+                  <div
+                    onClick={() => logout()}
                     className="flex px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex-row border-t-2 cursor-pointer"
                     role="menuitem"
                   >
                     <img src={iconLogout} alt="" className="pr-[12px]" />
                     Log out
-                  </Link>
+                  </div>
                 </div>
               </div>
             )}
