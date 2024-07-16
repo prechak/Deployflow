@@ -2,12 +2,15 @@ import React from "react";
 import people1 from "/src/assets/images/sm/section2/image1.png";
 import people2 from "/src/assets/images/sm/section2/image2.png";
 import people3 from "/src/assets/images/sm/section2/image3.png";
+import Vector3 from "/src/assets/icons/header/xl/vector3.png";
 
 function Section2() {
   return (
     <>
       <div className="body2 sm:flex sm:justify-center text-black">
+        <img src={Vector3} alt="" className=" absolute left-0 ml-16 md:hidden "/>
         <section className="sm:w-[343px] sm:h-[1538.59px] sm:px-[16px] sm:py-[64px] md:w-auto md:h-[600px] xl:w-[1440px] xl:h-[823px] xl:flex xl:flex-col xl:items-center">
+        <img src={Vector3} alt="" className="absolute sm:hidden md:block md:left-0 md:mt-[450px] md:ml-[70px] xl:left-0 xl:mt-[696px] xl:ml-[70px]"/>
           <h1 className="sm:font-medium sm:text-[24px] sm:text-center md:text-[36px] md:font-medium md:text-center xl:text-center xl:font-medium xl:text-4xl xl:flex-col xl:pt-[105px]">
             Our Professional Instructors
           </h1>

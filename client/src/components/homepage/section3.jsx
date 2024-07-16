@@ -3,6 +3,16 @@ import Slider from "react-slick";
 import people1 from "/src/assets/images/sm/section3/image1.png";
 import people2 from "/src/assets/images/sm/section3/image2.png";
 import people3 from "/src/assets/images/sm/section3/image3.png";
+import ellipse1 from "/src/assets/icons/section3/sm/Ellipse1.png";
+import ellipse2 from "/src/assets/icons/section3/sm/Ellipse2.png";
+import ellipse3 from "/src/assets/icons/section3/sm/Ellipse3.png";
+import qrtop from "/src/assets/icons/section3/sm/qrtop.png";
+import qrbottom from "/src/assets/icons/section3/xl/qrbottom.png";
+import ellipse1xl from "/src/assets/icons/section3/xl/Ellipse1.png";
+import ellipse2xl from "/src/assets/icons/section3/xl/Ellipse2.png";
+import ellipse3xl from "/src/assets/icons/section3/xl/Ellipse3.png";
+import qrtopxl from "/src/assets/icons/section3/xl/qrtop.png";
+import qrbottomxl from "/src/assets/icons/section3/xl/qrbottom.png";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -41,10 +51,20 @@ function Section3() {
 
   return (
     <section className=" sm:w-full sm:h-[716px] md:w-full md:h-[742px] xl:w-full xl:h-[742px] flex flex-col items-center">
-      <h1 className="text-black text-center sm:font-medium sm:text-2xl sm:text-center md:mt-[109px] md:font-medium md:text-4xl xl:mt-[109px] xl:font-medium xl:text-4xl ">
+      <img src={ellipse1} alt="" className=" absolute sm:right-0 md:hidden"/>
+      <img src={ellipse2} alt="" className=" absolute sm:right-8 sm:mt-8 md:hidden"/>
+      <img src={ellipse3} alt="" className=" absolute sm:left-0 sm:ml-5 sm:mt-[660px] md:hidden"/>
+      <img src={qrtop} alt="" className=" absolute sm:mt-12 sm:mr-44 md:hidden"/>
+      <img src={qrbottom} alt="" className=" absolute  sm:mt-[580px] sm:ml-56 z-10 md:hidden"/>
+      <img src={ellipse1xl} alt="" className=" absolute sm:hidden md:block md:right-0 xl:right-0"/>
+      <img src={ellipse2xl} alt="" className=" absolute sm:hidden md:block md:right-16 md:mt-14 xl:right-16 xl:mt-14"/>
+      <img src={ellipse3xl} alt="" className=" absolute md:left-0 md:mt-[609px] md:ml-48 xl:left-0 xl:mt-[609px] xl:ml-48"/>
+      {/* <img src={qrtopxl} alt="" className=" absolute z-10 sm:hidden md:block xl:mt-48 xl:mr-[580px]"/>
+      <img src={qrbottomxl} alt="" className=" absolute z-20 sm:hidden md:block xl:mt-[450px] xl:ml-[600px]"/> */}
+      <h1 className=" relative text-black text-center z-0 sm:font-medium sm:text-2xl sm:text-center md:mt-[109px] md:font-medium md:text-4xl xl:mt-[109px] xl:font-medium xl:text-4xl ">
         Our Graduates
       </h1>
-      <div className="sm:mt-8 md:flex md:items-center md:justify-center md:mt-[60px] xl:flex xl:items-center xl:justify-center xl:mt-[60px]">
+      <div className="sm:mt-14 md:flex md:items-center md:justify-center md:mt-[60px] xl:flex xl:items-center xl:justify-center xl:mt-[60px]">
         <Slider
           {...settings}
           className="sm:rounded-lg sm:w-[296px] sm:h-[534px] md:w-[737.76px] md:h-[311.33px] xl:w-[737.76px] xl:h-[311.33px]"
