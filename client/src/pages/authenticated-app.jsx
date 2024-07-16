@@ -18,6 +18,7 @@ import UserProfile from "./authorized/user-profile";
 import CourseListAdmin from "./admin/courselist";
 import EditCourse from "./admin/editcourse";
 import AddSubLesson from "./admin/add-sublesson";
+import UserDesireCourses from "./authorized/user-desirecourse";
 
 function AuthenticatedApp() {
   return (
