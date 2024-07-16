@@ -1,17 +1,47 @@
 import arrow_back from "../../icons/coursedetail/arrow_back.png";
-import video from "../../images/coursedetail/video.png";
 import arrow_drop from "../../icons/coursedetail/arrow_drop.png";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import modal_vector from "../../icons/coursedetail/modal_vector.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 function SectionCourseDetail() {
+  const navigate = useNavigate();
   const [modal, setModal] = useState(false);
+  const [coursedetail, setCoursedetail] = useState({});
+  const params = useParams();
+  const getCourses = async () => {
+    const result = await axios.get(
+      `http://localhost:4000/courses/${params.Id}`
+    );
+    setCoursedetail(result.data.data[0]);
+  };
+  useEffect(() => {
+    getCourses();
+  }, []);
+
+  const postDesireCourse = async () => {
+    await axios.post(`http://localhost:4000/courses/${params.Id}/desire`), {};
+    navigate("/user/desire");
+  };
+  const handlePostDesire = (event) => {
+    event.preventDefault();
+    postDesireCourse();
+  };
+
+  const postSubscribe = async () => {
+    await axios.post(`http://localhost:4000/courses/${params.Id}/subscribe`),{};
+    navigate("/user/subscribe")
+  };
+  const handlePostSubscribe = (event) => {
+    event.preventDefault();
+    postSubscribe();
+  }
+
   const toggleModal = () => {
     setModal(!modal);
   };
-  const navigate = useNavigate();
-
+ 
   const [isCoursevisible1, setIsCourseVisible1] = useState(false);
   const toggleCourse1 = () => {
     setIsCourseVisible1(!isCoursevisible1);
@@ -52,7 +82,7 @@ function SectionCourseDetail() {
               <figure className="h-[213.5px] mt-[10px] flex flex-row gap-[24px]">
                 <img
                   className="w-[343px] h-[213.5px] md:w-[450px] md:h-[320px] xl:w-[739px] xl:h-[460px] rounded-[8px]"
-                  src={video}
+                  src={coursedetail.imagefile}
                 ></img>
               </figure>
             </div>
@@ -320,22 +350,20 @@ function SectionCourseDetail() {
                 <div>
                   <div className="mb-[1px]">
                     <span className="text-black text-Headline3 font-Headline3">
-                      Service Design Essentials
+                      {coursedetail.coursename}
                     </span>
                   </div>
                   <p className="text-Body2 font-Body2 text-Gray-700">
-                    Lorem ipsum dolor sit amet, conse ctetur adipiscing elit
+                    {coursedetail.description}
                   </p>
                 </div>
               </div>
               <div className="text-Gray-700 text-Headline3 font-Headline3 mb-[30px] mt-[10px]">
-                THB 3,559.00
+                THB {coursedetail.price}.00
               </div>
               <div className="border-solid border-t-[1px] border-Gray-400 flex flex-col justify-end gap-[16px] h-[176px] w-[309px]">
                 <button
-                  onClick={() => {
-                    navigate("/user/coursedetail/desire");
-                  }}
+                  onClick={handlePostDesire}
                   className="border-solid border-[1px] border-Orange-500 text-Orange-500 rounded-[12px] text-[16px] font-[700] text-center w-[309px] h-[60px]"
                 >
                   Get in Desire Course
@@ -379,9 +407,7 @@ function SectionCourseDetail() {
                       No, I don't
                     </button>
                     <button
-                      onClick={() => {
-                        navigate("/user/confirmationcourse");
-                      }}
+                      onClick={handlePostSubscribe}
                       className="sm:w-[311px] sm:h-[56px] rounded-[12px] border-solid border-[1px] bg-Blue-500 text-white xl:text-[16px] xl:font-[700] xl:w-[250px] xl:h-[60px]"
                     >
                       Yes, I want to subscribe
