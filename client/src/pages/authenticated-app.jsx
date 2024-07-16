@@ -13,14 +13,16 @@ import CourseListAdmin from "./admin/courselist";
 import EditCourse from "./admin/editcourse";
 import AddSubLesson from "./admin/add-sublesson";
 import UserDesireCourses from "./authorized/user-desirecourse";
+import Course from "../components/course/courselist";
+import Coursedetail from "./non-authorized/coursedetail";
+import LoginAdmin from "./admin/login-admin";
+import AddCourseAdmin from "./admin/addcourse-admin";
 
 function AuthenticatedApp() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/" element={<Userhomepage />} />
         <Route path="/courselist" element={<Course />} />
         <Route path="/coursedetail/:Id" element={<Coursedetail />} />
         <Route path="/user/coursedetail/:Id" element={<UserCoursedetail />} />
@@ -35,12 +37,13 @@ function AuthenticatedApp() {
         <Route path="/usercourse" element={<Usercourse />} />
         <Route path="/login/admin" element={<LoginAdmin />} />
         <Route path="/admin/courselist" element={<CourseListAdmin />} />
-
         <Route path="/user/profile" element={<UserProfile />} />
         <Route path="/admin/addcourse" element={<AddCourseAdmin />} />
         <Route path="/user/my_course/" element={<UserMycourse />} />
         <Route path="/admin/editcourse/:id" element={<EditCourse />} />
         <Route path="/admin/addsublesson" element={<AddSubLesson />} />
+
+        <Route path="*" element={<Userhomepage />} />
       </Routes>
     </div>
   );
