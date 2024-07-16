@@ -59,7 +59,7 @@ courseRouter.post("/:id/subscribe", async (req, res) => {
   return res.status(201).json({
     message: "Subscribe created successfully",
   });
-})
+});
 
 courseRouter.get("/desire", async (req, res) => {
   let result;
@@ -100,8 +100,6 @@ courseRouter.get("/:id", async (req, res) => {
     data: result.rows,
   });
 });
-
-
 
 //*Add course admin*//
 
@@ -152,6 +150,7 @@ courseRouter.post("/", async (req, res) => {
       message: "Internal Server Error",
     });
   }
+});
 courseRouter.delete("/desire/:id", async (req, res) => {
   const courseId = req.params.id;
   try {
@@ -161,11 +160,12 @@ courseRouter.delete("/desire/:id", async (req, res) => {
       [courseId]
     );
   } catch {
-    return res.status (500).json({
-      message: "Server could not delete desire content because database connection"
+    return res.status(500).json({
+      message:
+        "Server could not delete desire content because database connection",
     });
   }
-  return res.status (201).json({
+  return res.status(201).json({
     message: "Deleted desire sucessfully",
   });
 });
