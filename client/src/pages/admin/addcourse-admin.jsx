@@ -19,6 +19,8 @@ function AddCourseAdmin() {
             <AddCourseForm />
           </main>
         </div>
+        <div className="p-4">{<Outlet />}</div>
+        <main className="p-4"></main>
       </div>
     </div>
   );
