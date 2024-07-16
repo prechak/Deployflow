@@ -8,12 +8,14 @@ import ellipse from "/src/assets/icons/section1/ellipse1.png";
 import ellipse2 from "/src/assets/icons/section1/ellipse2.png";
 import ellipse3 from "/src/assets/icons/section1/ellipse3.png";
 import vector1 from "/src/assets/icons/section1/vector1.png";
+import ellipse4 from "/src/assets/icons/section1/Ellipse4.png";
 
 function section1() {
   return (
     <>
       <div className=" absolute">
-        <img src={ellipse} alt="" className="sm:pl-6 xl:hidden" />
+        <img src={ellipse} alt="" className="sm:pl-6 md:hidden xl:hidden" />
+        <img src={ellipse4} alt="" className="sm:hidden md:block md:pl-[100px] xl:pl-[140px]"/>
       </div>
       <section className="flex justify-center items-center text-black sm:w-auto sm:h-[1428.63px] xl:w-auto xl:h-[1111px] ">
         <div className="box sm:w-[343px] sm:h-[1300.63px] xl:w-[1120px] xl:h-[780px] xl:flex xl:flex-col xl:justify-center xl:align-middle ">
@@ -35,6 +37,7 @@ function section1() {
                     </p>
                   </div>
                 </div>
+                <img src={vector1} alt="" className=" absolute sm:ml-[340px] md:ml-[340px] xl:right-[200px]"/>
                 <div className="sm:mt-8 sm:w-auto sm:h-[103px]">
                   <div className="sm:flex">
                     <img src={support} alt="" className="sm:h-full" />
