@@ -1,13 +1,13 @@
-import Button from "./Button";
 import { useNavigate } from "react-router-dom";
+import Button from "../button/button";
 
-
-function Navbar() {
+function NavbarCourseList() {
   const navigate = useNavigate();
 
   const handleAddCourseClick = () => {
     navigate("/admin/addcourse");
   };
+
   return (
     <div className="w-full ">
       <nav className="border-b-2 border-gray-300 md:p-4 bg-white text-base text-slate-800 flex flex-col md:flex-row md:justify-between items-center">
@@ -26,4 +26,4 @@ function Navbar() {
   );
 }
 
-export default Navbar;
+export default NavbarCourseList;

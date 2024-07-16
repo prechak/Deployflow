@@ -31,7 +31,7 @@ function LoginAdmin() {
 
       const userDataFromToken = jwtDecode(token);
       setState({ ...state, user: userDataFromToken });
-      navigate("/");
+      navigate("/admin/courselist");
     } catch (error) {
       setState({ ...state, error: error.message });
     }
@@ -39,25 +39,28 @@ function LoginAdmin() {
 
   return (
     <>
-      <section className="bg-blue-100 flex items-center justify-center min-h-screen">
-        <div className="min-h-screen flex items-center justify-center bg-blue-100">
-          <div className="bg-white p-6 rounded shadow-md w-full max-w-sm">
-            <h2 className="text-2xl text-black font-bold mb-6 text-center">
-              Login Admin Test
+      <section className="bg-gradient-to-r from-blue-700 to-blue-400 h-screen overflow-hidden flex items-center justify-center">
+        <div className="max-w-[566px] w-full md:max-w-[568px] p-6 shadow-lg bg-white rounded-md">
+          <div className="">
+            <h1 className="mt-6 text-6xl md:text-6xl lg:text-6xl font-bold bg-gradient-to-l from-blue-700 to-blue-200 bg-clip-text text-transparent flex items-center justify-center">
+              CourseFlow
+            </h1>
+            <h2 className="mt-2 text-slate-500 font-medium text-base md:text-lg lg:text-xl xl:text-24 flex items-center justify-center">
+              Admin Panel Control
             </h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label
-                  className=" block text-gray-700 text-sm font-bold mb-2"
+                  className="mx-8 mt-10 block text-base mb-2 text-black"
                   htmlFor="email"
                 >
                   Email
                 </label>
                 <input
-                  className="bg-white shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="mx-8 bg-white box-border border-2 w-[446px] h-[48px] text-base px-2 py-1 rounded-md flex items-center focus:text-black text-black"
                   id="email"
                   type="email"
-                  placeholder="Email"
+                  placeholder="Enter Email"
                   value={email}
                   onChange={(e) => {
                     setEmail(e.target.value);
@@ -66,26 +69,25 @@ function LoginAdmin() {
               </div>
               <div className="mb-6">
                 <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
+                  className="mx-8 mt-10 block text-base mb-2 text-black "
                   htmlFor="password"
                 >
                   Password
                 </label>
                 <input
-                  className="bg-white shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                  className="mx-8 bg-white box-border border-2 w-[446px] h-[48px] text-base px-2 py-1 rounded-md flex items-center focus:text-black text-black"
                   id="password"
                   type="password"
-                  placeholder="Password"
+                  placeholder="Enter Password"
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);
                   }}
                 />
-                <p className="text-blue-500 text-xs italic">Forgot password?</p>
               </div>
               <div className="flex items-center justify-between">
                 <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  className="mx-8 mb-6 bg-blue-500 hover:bg-blue-700 text-white w-[446px] h-[60px] font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
                   type="submit"
                 >
                   Login
@@ -93,9 +95,7 @@ function LoginAdmin() {
                 <a
                   className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
                   href="#"
-                >
-                  Signup
-                </a>
+                ></a>
               </div>
             </form>
           </div>
