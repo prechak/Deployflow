@@ -36,8 +36,55 @@ courseRouter.get("/:id", async (req, res) => {
 
 
 
-//*Edit course admin*//
+//*Add course admin*//
 
+courseRouter.post("/", async (req, res) => {
+  const {
+    coursename,
+    price,
+    description,
+    coursesummary,
+    courselearningtime,
+    videofile,
+    imagefile,
+  } = req.body;
 
+  try {
+    if (!coursename || !price || !courselearningtime) {
+      return res.status(400).json({
+        message:
+          "Missing required fields: coursename, price, or courselearningtime.",
+      });
+    }
+
+    const result = await connectionPool.query(
+      `
+        INSERT INTO courses (coursename, price, description, coursesummary, courselearningtime, videofile, imagefile)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING *`,
+      [
+        coursename,
+        price,
+        description,
+        coursesummary,
+        courselearningtime,
+        videofile,
+        imagefile,
+      ]
+    );
+
+    /*if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Course not found" });
+    }*/
+
+    return res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Database error:", error);
+
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+});
 
 export default courseRouter;

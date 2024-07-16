@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import edit from "../../assets/image/edit.png"
-import bin from "../../assets/image/Bin.png"
+import edit from "../../assets/image/edit.png";
+import bin from "../../assets/image/Bin.png";
 import { Link } from "react-router-dom";
-
 
 function CourseListTable() {
   const [users, setUsers] = useState([]);
@@ -46,13 +45,21 @@ function CourseListTable() {
                 />
               </td>
               <td className="w-[268px] text-left">{item.coursename}</td>
-              <td className="w-[105px] text-left">{item.lesson}</td>
+              <td className="w-[105px] text-left">{item.courselearningtime}</td>
               <td className="w-[105px] text-left">{item.price}</td>
               <td className="w-[188px] text-left"></td>
               <td className="w-[188px] text-left"></td>
               <td className="w-[120px] text-left">
-                <button><Link to=""><img src={bin} /></Link></button>
-                <button><Link to={`/admin/editcourse/${item.courseid}`}><img src={edit} /></Link></button>
+                <button>
+                  <Link to="">
+                    <img src={bin} />
+                  </Link>
+                </button>
+                <button>
+                  <Link to={`/admin/editcourse/${item.courseid}`}>
+                    <img src={edit} />
+                  </Link>
+                </button>
               </td>
             </tr>
           ))}
