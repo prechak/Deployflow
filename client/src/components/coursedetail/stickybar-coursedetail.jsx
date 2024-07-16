@@ -1,14 +1,25 @@
 import React, { useState } from "react";
 import arrow_drop from "../../icons/coursedetail/arrow_drop.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 function StickybarCoursedetail() {
+  const navigate = useNavigate();
+  const params = useParams();
   const [isCoursevisible, setIsCourseVisible] = useState(false);
   const toggleCourse = () => {
     setIsCourseVisible(!isCoursevisible);
   };
 
-  const navigate = useNavigate();
+  const postDesireCourse = async () => {
+    await axios.post(`http://localhost:4000/courses/${params.Id}/desire`), {};
+    navigate("/user/desire");
+  };
+  const handlePostDesire = (event) => {
+    event.preventDefault();
+    postDesireCourse();
+  };
+
   return (
     <div>
       <footer className="bg-white flex items-center justify-center shadow-md h-fit sticky bottom-0 xl:hidden">
@@ -48,9 +59,7 @@ function StickybarCoursedetail() {
             </div>
             <div className="flex flex-row gap-[8px]">
               <button
-                onClick={() => {
-                  navigate("/user/coursedetail/desire");
-                }}
+                onClick={handlePostDesire}
                 className="border-solid border-[1px] border-Orange-500 rounded-[12px] text-[12px] font-[700] text-Orange-500 sm:w-[180px] sm:h-[34px]"
               >
                 Get in Desire course

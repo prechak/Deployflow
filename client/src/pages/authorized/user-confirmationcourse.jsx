@@ -1,19 +1,20 @@
 import SectionOtherCourse from "../../components/coursedetail/section-othercourse";
 import UserSectionConfirmation from "../../components/coursedetail/section-confirmation";
 import StickybarStartLearning from "../../components/coursedetail/stickybar-startlearning";
-import StickybarConfirmation from "../../components/coursedetail/stickybar-confirmation"; 
+import NavbarUser from "../../components/homepage/navbar-user";
+import Footer from "../../components/homepage/footer";
 
 function ConfirmationCourse() {
   return (
     <div>
-      <nav className="border-solid border-2 border-purple-700 bg-green-400 h-[56px] sticky top-0"></nav>
+      <nav className="sticky top-0 bg-white z-10">
+        <NavbarUser />
+      </nav>
       <UserSectionConfirmation />
       <div className="xl:hidden">
         <SectionOtherCourse />
       </div>
-      <div>
-        <footer className="border-solid border-2 border-purple-700 flex h-[272px]"></footer>
-      </div>
+      <Footer />
       <div className="sticky bottom-0">
         <StickybarStartLearning />
       </div>
@@ -22,3 +23,4 @@ function ConfirmationCourse() {
 }
 
 export default ConfirmationCourse;
+

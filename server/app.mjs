@@ -28,6 +28,7 @@ app.use("/courses", courseRouter);
 app.use("/users", userRouter);
 app.use("/admin", adminRouter);
 
+
 //Server connection test
 app.get("/test", (req, res) => {
   return res.json("Server API is working 🚀");

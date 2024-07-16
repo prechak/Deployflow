@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import arrow_drop from "../../icons/coursedetail/arrow_drop.png";
 import { useNavigate } from "react-router-dom";
 
+
 function StickybarStartLearning() {
   const [isCoursevisible, setIsCourseVisible] = useState(false);
   const toggleCourse = () => {
     setIsCourseVisible(!isCoursevisible);
   };
   const navigate = useNavigate();
-
   return (
     <div>
       <footer className="flex items-center justify-center shadow-md bg-white h-fit sticky bottom-0 xl:hidden">
