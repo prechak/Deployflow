@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import "dayjs/locale/en-gb";
+import { useAuth } from "../../contexts/authentication";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(localizedFormat);
@@ -20,6 +21,8 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("Student");
+
+  const { register } = useAuth();
 
   // Error Message
   const [errorMessage, setErrorMessage] = useState("");
@@ -47,6 +50,7 @@ function Register() {
     setEmailExistError("");
     setPasswordError("");
     setSuccessMessage("");
+    register(data);
 
     // All required field validation
     if (
