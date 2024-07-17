@@ -4,15 +4,14 @@ import AddCourseSubLessonTable from "../addcourse-sublesson";
 import { useNavigate } from "react-router-dom";
 
 function AddCourseFrom() {
-  const [inputData, setInputData] = useState({
-    coursename: "",
-    price: "",
-    description: "",
-    coursesummary: "",
-    courselearningtime: "",
-    videofile: "",
-    imagefile: "",
-  });
+  const [coursename, setCoursename]=useState('');
+  const [price, setPrice] = useState('');
+  const [description, setDescription] = useState ('');
+  const [coursesummary, setCoursesummary] = useState('');
+  const [courselearningtime, setCourselearningtime] = useState('');
+  const [videofile, setVideofile] = useState('');
+  const [imagefile, setImagefile] = useState;
+
 
   const navigate = useNavigate();
 
