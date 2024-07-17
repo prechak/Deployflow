@@ -22,16 +22,34 @@ function Login() {
     e.preventDefault();
     console.log("Email:", email);
     console.log("Password:", password);
-    setState({ ...state, loading: true, error: "" });
     try {
-      const user = await login({ email, password });
-      setState({ ...state, loading: false, user });
+      //Validate password
+      if (password.length < 12) {
+        setState({
+          ...state,
+          error: "Password should be more than 12 or equal",
+        });
+      }
+      if (password.length < 12) {
+        return setState({
+          ...state,
+          error: "Password should be more than 12 or equal",
+        });
+      }
+
+      const result = await axios.post(
+        "http://localhost:4000/users/login",
+        { email, password } // Pass email and password as object
+      );
+
+      const token = result.data.token;
+      localStorage.setItem("token", token);
+
+      const userDataFromToken = jwtDecode(token);
+      setState({ ...state, user: userDataFromToken });
+      navigate("/");
     } catch (error) {
-      setState({
-        ...state,
-        loading: false,
-        error: "Incorrect email or password",
-      });
+      setState({ ...state, error: "Invalid password of email" });
     }
   };
 
@@ -136,6 +154,7 @@ function Login() {
               <p>
                 <input
                   type="email"
+                  id="email"
                   className="border border-gray-300 text-gray-900 text-sm rounded-lg outline-Orange-500 block w-full p-3 "
                   required
                   placeholder="Enter Email"
@@ -153,6 +172,7 @@ function Login() {
                 {" "}
                 <input
                   type="password"
+                  id="password"
                   className="border border-gray-300 text-gray-900 text-sm rounded-lg outline-Orange-500  block w-full p-3"
                   placeholder="Enter Password"
                   onChange={(e) => {
