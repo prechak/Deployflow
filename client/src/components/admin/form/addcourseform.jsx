@@ -288,9 +288,6 @@ function AddCourseFrom() {
     console.log("File Size:", selectedFile.size);
   };
 
-
-
-
   return (
     <div>
       <NavbarAddCourse onCreateCourseClick={handleCreateCourseClick} />
