@@ -18,6 +18,7 @@ userRouter.get("/", async (req, res) => {
   }
 });
 
+//===========Register
 userRouter.post("/register", [userRegisterValidation], async (req, res) => {
   const newUser = { ...req.body };
   const query = `insert into users (fullname, age, educationalbackground, email, password, role)
@@ -33,9 +34,26 @@ userRouter.post("/register", [userRegisterValidation], async (req, res) => {
   ];
   console.log(newUser);
   try {
-    await connectionPool.query(query, values);
+    // Start a transaction
+    await connectionPool.query("BEGIN");
+
+    // Insert new user
+    const result = await connectionPool.query(query, values);
+    const newUserId = result.rows[0].userid;
+
+    // Insert corresponding profile
+    const profileQuery = `insert into profiles (userid, profilepicture)
+                          values($1, $2)`;
+    const profileValues = [newUserId, ""]; // Assuming an empty string for profilepicture as default
+    await connectionPool.query(profileQuery, profileValues);
+
+    // Commit the transaction
+    await connectionPool.query("COMMIT");
+
     return res.status(201).json({ message: "Registration successful!" });
-  } catch {
+  } catch (error) {
+    // Rollback the transaction in case of error
+    await connectionPool.query("ROLLBACK");
     return res.status(500).json({ message: `Internal Server Error` });
   }
 });
