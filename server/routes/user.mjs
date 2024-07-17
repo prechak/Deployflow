@@ -19,36 +19,80 @@ userRouter.get("/", async (req, res) => {
   }
 });
 
-//===============Get user by id
-userRouter.get("/:id", async (req, res) => {
-  let result;
-  const userId = req.params.id;
+//===========Register
+userRouter.post("/register", [userRegisterValidation], async (req, res) => {
+  const newUser = { ...req.body };
+  const query = `insert into users (fullname, age, educationalbackground, email, password, role)
+                values($1, $2, $3, $4, $5, $6)
+                returning *`;
+  const values = [
+    newUser.fullname,
+    newUser.age,
+    newUser.educationalbackground,
+    newUser.email,
+    newUser.password,
+    newUser.role,
+  ];
+  console.log(newUser);
   try {
-    result = await connectionPool.query(
-      `SELECT * FROM users WHERE userid = $1`,
-      [userId]
-    );
+    // Start a transaction
+    await connectionPool.query("BEGIN");
+
+    // Insert new user
+    const result = await connectionPool.query(query, values);
+    const newUserId = result.rows[0].userid;
+
+    // Insert corresponding profile
+    const profileQuery = `insert into profiles (userid, profilepicture)
+                          values($1, $2)`;
+    const profileValues = [newUserId, ""]; // Assuming an empty string for profilepicture as default
+    await connectionPool.query(profileQuery, profileValues);
+
+    // Commit the transaction
+    await connectionPool.query("COMMIT");
+
+    return res.status(201).json({ message: "Registration successful!" });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      message:
-        "Server could not read user because of a database connection error",
-    });
+    // Rollback the transaction in case of error
+    await connectionPool.query("ROLLBACK");
+    return res.status(500).json({ message: `Internal Server Error` });
   }
-  if (!result.rows[0]) {
-    return res.status(404).json({
-      message: "Server could not find user",
-    });
-  }
-  return res.status(200).json({
-    data: result.rows[0],
-  });
 });
 
-//==============Register User
-userRouter.post("/register", [userRegisterValidation], register);
+// user login
+userRouter.post("/login", [loginValidation], async (req, res) => {
+  console.log("SECRET_KEY: ", process.env.SECRET_KEY);
+  console.log("Request Body: ", req.body);
+  const { email } = req.body;
 
-//==============User login
-userRouter.post("/login", [userLoginValidation], userLogin);
+  try {
+    console.log(`Attempting to log in with email: ${email}`);
+
+    const result = await connectionPool.query(
+      `SELECT * FROM users WHERE email = $1`,
+      [email]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Invalid email or password" });
+    }
+
+    // generate token
+    const user = result.rows[0];
+    const token = jwt.sign(
+      { userId: user.userid, fullname: user.fullname, role: user.role },
+      process.env.SECRET_KEY,
+      { expiresIn: "900000" } // 15 minutes
+    );
+
+    return res.status(200).json({
+      message: "Login successful",
+      token: token,
+    });
+  } catch (error) {
+    console.error("Error during login:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 export default userRouter;
