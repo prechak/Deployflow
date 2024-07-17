@@ -6,6 +6,7 @@ import connectionPool from "./utils/db.mjs";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import adminRouter from "./routes/admin.mjs";
+import profileRouter from "./routes/profiles.mjs";
 
 const app = express();
 app.use(express.json());
@@ -27,7 +28,7 @@ connect();
 app.use("/courses", courseRouter);
 app.use("/users", userRouter);
 app.use("/admin", adminRouter);
-
+app.use("/profiles", profileRouter);
 
 //Server connection test
 app.get("/test", (req, res) => {
@@ -44,11 +45,10 @@ app.get("/users", async (req, res) => {
   }
 });
 
-
 //log in api admin//
 app.post("/login/admin", async (req, res) => {
   try {
-    const { email, password,  } = req.body;
+    const { email, password } = req.body;
     if (!email || !password) {
       return res
         .status(400)
