@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import logo from "/src/assets/icons/logo.png";
 import Profile from "/src/assets/images/sm/profile/profile.png";
 import iconProfile from "/src/assets/icons/icon-profile.png";
@@ -9,9 +9,11 @@ import iconHomework from "/src/assets/icons/icon-homework.png";
 import iconLogout from "/src/assets/icons/icon-logout.png";
 import Usercourse from "../../pages/authorized/user-course";
 import { useAuth } from "../../contexts/authentication";
+import axios from "axios";
 
 function Navbarnonuser() {
   const [isOpen, setIsOpen] = useState(false);
+  const [userData, setUserData] = useState([]);
   // const history = useHistory();
 
   const toggleMenu = () => {
@@ -19,6 +21,23 @@ function Navbarnonuser() {
   };
 
   const { logout } = useAuth();
+  const userId = useAuth();
+
+  const getUserData = async () => {
+    try {
+      const result = await axios.get(
+        `http://localhost:4000/users/${userId.UserIdFromLocalStorage}`
+      );
+      console.log(result.data);
+      setUserData(result.data.data);
+    } catch (error) {
+      console.error("Error Fetching", error);
+    }
+  };
+
+  useEffect(() => {
+    getUserData();
+  }, []);
 
   // const handleLogout = () => {
   //   history.push("/homepage");
@@ -44,12 +63,12 @@ function Navbarnonuser() {
               onClick={toggleMenu}
             >
               <img
-                src={Profile}
+                src={userData.profilePicture}
                 alt="Profile"
                 className="w-8 h-8 rounded-full"
               />
               <span className="hidden md:block mx-2 text-sm text-gray-700 md:font-normal xl:text-base xl:font-normal">
-                username
+                Name: {userData.fullname}
               </span>
               <svg
                 className={`h-5 w-5 ml-1 text-black ${
@@ -70,7 +89,7 @@ function Navbarnonuser() {
               <div className="absolute bg-white z-50 shadow-2xl rounded-lg sm:w-[198px] sm:h-auto sm:mt-5 md:left-[85px]  sm:right-0 sm:mr-[-18px] md:mt-0 xl:left-24 xl:mt-0">
                 <div className="py-1 text-sm font-medium">
                   <Link
-                    to=""
+                    to="/user/profile"
                     className="flex px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex-row"
                     role="menuitem"
                   >
