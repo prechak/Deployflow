@@ -1,5 +1,5 @@
 import React from "react";
-import Navbarnonuser from "../../components/homepage/navbar-user";
+import Navbaruser from "../../components/homepage/navbar-user";
 import Header from "../../components/homepage/header";
 import Section1 from "../../components/homepage/section1";
 import Section2 from "../../components/homepage/section2";
@@ -10,7 +10,7 @@ import Footer from "../../components/homepage/footer";
 function Userhomepage() {
   return (
     <div className="relative">
-      <Navbarnonuser />
+      <Navbaruser />
       <Header/>
       <Section1/>
       <Section2/>

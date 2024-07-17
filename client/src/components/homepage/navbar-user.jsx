@@ -39,13 +39,14 @@ function Navbarnonuser() {
     getUserData();
   }, []);
 
-  // const handleLogout = () => {
-  //   history.push("/homepage");
-  // };
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setState({ ...state, user: null });
+  };
 
   return (
     <div className="navbar z-40 relative">
-      <section className="navbar items-center sm:w-auto sm:h-[56px] sm:flex sm:flex-row sm:justify-between md:w-full md:h-[88px] md:flex md:flex-row md:justify-between xl:w-full xl:h-[88px] xl:flex xl:flex-row xl:justify-between">
+      <section className="navbar items-center sm:w-auto sm:h-[56px] sm:flex sm:flex-row sm:justify-between md:w-full md:h-[88px] md:flex md:flex-row md:justify-between xl:w-full xl:h-[88px] xl:flex xl:flex-row xl:justify-between" style={{ boxShadow: "4px 4px 24px 0px rgba(0, 0, 0, 0.08)" }}>
         <Link to="/userhomepage">
           <img
             src={logo}
@@ -86,7 +87,7 @@ function Navbarnonuser() {
               </svg>
             </div>
             {isOpen && (
-              <div className="absolute bg-white z-50 shadow-2xl rounded-lg sm:w-[198px] sm:h-auto sm:mt-5 md:left-[85px]  sm:right-0 sm:mr-[-18px] md:mt-0 xl:left-24 xl:mt-0">
+              <div className="absolute bg-white z-50 shadow-2xl rounded-lg sm:w-[198px] sm:h-auto sm:mt-5 md:left-[85px] sm:right-0 sm:mr-[-18px] md:mt-0 xl:left-24 xl:mt-0">
                 <div className="py-1 text-sm font-medium">
                   <Link
                     to="/user/profile"
@@ -124,6 +125,7 @@ function Navbarnonuser() {
                     onClick={() => logout()}
                     className="flex px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex-row border-t-2 cursor-pointer"
                     role="menuitem"
+                    style={{ boxShadow: "4px 4px 24px 0px rgba(0, 0, 0, 0.08)" }}
                   >
                     <img src={iconLogout} alt="" className="pr-[12px]" />
                     Log out

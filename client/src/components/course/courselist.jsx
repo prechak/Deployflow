@@ -88,8 +88,8 @@ function Course() {
               </p>
             </div>
             <div className="sm:w-[343px] sm:h-[53px] border-t-[1px] border-Gray-700 text-Gray-700 flex flex-row items-center p-4 gap-5">
-              <p className="flex flex-row gap-4"><img src={book} alt="" className="w-[20px]"/>{course.lessons} Lessons</p>
-              <p className="flex flex-row gap-4"><img src={clock} alt="" className="w-[20px]"/>{course.hours} Hours</p>
+              <p className="flex flex-row gap-4"><img src={book} alt="" className="w-[20px]"/>{course.coursesummary} Lessons</p>
+              <p className="flex flex-row gap-4"><img src={clock} alt="" className="w-[20px]"/>{course.courselearningtime} Hours</p>
             </div>
           </Link>
         ))}
