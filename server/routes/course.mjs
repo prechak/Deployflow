@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, text } from "express";
 import connectionPool from "../utils/db.mjs";
 
 const courseRouter = Router();
@@ -319,5 +319,33 @@ courseRouter.delete("/desire/:id", async (req, res) => {
     message: "Deleted desire sucessfully",
   });
 });
+
+/**Delete course admin */
+
+courseRouter.delete("/:id", async (req, res) => {
+  const courseId = req.params.id;
+  try {
+    const result = await connectionPool.query(
+      `
+      DELETE FROM courses WHERE courseid = $1
+      `,
+      [courseId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    return res.status(200).json({
+      message: "Deleted course successfully"
+    });
+  } catch (error) {
+    console.error("Error deleting course:", error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+});
+
 
 export default courseRouter;
