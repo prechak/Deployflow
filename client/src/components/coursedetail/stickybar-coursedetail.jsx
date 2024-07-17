@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import arrow_drop from "../../icons/coursedetail/arrow_drop.png";
+import arrow_drop from "../../assets/icons/coursedetail/arrow_drop.png";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
@@ -66,7 +66,7 @@ function StickybarCoursedetail() {
               </button>
               <button
                 onClick={() => {
-                  navigate("/modal");
+                  navigate(`/modal/${params.Id}`);
                 }}
                 className="border-solid border-[1px] bg-Blue-500 rounded-[12px] text-[12px] font-[700] text-white sm:w-[155px] sm:h-[34px]"
               >

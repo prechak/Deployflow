@@ -1,12 +1,23 @@
-import arrow_back from "../../icons/coursedetail/arrow_back.png";
-import video from "../../images/coursedetail/video.png";
-import attachfile from "../../icons/coursedetail/attachfile.png";
-import arrow_drop from "../../icons/coursedetail/arrow_drop.png";
-import { useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import arrow_back from "../../assets/icons/coursedetail/arrow_back.png";
+import attachfile from "../../assets/icons/coursedetail/attachfile.png";
+import arrow_drop from "../../assets/icons/coursedetail/arrow_drop.png";
+import { useNavigate, useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-function UserSectionConfirmation() {
+function UserSectionSubscribe() {
   const navigate = useNavigate();
+  const params = useParams();
+  const [coursedetail, setCoursedetail] = useState({});
+  const getCourses = async () => {
+    const result = await axios.get(
+      `http://localhost:4000/courses/${params.Id}`
+    );
+    setCoursedetail(result.data.data[0]);
+  };
+  useEffect(() => {
+    getCourses();
+  }, []);
 
   const [isCoursevisible1, setIsCourseVisible1] = useState(false);
   const toggleCourse1 = () => {
@@ -47,7 +58,7 @@ function UserSectionConfirmation() {
               <figure className="h-[213.5px] mt-[10px] flex flex-row gap-[24px]">
                 <img
                   className="w-[343px] h-[213.5px] md:w-[450px] md:h-[320px] xl:w-[739px] xl:h-[460px] rounded-[8px]"
-                  src={video}
+                  src={coursedetail.imagefile}
                 ></img>
               </figure>
             </div>
@@ -354,4 +365,4 @@ function UserSectionConfirmation() {
   );
 }
 
-export default UserSectionConfirmation;
+export default UserSectionSubscribe;

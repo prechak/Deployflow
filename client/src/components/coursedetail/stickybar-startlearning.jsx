@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import arrow_drop from "../../icons/coursedetail/arrow_drop.png";
+import arrow_drop from "../../assets/icons/coursedetail/arrow_drop.png";
 import { useNavigate } from "react-router-dom";
 
 

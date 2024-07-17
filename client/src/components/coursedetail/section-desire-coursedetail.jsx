@@ -1,9 +1,8 @@
-import arrow_back from "../../icons/coursedetail/arrow_back.png";
-import video from "../../images/coursedetail/video.png";
-import arrow_drop from "../../icons/coursedetail/arrow_drop.png";
+import arrow_back from "../../assets/icons/coursedetail/arrow_back.png";
+import arrow_drop from "../../assets/icons/coursedetail/arrow_drop.png";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import modal_vector from "../../icons/coursedetail/modal_vector.png";
+import modal_vector from "../../assets/icons/coursedetail/modal_vector.png";
 import axios from "axios";
 
 function SectionDesireCourseDetail() {

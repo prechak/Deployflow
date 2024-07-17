@@ -1,16 +1,16 @@
 import SectionOtherCourse from "../../components/coursedetail/section-othercourse";
-import UserSectionConfirmation from "../../components/coursedetail/section-confirmation";
+import UserSectionSubscribe from "../../components/coursedetail/section-subscribe";
 import StickybarStartLearning from "../../components/coursedetail/stickybar-startlearning";
 import NavbarUser from "../../components/homepage/navbar-user";
 import Footer from "../../components/homepage/footer";
 
-function ConfirmationCourse() {
+function SubscribeCourse() {
   return (
     <div>
       <nav className="sticky top-0 bg-white z-10">
         <NavbarUser />
       </nav>
-      <UserSectionConfirmation />
+      <UserSectionSubscribe />
       <div className="xl:hidden">
         <SectionOtherCourse />
       </div>
@@ -22,5 +22,5 @@ function ConfirmationCourse() {
   );
 }
 
-export default ConfirmationCourse;
+export default SubscribeCourse;
 

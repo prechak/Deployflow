@@ -1,7 +1,7 @@
-import arrow_back from "../../icons/coursedetail/arrow_back.png";
-import arrow_drop from "../../icons/coursedetail/arrow_drop.png";
+import arrow_back from "../../assets/icons/coursedetail/arrow_back.png";
+import arrow_drop from "../../assets/icons/coursedetail/arrow_drop.png";
 import React, { useState, useEffect } from "react";
-import modal_vector from "../../icons/coursedetail/modal_vector.png";
+import modal_vector from "../../assets/icons/coursedetail/modal_vector.png";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
@@ -30,18 +30,19 @@ function SectionCourseDetail() {
   };
 
   const postSubscribe = async () => {
-    await axios.post(`http://localhost:4000/courses/${params.Id}/subscribe`),{};
-    navigate("/user/subscribe")
+    await axios.post(`http://localhost:4000/courses/${params.Id}/subscribe`),
+      {};
+    navigate(`/user/subscribe/coursedetail/${params.Id}`);
   };
   const handlePostSubscribe = (event) => {
     event.preventDefault();
     postSubscribe();
-  }
+  };
 
   const toggleModal = () => {
     setModal(!modal);
   };
- 
+
   const [isCoursevisible1, setIsCourseVisible1] = useState(false);
   const toggleCourse1 = () => {
     setIsCourseVisible1(!isCoursevisible1);
@@ -69,7 +70,7 @@ function SectionCourseDetail() {
 
   return (
     <div>
-      <section className="h-fit flex flex-row pt-[16px] pl-[16px] pr-[16px] xl:pl-[144px]">
+      <section className={`h-fit flex flex-row pt-[16px] pl-[16px] pr-[16px] xl:pl-[144px] ${modal ? "bg-gray-300 bg-opacity-50" : "opacity-100 bg-white"} `}>
         <div className={`${modal ? "opacity-25" : "opacity-100"}`}>
           <header className="w-[100%] h-[261.5px] md:h-[450px] xl:h-[500px] flex justify-center xl:justify-start xl:w-[739px]">
             <div className="flex flex-col">
@@ -89,7 +90,7 @@ function SectionCourseDetail() {
           </header>
           <article>
             <div className="w-[100%] h-fit mb-[15px] mt-[15px] xl:w-[739px] md:mt-[10px] xl:mt-[70px] xl:mb-[70px]">
-              <h1 className="text-black text-Headline3 font-Headline3 mb-[5px] xl:text-Headline2 xl:font-Headline2">
+              <h1 className="text-black text-Headline3 font-Headline3 mb-[25px] xl:text-Headline2 xl:font-Headline2">
                 Course Detail
               </h1>
               <p className="text-Gray-700 text-Body3 font-Body3 xl:text-Body2 xl:font-Body2">
@@ -127,7 +128,7 @@ function SectionCourseDetail() {
             </div>
           </article>
           <article>
-            <div className="h-[924px] mt-[70px] xl:w-[739px]">
+            <div className="h-[924px] sm:mt-[30px] xl:mt-[70px] xl:w-[739px] mb-[40px]">
               <h1 className="text-black text-Headline3 font-Headline3 xl:text-Headline2 xl:font-Headline2 xl:mb-[20px]">
                 Module Samples
               </h1>
