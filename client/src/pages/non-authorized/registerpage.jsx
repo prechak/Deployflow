@@ -52,7 +52,7 @@ function Register() {
     setEmailExistError("");
     setPasswordError("");
     setSuccessMessage("");
-    register(data);
+    // register(data);
 
     // All required field validation
     if (

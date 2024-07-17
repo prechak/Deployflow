@@ -3,6 +3,7 @@ import connectionPool from "../utils/db.mjs";
 import userRegisterValidation from "../middlewares/postuser.validation.mjs";
 import userLoginValidation from "../middlewares/userlogin.validation.mjs";
 import { userLogin, register } from "../controllers/authcontrollers.mjs";
+import jwt from "jsonwebtoken";
 
 const userRouter = Router();
 
@@ -60,7 +61,7 @@ userRouter.post("/register", [userRegisterValidation], async (req, res) => {
 });
 
 // user login
-userRouter.post("/login", [loginValidation], async (req, res) => {
+userRouter.post("/login", [userLoginValidation], async (req, res) => {
   console.log("SECRET_KEY: ", process.env.SECRET_KEY);
   console.log("Request Body: ", req.body);
   const { email } = req.body;

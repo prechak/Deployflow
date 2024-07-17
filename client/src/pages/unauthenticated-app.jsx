@@ -5,6 +5,11 @@ import HomePage from "./non-authorized/homepage";
 import Register from "./non-authorized/registerpage";
 import Course from "./non-authorized/course";
 import NotFoundPage from "./notfoundpage";
+import LoginAdmin from "./admin/login-admin";
+import CourseListAdmin from "./admin/courselist";
+import AddCourseAdmin from "./admin/addcourse-admin";
+import EditCourse from "./admin/editcourse";
+import AddSubLesson from "./admin/add-sublesson";
 
 function UnauthenticatedApp() {
   return (
@@ -14,7 +19,13 @@ function UnauthenticatedApp() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/courselist" element={<Course />} />
-        <Route path="/coursedetail" element={<Coursedetail />} />
+        <Route path="/coursedetail/:Id" element={<Coursedetail />} />
+
+        <Route path="/login/admin" element={<LoginAdmin />} />
+        <Route path="/admin/courselist" element={<CourseListAdmin />} />
+        <Route path="/admin/addcourse" element={<AddCourseAdmin />} />
+        <Route path="/admin/editcourse/:id" element={<EditCourse />} />
+        <Route path="/admin/addsublesson" element={<AddSubLesson />} />
         <Route path="*" element={<Login />} />
       </Routes>
     </div>
