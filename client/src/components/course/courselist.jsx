@@ -5,6 +5,7 @@ import clock from "/src/assets/icons/icon-clock.png";
 import book from "/src/assets/icons/icon-homework.png";
 import bgSm from "/src/assets/icons/bgcourse/assetsSM.png";
 import bgXl from "/src/assets/icons/bgcourse/assetsXl.png";
+import NavbarUser from "../homepage/navbar-user";
 
 function Course() {
   const [searchCourse, setSearchCourse] = useState("");
@@ -41,12 +42,21 @@ function Course() {
 
   return (
     <>
+      <NavbarUser />
       <section
         id="search"
         className="sm:w-full sm:h-[198px] xl:flex xl:flex-col"
       >
-        <img src={bgXl} alt="" className="z-0 absolute sm:hidden md:block md:w-auto md:mt-10 xl:w-full"/>
-        <img src={bgSm} alt="" className="z-0 absolute sm:w-full sm:h-[157px] sm:mt-10 md:hidden"/>
+        <img
+          src={bgXl}
+          alt=""
+          className="z-0 absolute sm:hidden md:block md:w-auto md:mt-10 xl:w-full"
+        />
+        <img
+          src={bgSm}
+          alt=""
+          className="z-0 absolute sm:w-full sm:h-[157px] sm:mt-10 md:hidden"
+        />
         <h1 className="text-black sm:text-2xl sm:font-medium sm:text-center sm:pt-10 z-10">
           Our Courses
         </h1>
@@ -88,8 +98,14 @@ function Course() {
               </p>
             </div>
             <div className="sm:w-[343px] sm:h-[53px] border-t-[1px] border-Gray-700 text-Gray-700 flex flex-row items-center p-4 gap-5">
-              <p className="flex flex-row gap-4"><img src={book} alt="" className="w-[20px]"/>{course.lessons} Lessons</p>
-              <p className="flex flex-row gap-4"><img src={clock} alt="" className="w-[20px]"/>{course.hours} Hours</p>
+              <p className="flex flex-row gap-4">
+                <img src={book} alt="" className="w-[20px]" />
+                {course.coursesummary} Lessons
+              </p>
+              <p className="flex flex-row gap-4">
+                <img src={clock} alt="" className="w-[20px]" />
+                {course.courselearningtime} Hours
+              </p>
             </div>
           </Link>
         ))}

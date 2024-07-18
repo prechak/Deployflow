@@ -24,15 +24,15 @@ profileRouter.get("/", async (req, res) => {
 
 //================Get profile by id
 profileRouter.get("/:id", async (req, res) => {
-  const profileId = req.params.id;
+  const { id } = req.params;
 
   try {
     const result = await connectionPool.query(
-      `SELECT profileid, profilepicture, fullname, educationalbackground, email, age
-       FROM profiles
-       JOIN users ON users.userid = profiles.userid
-        WHERE profileid = $1`,
-      [profileId]
+      `SELECT profiles.profileid, profiles.profilepicture, users.userid, users.fullname, users.educationalbackground, users.email, users.age
+       FROM users
+       JOIN profiles ON users.userid = profiles.userid
+       WHERE users.userid = $1`,
+      [id]
     );
 
     if (result.rows.length === 0) {

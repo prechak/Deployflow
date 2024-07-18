@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import image1 from "/src/assets/images/sm/course/image1.png";
 import image2 from "/src/assets/images/sm/course/image2.png";
 import image3 from "/src/assets/images/sm/course/image3.png";
-import image4 from "/src/assets/images/sm/course/image1.png";
 import clock from "/src/assets/icons/icon-clock.png";
 import book from "/src/assets/icons/icon-homework.png";
 import bgSm from "/src/assets/icons/bgcourse/assetsSM.png";
