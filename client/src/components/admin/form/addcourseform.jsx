@@ -475,6 +475,12 @@ function AddCourseFrom() {
             </div>
           </form>
         </div>
+        <button
+          onClick={() => deletecourse(courses._id)}
+          className="bg-red-600"
+        >
+          delete
+        </button>
       </div>
       <AddCourseSubLessonTable />
     </div>

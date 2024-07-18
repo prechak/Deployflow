@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import upload from "../../../assets/image/upload.png"
+import upload from "../../../assets/image/upload.png";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import AddCourseSubLessonTable from "../addcourse-sublesson";
@@ -16,7 +16,7 @@ function EditCourseForm() {
   const [courses, setCourses] = useState(" ");
   const [videoFile, setVideoFileState] = useState("");
   const [videoPreviewUrl, setVideoPreviewUrl] = useState("");
-  const [imageUrl, setImageUrl] = useState()
+  const [imageUrl, setImageUrl] = useState();
   const { id } = useParams();
   const [inputData, setInputData] = useState({
     coursename: "",
@@ -68,26 +68,26 @@ function EditCourseForm() {
   const [videofile,setVideoFile] = useState('')
   const [pdffile, setPdfFile] = useState('')*/
 
-  useEffect(()=>{
-    const fetchCoursesFile = async() => {
+  useEffect(() => {
+    const fetchCoursesFile = async () => {
       const { data, error } = await supabase
-      .from('courses')
-      .select()
-      .eq('id', id)
-      .single()
-      
-      if (error){
-        console.error(error)
+        .from("courses")
+        .select()
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        console.error(error);
       }
-      if(data) {
-        setImgFile(data.imagefile)
-        setVideoFile(data.videofile)
-        setPdfFile(data.pdffile)
-        console.log(data)
+      if (data) {
+        setImgFile(data.imagefile);
+        setVideoFile(data.videofile);
+        setPdfFile(data.pdffile);
+        console.log(data);
       }
-    }
-    fetchCoursesFile
-  },[id])
+    };
+    fetchCoursesFile;
+  }, [id]);
   const sanitizeFileName = (name) => {
     return name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
   };
@@ -271,9 +271,6 @@ function EditCourseForm() {
     console.log("File Type:", selectedFile.type);
     console.log("File Size:", selectedFile.size);
   };
-
-
-
 
   return (
     <div>
