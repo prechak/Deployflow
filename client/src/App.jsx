@@ -1,15 +1,11 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import { useAuth } from "./contexts/authentication";
+import AuthenticatedApp from "./pages/authenticated-app";
+import UnauthenticatedApp from "./pages/unauthenticated-app";
 
 function App() {
-
-  return (
-    <>
-      <h1 className='text-Blue-700 text-Headline2 font-Headline2'>Hello</h1>
-    </>
-  )
+  const auth = useAuth();
+  return auth.isAuthenticated ? <AuthenticatedApp /> : <UnauthenticatedApp />;
 }
 
-export default App
+export default App;

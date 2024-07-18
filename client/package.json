@@ -10,8 +10,22 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@heroicons/react": "^2.1.5",
+    "@mui/material": "^5.16.1",
+    "@mui/x-date-pickers": "^7.9.0",
+    "axios": "^1.7.2",
+    "dayjs": "^1.11.11",
+    "jwt-decode": "^4.0.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.25.0",
+    "react-slick": "^0.30.2",
+    "react-spring": "^9.7.3",
+    "shadcn-ui": "^0.8.0",
+    "slick-carousel": "^1.8.1",
+    "swiper": "^11.1.4"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
@@ -24,6 +38,6 @@
     "eslint-plugin-react-refresh": "^0.4.7",
     "postcss": "^8.4.39",
     "tailwindcss": "^3.4.4",
-    "vite": "^5.3.1"
+    "vite": "^5.3.3"
   }
 }

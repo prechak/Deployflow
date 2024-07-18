@@ -28,7 +28,7 @@ export default {
         },
         Orange: {
           100: "#FBAA1C",
-          200: "#F47E20",
+          500: "#F47E20",
         },
         Green: {
           100: "#2FAC8E",
@@ -51,6 +51,15 @@ export default {
         Body2: "400",
         Body3: "400",
         Body4: "400",
+      },
+      screens: {
+        sm: "375px",
+        md: "768px",
+        xl: "1440px",
+      },
+      boxShadow: {
+        shadow1: "2px 2px 12px 0 rgba(0, 0, 0, 0.08)",
+        shadow2: "2px 2px 12px 0 rgba(64, 50, 133, 0.12)",
       },
     },
   },
