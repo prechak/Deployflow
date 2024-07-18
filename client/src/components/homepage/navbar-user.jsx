@@ -76,7 +76,7 @@ function NavbarUser() {
                 className="w-8 h-8 rounded-full"
               />
               <span className="hidden md:block mx-2 text-sm text-gray-700 md:font-normal xl:text-base xl:font-normal">
-                Name: {userData.fullname}
+                {userData.fullname}
               </span>
               <svg
                 className={`h-5 w-5 ml-1 text-black ${
