@@ -11,6 +11,7 @@ import AddCourseAdmin from "./admin/addcourse-admin";
 import EditCourse from "./admin/editcourse";
 import AddSubLesson from "./admin/add-sublesson";
 import EditSubLesson from "./admin/edit-sublesson";
+import AddAssignment from "./admin/add-assignment";
 
 function UnauthenticatedApp() {
   return (
@@ -28,6 +29,7 @@ function UnauthenticatedApp() {
         <Route path="/admin/editcourse/:id" element={<EditCourse />} />
         <Route path="/admin/addsublesson" element={<AddSubLesson />} />
         <Route path="/admin/editsublesson" element={<EditSubLesson />} />
+        <Route path="/admin/addassignment" element={<AddAssignment/>}/>
         <Route path="*" element={<Login />} />
       </Routes>
     </div>
