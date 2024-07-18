@@ -12,6 +12,7 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { linearProgressClasses } from "@mui/material/LinearProgress";
 import Navbarnonuser from "../homepage/navbar-user";
+import GeneralFooter from "../homepage/footer";
 
 // SVG Icons
 const NotPlayingIcon = () => (
@@ -138,28 +139,27 @@ const Sidebar = () => {
   return (
     <>
       <Navbarnonuser />
-      <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
+      <div className="flex flex-col md:flex-row mx-4 lg:mx-20 xl:mx-40 mt-[128px] md:mt-[188px] min-h-screen ">
         {/* Sidebar */}
         <div className="md:w-1/4 bg-white text-black shadow-md h-auto md:h-screen p-4">
           <div className="mb-6">
-            <h2 className="text-2xl font-bold text-orange-500">Course</h2>
-            <h3 className="text-xl font-bold mt-4">
+            <h2 className="text-sm font-bold text-orange-500">Course</h2>
+            <h3 className="text-2xl font-bold mt-4">
               Service Design Essentials
             </h3>
-            <p className="text-gray-600 text-sm mt-2">
+            <p className="text-gray-600 text-base mt-2">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             </p>
             <div className="mt-4">
+              <span className="text-sm text-gray-600">
+                {progress}% Complete
+              </span>
               <div className="flex items-center">
                 <BorderLinearProgress
                   variant="determinate"
-                  value={progress} // Use the progress state
+                  value={progress}
                   className="w-full mr-2"
                 />
-                <span className="text-sm text-gray-600">
-                  {progress}% Complete
-                </span>{" "}
-                {/* Update text with progress state */}
               </div>
             </div>
           </div>
@@ -245,7 +245,7 @@ const Sidebar = () => {
         </div>
 
         {/* Main content */}
-        <div className="flex-1 p-6 text-black">
+        <div className="flex-1 p-4 lg:p-6 text-black">
           <h1 className="text-2xl font-bold mb-4">Korean bbq pork</h1>
           <div className="mb-4 flex justify-center">
             <video
@@ -255,31 +255,50 @@ const Sidebar = () => {
               src="https://videos.pexels.com/video-files/6007892/6007892-hd_1920_1080_30fps.mp4"
               title="Service Design Video"
               controls
-              // autoPlay
               muted
               className="rounded-lg shadow-md w-full max-w-full"
             ></video>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-lg font-bold mb-2">Assignment</h2>
-            <p className="mb-4">What are the 4 elements of service design?</p>
-            <form>
+          {/* Assignment */}
+          <div className="bg-blue-50 border border-gray-300 rounded-lg p-4 lg:p-6 shadow-md">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Assignment</h2>
+              <span className="bg-yellow-200 text-yellow-800 text-sm font-medium px-2 py-1 rounded">
+                Pending
+              </span>
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-semibold mb-2">
+                What are the 4 elements of service design?
+              </label>
               <textarea
-                className="bg-white w-full p-2 border rounded-lg mb-4"
-                rows="4"
+                className="bg-white w-full px-3 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                rows="3"
                 placeholder="Answer..."
               ></textarea>
-              <button
-                type="submit"
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-              >
+            </div>
+            <div className="flex justify-between items-center">
+              <button className="bg-[#2F5FAC] text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600">
                 Send Assignment
               </button>
-              <p className="text-sm text-gray-500 mt-2">Assign within 2 days</p>
-            </form>
+              <span className="text-gray-500 text-sm">
+                Assign within 2 days
+              </span>
+            </div>
           </div>
         </div>
       </div>
+      {/* Footer */}
+      <footer className="bg-white py-4 flex justify-between items-center border-t border-gray-300 mt-6 md:mt-0">
+        <button className="text-blue-600 ml-4 md:ml-16 my-2 md:my-9">
+          Previous Lesson
+        </button>
+        <button className="bg-[#2F5FAC] mr-4 md:mr-14 my-2 md:my-5 text-white py-2 px-4 rounded-lg">
+          Next Lesson
+        </button>
+      </footer>
+      {/* General Footer */}
+      <GeneralFooter />
     </>
   );
 };
