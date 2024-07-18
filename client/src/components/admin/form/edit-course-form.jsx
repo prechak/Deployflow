@@ -7,33 +7,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 
 function EditCourseFrom() {
-  const { id } = useParams();
-  const [values, setValues] = useState({
-    courseid: "",
-    coursename: "",
-    price: "",
-    description: "",
-    coursesummary: "",
-    courselearningtime: "",
-    imagefile: "",
-  });
 
-  useEffect(() => {
-    axios
-      .get(`http://localhost:4000/courses/` + id)
-      .then((res) => {
-        setValues({
-          ...values,
-          courseid: res.data.courseid,
-          coursename: res.data.coursename,
-          price: res.data.price,
-          description: res.data.description,
-          coursesummary: res.data.coursesummary,
-          courselearningtime: res.data.courselearningtime,
-        });
-      })
-      .catch((err) => console.log(err));
-  }, []);
 
   return (
     <div className="mx-8 w-[1120px] h-[1521px] bg-white rounded-md border-2">
@@ -44,10 +18,6 @@ function EditCourseFrom() {
             <input
               className="w-full h-[48px] bg-white  text-black border-2 rounded-md"
               placeholder=" "
-              value={values.coursename}
-              onChange={(e) =>
-                setValues({ ...values, coursename: e.target.value })
-              }
             />
           </div>
           <div className="w-[920px] h-[76px][] flex flex-row gap-8 mt-8 ">
@@ -58,10 +28,6 @@ function EditCourseFrom() {
               <input
                 className="w-full h-[48px] bg-white text-black border-2 rounded-md"
                 placeholder=""
-                value={values.price}
-                onChange={(e) =>
-                  setValues({ ...values, price: e.target.value })
-                }
               />
             </div>
             <div>
@@ -71,10 +37,6 @@ function EditCourseFrom() {
               <input
                 className="w-full h-[48px] bg-white  text-black border-2 rounded-md"
                 placeholder=""
-                value={values.courselearningtime}
-                onChange={(e) =>
-                  setValues({ ...values, courselearningtime: e.target.value })
-                }
               />
             </div>
           </div>
@@ -85,10 +47,6 @@ function EditCourseFrom() {
             <input
               className="w-full h-[72px] bg-white  text-black border-2 rounded-md"
               placeholder=""
-              value={values.coursesummary}
-              onChange={(e) =>
-                setValues({ ...values, coursesummary: e.target.value })
-              }
             />
           </div>
 
@@ -99,10 +57,6 @@ function EditCourseFrom() {
             <input
               className="w-full h-[192px] bg-white  text-black border-2 rounded-md"
               placeholder=""
-              value={values.description}
-              onChange={(e) =>
-                setValues({ ...values, description: e.target.value })
-              }
             />
           </div>
 
@@ -121,10 +75,6 @@ function EditCourseFrom() {
                 className="hidden"
                 accept="image/png,image/jpeg"
                 id="input"
-                value={values.imagefile}
-                onChange={(e) =>
-                  setValues({ ...values, imagefile: e.target.value })
-                }
               ></input>
             </label>
           </div>
