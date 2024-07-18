@@ -1,48 +1,95 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import upload from "../../../assets/image/upload.png";
 import AddCourseSubLessonTable from "../addcourse-sublesson";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import NavbarAddCourse from "../navbar/navbar-addcourse"; // Adjust the import path as needed
 
 function AddCourseFrom() {
-  const [coursename, setCoursename]=useState('');
-  const [price, setPrice] = useState('');
-  const [description, setDescription] = useState ('');
-  const [coursesummary, setCoursesummary] = useState('');
-  const [courselearningtime, setCourselearningtime] = useState('');
-  const [videofile, setVideofile] = useState('');
-  const [imagefile, setImagefile] = useState;
+  const [courses, setCourses] = useState(" ");
+  const [createForm, setCreateForm] = useState({
+    coursename: " ",
+    price: " ",
+    description: " ",
+    coursesummary: " ",
+    courselearningtime: " ",
+    videofile: " ",
+    imagefile: " ",
+  });
 
+  const formRef = useRef(null);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    fetchCourse();
+  }, []);
 
-  function handleSubmit(event) {
-    event.preventDefualt();
-    axios.post("http://localhost:4000/courses", inputData)
-    .then(res => {
-      alert("Data added Succesfully!");
-      navigate('/admin/courselist');
-    }).catch (err => console.log(err))
+  const fetchCourse = async () => {
+    const result = await axios.get("http://localhost:4000/courses");
+    setCourses(result.data.courses);
+  };
+
+  const updateCreateFormField = (e) => {
+    const { name, value } = e.target;
+
+    setCreateForm({
+      ...createForm,
+      [name]: value,
+    });
+  };
+
+  const createCourse = async (e) => {
+    e.preventDefault();
+    const res = await axios.post("http://localhost:4000/courses", createForm)
+
+    //*setCourses([...courses, res.data.course])
+    console.log(res);
+
+    setCreateForm({coursename: " ",
+      price: " ",
+      description: " ",
+      coursesummary: " ",
+      courselearningtime: " ",
+      videofile: " ",
+      imagefile: " "})
+  };
+
+  const deletecourse = async (_id) => {
+    const res = await axios.delete(`http://localhost:4000/courses/${_id}`)
+    console.log(res)
+
+    const newCourses = [...courses].filter((course)=>{
+      return course._id !== _id;
+    });
+    setCourses(newCourses);
   }
 
 
+  const handleCreateCourseClick = () => {
+    if (formRef.current) {
+      formRef.current.requestSubmit(); // Trigger form submission
+    }
+  };
+
   return (
     <div>
-      <div className="mx-8 w-[1120px]  bg-white rounded-md border-2">
-        <div className=" mx-8 p-8">
-          <form onSubmit={handleSubmit}>
+      <NavbarAddCourse onCreateCourseClick={handleCreateCourseClick} />
+      <div className="mt-8 mx-8 w-[1120px] bg-white rounded-md border-2">
+        <div className="mx-8 p-8">
+          <form ref={formRef} onSubmit={createCourse}>
+            {/* Form fields */}
             <div className="w-[920px] h-[76px]">
               <label className="w-full h-[24px] text-black">
                 Course name *
               </label>
               <input
-                className="w-full h-[48px] bg-white  text-black border-2 rounded-md"
+                className="w-full h-[48px] bg-white text-black border-2 rounded-md"
                 placeholder="     Place Holder"
-                onChange={(e) =>
-                  setInputData({ ...inputData, coursename: e.target.value })
-                }
+                value={createForm.coursename}
+                name="coursename"
+                type="text"
+                onChange={updateCreateFormField}
               />
             </div>
-            <div className="w-[920px] h-[76px][] flex flex-row gap-8 mt-8 ">
+            <div className="w-[920px] h-[76px] flex flex-row gap-8 mt-8 ">
               <div className="w-[420px] h-[76px] ">
                 <label className="w-full h-[24px] text-black gap-4">
                   Price *
@@ -50,9 +97,10 @@ function AddCourseFrom() {
                 <input
                   className="w-full h-[48px] bg-white text-black border-2 rounded-md"
                   placeholder="       Place Holder"
-                  onChange={(e) =>
-                    setInputData({ ...inputData, price: e.target.value })
-                  }
+                  value={createForm.price}
+                  name="price"
+                  type="text"
+                  onChange={updateCreateFormField}
                 />
               </div>
               <div>
@@ -60,27 +108,26 @@ function AddCourseFrom() {
                   Total learning time *
                 </label>
                 <input
-                  className="w-full h-[48px] bg-white  text-black border-2 rounded-md"
+                  className="w-full h-[48px] bg-white text-black border-2 rounded-md"
                   placeholder="   Place Holder"
-                  onChange={(e) =>
-                    setInputData({
-                      ...inputData,
-                      courselearningtime: e.target.value,
-                    })
-                  }
+                  value={createForm.courselearningtime}
+                  name="courselearningtime"
+                  type="text"
+                  onChange={updateCreateFormField}
                 />
               </div>
             </div>
             <div className="w-[920px] h-[100px] gap-8 mt-8">
               <label className="w-full h-[24px] text-black">
-                Course summery *
+                Course summary *
               </label>
               <input
-                className="w-full h-[72px] bg-white  text-black border-2 rounded-md"
+                className="w-full h-[72px] bg-white text-black border-2 rounded-md"
                 placeholder="     Place Holder"
-                onChange={(e) =>
-                  setInputData({ ...inputData, coursesummary: e.target.value })
-                }
+                value={createForm.coursesummary}
+                name="coursesummary"
+                type="text"
+                onChange={updateCreateFormField}
               />
             </div>
 
@@ -88,12 +135,12 @@ function AddCourseFrom() {
               <label className="w-full h-[24px] text-black">
                 Course detail *
               </label>
-              <input
-                className="w-full h-[192px] bg-white  text-black border-2 rounded-md"
+              <textarea
+                className="w-full h-[192px] bg-white text-black border-2 rounded-md"
                 placeholder="     Place Holder"
-                onChange={(e) =>
-                  setInputData({ ...inputData, description: e.target.value })
-                }
+                value={createForm.description}
+                name="description"
+                onChange={updateCreateFormField}
               />
             </div>
 
@@ -102,21 +149,18 @@ function AddCourseFrom() {
                 Cover image *
               </label>
               <label
-                className="r w-[240PX] h-[240PX] px-4  bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
+                className="r w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
                 id="drop"
               >
                 <span>
-                  <img src={upload} />
+                  <img src={upload} alt="upload" />
                 </span>
                 <input
                   type="file"
-                  name="file_upload"
+                  name="imagefile"
                   className="hidden"
                   accept="image/png,image/jpeg"
                   id="input"
-                  onChange={(e) =>
-                    setInputData({ ...inputData, imagefile: e.target.value })
-                  }
                 ></input>
               </label>
             </div>
@@ -125,21 +169,18 @@ function AddCourseFrom() {
                 Video Trailer *
               </label>
               <label
-                className="r w-[240PX] h-[240PX] px-4  bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
+                className="r w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
                 id="drop"
               >
                 <span>
-                  <img src={upload} />
+                  <img src={upload} alt="upload" />
                 </span>
                 <input
                   type="file"
-                  name="file_upload"
+                  name="videofile"
                   className="hidden"
-                  accept="image/png,image/jpeg"
+                  accept="video/mp4"
                   id="input"
-                  onChange={(e) =>
-                    setInputData({ ...inputData, videofile: e.target.value })
-                  }
                 ></input>
               </label>
             </div>
@@ -148,24 +189,27 @@ function AddCourseFrom() {
                 Attach File (Optional) *
               </label>
               <label
-                className="r  w-[160px] h-[192px] px-4  bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
+                className="r w-[160px] h-[192px] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
                 id="drop"
               >
                 <span>
-                  <img src={upload} />
+                  <img src={upload} alt="upload" />
                 </span>
                 <input
                   type="file"
                   name="file_upload"
                   className="hidden"
-                  accept="image/png,image/jpeg"
+                  accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                   id="input"
                 ></input>
               </label>
             </div>
-            <button className="bg-black">Submit</button>
+            {/*<button type="submit" className="bg-black">
+              Submit
+            </button>*/}
           </form>
         </div>
+        <button onClick={() => deletecourse(courses._id)} className="bg-red-600">delete</button>
       </div>
       <AddCourseSubLessonTable />
     </div>

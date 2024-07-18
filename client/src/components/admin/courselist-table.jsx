@@ -5,24 +5,35 @@ import bin from "../../assets/image/Bin.png";
 import { Link } from "react-router-dom";
 
 function CourseListTable() {
-  const [users, setUsers] = useState([]);
+  const [courses, setCourses] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:4000/courses")
-      .then((res) => {
-        setUsers(res.data);
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the data!", error);
-      });
+    fetchCourses();
   }, []);
+
+  const fetchCourses = async () => {
+    try {
+      const res = await axios.get("http://localhost:4000/courses");
+      setCourses(res.data);
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+    }
+  };
+
+  const deleteCourse = async (id) => {
+    try {
+      await axios.delete(`http://localhost:4000/courses/${id}`);
+      setCourses(courses.filter((course) => course.courseid !== id));
+    } catch (error) {
+      console.error("Error deleting course:", error);
+    }
+  };
 
   return (
     <div className="m-10">
-      <table className=" text-black text-sm  ">
+      <table className="text-black text-sm">
         <thead className="w-[1120px] h-[41px] bg-slate-200 rounded-lg">
-          <tr className="">
+          <tr>
             <th className="w-[48px] text-left"></th>
             <th className="w-[96px] text-left">Image</th>
             <th className="w-[268px] text-left">Course name</th>
@@ -34,8 +45,8 @@ function CourseListTable() {
           </tr>
         </thead>
         <tbody>
-          {users.map((item, index) => (
-            <tr key={index} className="w-[1120px] h-[88px]">
+          {courses.map((item) => (
+            <tr key={item.courseid} className="w-[1120px] h-[88px]">
               <td className="w-[48px]">{item.courseid}</td>
               <td className="w-[96px]">
                 <img
@@ -50,14 +61,12 @@ function CourseListTable() {
               <td className="w-[188px] text-left"></td>
               <td className="w-[188px] text-left"></td>
               <td className="w-[120px] text-left">
-                <button>
-                  <Link to="">
-                    <img src={bin} />
-                  </Link>
+                <button onClick={() => deleteCourse(item.courseid)}>
+                  <img src={bin} alt="delete" />
                 </button>
                 <button>
-                  <Link to={`/admin/editcourse/${item.courseid}`}>
-                    <img src={edit} />
+                  <Link to={`/edit-course/${item.courseid}`}>
+                    <img src={edit} alt="edit" />
                   </Link>
                 </button>
               </td>
@@ -65,7 +74,6 @@ function CourseListTable() {
           ))}
         </tbody>
       </table>
-      <button>Create</button>
     </div>
   );
 }

@@ -292,7 +292,9 @@ courseRouter.post("/", async (req, res) => {
       return res.status(404).json({ error: "Course not found" });
     }*/
 
-    return res.status(201).json(result.rows[0]);
+    return res
+      .status(201)
+      .json({ message: "Created course successful", data: result.rows });
   } catch (error) {
     console.error("Database error:", error);
 
@@ -337,7 +339,7 @@ courseRouter.delete("/:id", async (req, res) => {
     }
 
     return res.status(200).json({
-      message: "Deleted course successfully"
+      message: "Deleted course successfully",
     });
   } catch (error) {
     console.error("Error deleting course:", error);
@@ -346,6 +348,5 @@ courseRouter.delete("/:id", async (req, res) => {
     });
   }
 });
-
 
 export default courseRouter;
