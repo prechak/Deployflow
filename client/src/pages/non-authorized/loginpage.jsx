@@ -24,17 +24,8 @@ function Login() {
     console.log("Password:", password);
     setState({ ...state, loading: true, error: "" });
     try {
-      const result = await axios.post(
-        "http://localhost:4000/users/login",
-        { email, password } // Pass email and password as object
-      );
-
-      const token = result.data.token;
-      localStorage.setItem("token", token);
-
-      const userDataFromToken = jwtDecode(token);
-      setState({ ...state, user: userDataFromToken });
-      navigate("/userhomepage");
+      const user = await login({ email, password });
+      setState({ ...state, loading: false, user });
     } catch (error) {
       setState({
         ...state,

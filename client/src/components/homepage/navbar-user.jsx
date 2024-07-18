@@ -11,9 +11,9 @@ import Usercourse from "../../pages/authorized/user-course";
 import { useAuth } from "../../contexts/authentication";
 import axios from "axios";
 
-function Navbarnonuser() {
+function NavbarUser() {
   const [isOpen, setIsOpen] = useState(false);
-  const [userData, setUserData] = useState([]);
+  const [userData, setUserData] = useState({});
   // const history = useHistory();
 
   const toggleMenu = () => {
@@ -26,10 +26,10 @@ function Navbarnonuser() {
   const getUserData = async () => {
     try {
       const result = await axios.get(
-        `http://localhost:4000/users/${userId.UserIdFromLocalStorage}`
+        `http://localhost:4000/profiles/${userId.UserIdFromLocalStorage}`
       );
       console.log(result.data);
-      setUserData(result.data.data);
+      setUserData(result.data);
     } catch (error) {
       console.error("Error Fetching", error);
     }
@@ -39,14 +39,17 @@ function Navbarnonuser() {
     getUserData();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setState({ ...state, user: null });
-  };
+  // const handleLogout = () => {
+  //   localStorage.removeItem("token");
+  //   setState({ ...state, user: null });
+  // };
 
   return (
     <div className="navbar z-40 relative">
-      <section className="navbar items-center sm:w-auto sm:h-[56px] sm:flex sm:flex-row sm:justify-between md:w-full md:h-[88px] md:flex md:flex-row md:justify-between xl:w-full xl:h-[88px] xl:flex xl:flex-row xl:justify-between" style={{ boxShadow: "4px 4px 24px 0px rgba(0, 0, 0, 0.08)" }}>
+      <section
+        className="navbar items-center sm:w-auto sm:h-[56px] sm:flex sm:flex-row sm:justify-between md:w-full md:h-[88px] md:flex md:flex-row md:justify-between xl:w-full xl:h-[88px] xl:flex xl:flex-row xl:justify-between"
+        style={{ boxShadow: "4px 4px 24px 0px rgba(0, 0, 0, 0.08)" }}
+      >
         <Link to="/userhomepage">
           <img
             src={logo}
@@ -54,17 +57,21 @@ function Navbarnonuser() {
             className="sm:pl-[16px] md:p-[100px] xl:p-[160px]"
           />
         </Link>
+
         <div className="menu flex items-center sm:mr-[16px] md:mr-[160px] xl:mr-[160px]">
-          <h1 className="sm:font-bold sm:text-sm sm:mx-[16px] sm:my-[16px] xl:font-bold xl:text-base sm:text-black cursor-pointer">
-            Our Courses
-          </h1>
+          <Link to="/courselist">
+            <h1 className="sm:font-bold sm:text-sm sm:mx-[16px] sm:my-[16px] xl:font-bold xl:text-base sm:text-black cursor-pointer">
+              Our Courses
+            </h1>
+          </Link>
+
           <div className="relative ml-4">
             <div
               className="flex items-center cursor-pointer"
               onClick={toggleMenu}
             >
               <img
-                src={userData.profilePicture}
+                src={userData.profilepicture}
                 alt="Profile"
                 className="w-8 h-8 rounded-full"
               />
@@ -98,7 +105,7 @@ function Navbarnonuser() {
                     Profile
                   </Link>
                   <Link
-                    to="/usercourse"
+                    to="/user/my_course"
                     className="flex px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex-row"
                     role="menuitem"
                   >
@@ -125,7 +132,9 @@ function Navbarnonuser() {
                     onClick={() => logout()}
                     className="flex px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex-row border-t-2 cursor-pointer"
                     role="menuitem"
-                    style={{ boxShadow: "4px 4px 24px 0px rgba(0, 0, 0, 0.08)" }}
+                    style={{
+                      boxShadow: "4px 4px 24px 0px rgba(0, 0, 0, 0.08)",
+                    }}
                   >
                     <img src={iconLogout} alt="" className="pr-[12px]" />
                     Log out
@@ -140,4 +149,4 @@ function Navbarnonuser() {
   );
 }
 
-export default Navbarnonuser;
+export default NavbarUser;
