@@ -2,7 +2,7 @@ function SubButton({ text, onClick }) {
     return (
       <button
         onClick={onClick}
-        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition w-[117px] h-[60px]"
+        className="border-[1px] rounded-[12px] shadow-md bg-Blue-500 text-white text-[16px] font-[700] w-[117px] h-[60px]"
       >
         {text}
       </button>

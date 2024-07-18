@@ -2,7 +2,7 @@ function CancelButton({ text, onClick }) {
     return (
       <button
         onClick={onClick}
-        className="border-2 border-orange-600 bg-white text-orange-600 px-4 py-2 rounded-md hover:bg-orange-600 transition w-[117px] h-[60px]"
+        className="border-[1px] rounded-[12px] shadow-md border-Orange-500 bg-white text-Orange-500 text-[16px] font-[700] w-[119px] h-[60px]"
       >
         {text}
       </button>

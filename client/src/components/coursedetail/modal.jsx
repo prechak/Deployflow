@@ -9,7 +9,7 @@ function Modal() {
   const postSubscribe = async () => {
     await axios.post(`http://localhost:4000/courses/${params.Id}/subscribe`),
       {};
-    navigate("/user/subscribe");
+    navigate(`/user/subscribe/coursedetail/${params.Id}`);
   };
   const handlePostSubscribe = (event) => {
     event.preventDefault();
@@ -43,9 +43,7 @@ function Modal() {
                 No, I don't
               </button>
               <button
-                onClick={() => {
-                  navigate(`/user/subscribe/coursedetail/${params.Id}`);
-                }}
+                onClick={handlePostSubscribe}
                 className="sm:w-[311px] sm:h-[56px] rounded-[12px] border-solid border-[1px] bg-Blue-500 text-white xl:text-[16px] xl:font-[700] xl:w-[250px] xl:h-[60px]"
               >
                 Yes, I want to subscribe

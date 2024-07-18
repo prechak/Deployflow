@@ -2,7 +2,7 @@ function OrageButton({ text, onClick }) {
   return (
     <button
       onClick={onClick}
-      className="border-2 border-orange-600 bg-white text-orange-600 px-4 py-2 rounded-md hover:bg-orange-100 w-[208px] h-[60px]"
+      className="border-[1px] border-Orange-500 shadow-md bg-white text-Orange-500 rounded-[12px] w-[208px] h-[60px] text-[16px] font-[700]"
     >
       {text}
     </button>
