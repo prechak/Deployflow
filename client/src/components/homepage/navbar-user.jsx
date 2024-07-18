@@ -44,16 +44,11 @@ function NavbarUser() {
   // };
 
   return (
-<<<<<<< HEAD
     <div className="navbar z-40 relative">
       <section
         className="navbar items-center sm:w-auto sm:h-[56px] sm:flex sm:flex-row sm:justify-between md:w-full md:h-[88px] md:flex md:flex-row md:justify-between xl:w-full xl:h-[88px] xl:flex xl:flex-row xl:justify-between"
         style={{ boxShadow: "4px 4px 24px 0px rgba(0, 0, 0, 0.08)" }}
       >
-=======
-    <div className="navbar z-40 relative shadow-lg">
-      <section className="navbar items-center sm:w-auto sm:h-[56px] sm:flex sm:flex-row sm:justify-between md:w-full md:h-[88px] md:flex md:flex-row md:justify-between xl:w-full xl:h-[88px] xl:flex xl:flex-row xl:justify-between">
->>>>>>> 1df31ca (commit before rebase)
         <Link to="/userhomepage">
           <img
             src={logo}
