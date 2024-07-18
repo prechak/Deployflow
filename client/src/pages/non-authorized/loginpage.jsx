@@ -22,34 +22,23 @@ function Login() {
     e.preventDefault();
     console.log("Email:", email);
     console.log("Password:", password);
+    setState({ ...state, loading: true, error: "" });
     try {
       //Validate password
-      if (password.length < 12) {
-        setState({
-          ...state,
-          error: "Password should be more than 12 or equal",
-        });
-      }
       if (password.length < 12) {
         return setState({
           ...state,
           error: "Password should be more than 12 or equal",
         });
       }
-
-      const result = await axios.post(
-        "http://localhost:4000/users/login",
-        { email, password } // Pass email and password as object
-      );
-
-      const token = result.data.token;
-      localStorage.setItem("token", token);
-
-      const userDataFromToken = jwtDecode(token);
-      setState({ ...state, user: userDataFromToken });
-      navigate("/");
+      const user = await login({ email, password });
+      setState({ ...state, loading: false, user });
     } catch (error) {
-      setState({ ...state, error: "Invalid password of email" });
+      setState({
+        ...state,
+        loading: false,
+        error: "Incorrect email or password",
+      });
     }
   };
 
@@ -132,14 +121,14 @@ function Login() {
             <path
               d="M13.843 1.99998L8.83754 20.6805"
               stroke="#2FAC61"
-              stroke-width="3"
-              stroke-linecap="round"
+              strokeWidth="3"
+              strokeLinecap="round"
             />
             <path
               d="M1.99986 8.83751L20.6804 13.8429"
               stroke="#2FAC61"
-              stroke-width="3"
-              stroke-linecap="round"
+              strokeWidth="3"
+              strokeLinecap="round"
             />
           </svg>
         </div>{" "}
@@ -155,7 +144,7 @@ function Login() {
                 <input
                   type="email"
                   id="email"
-                  className="border border-gray-300 text-gray-900 text-sm rounded-lg outline-Orange-500 block w-full p-3 "
+                  className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-3 "
                   required
                   placeholder="Enter Email"
                   onChange={(e) => {
@@ -173,7 +162,7 @@ function Login() {
                 <input
                   type="password"
                   id="password"
-                  className="border border-gray-300 text-gray-900 text-sm rounded-lg outline-Orange-500  block w-full p-3"
+                  className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500  block w-full p-3"
                   placeholder="Enter Password"
                   onChange={(e) => {
                     setPassword(e.target.value);
