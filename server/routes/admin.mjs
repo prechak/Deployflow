@@ -95,6 +95,117 @@ adminRouter.put("/course/:id", async (req, res) => {
   }
 });
 
+//*get lesson(modules)*//
+adminRouter.get("/lesson", async (req, res) => {
+  try {
+    const result = await connectionPool.query(
+      `SELECT * FROM modules `
+    );
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("Error occurred while fetching sublesson:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//*get sublesson all*//
+adminRouter.get("/sublesson", async (req, res) => {
+  try {
+    const result = await connectionPool.query(
+      `SELECT * FROM sublesson`
+    );
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("Error occurred while fetching sublesson:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//*get assignment all//
+adminRouter.get("/assignments", async (req, res) => {
+  try {
+    const result = await connectionPool.query(
+      `SELECT * FROM assignments`
+    );
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("Error occurred while fetching assignments:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//*post addsignments(add)*//
+adminRouter.post("/assignments", async (req, res) => {
+  const { 
+    coursename,
+    lesson,
+    subLesson,
+    assignmentDetails,
+    duration 
+  } = req.body;
+
+  if (
+    !coursename ||
+    !lesson ||
+    !subLesson ||
+    !assignmentDetails ||
+    !duration
+  ) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
+  try {
+    const result = await connectionPool.query(
+      `INSERT INTO assignments (course, lesson, sub_lesson, details, duration)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [
+        coursename,
+        lesson,
+        subLesson,
+        assignmentDetails,
+        duration]
+    );
+
+    res.status(201).json({ message: "create assignment success" });
+  } catch (error) {
+    console.error("Error occurred while saving the assignment:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//*get addsignments by id//
+adminRouter.get("/assignments/:id", async (req, res) => {
+  const assignmentid = req.params.id;
+  let result;
+  
+  try {
+    result = await connectionPool.query(
+      `SELECT * FROM assignments WHERE assignmentid = $1`,
+      [assignmentid]
+    );
+  } catch (error) {
+    console.error("Error occurred while fetching the assignment:", error);
+    return res.status(500).json({
+      message: "Server could not read assignments due to database connection error",
+    });
+  }
+
+  if (result.rows.length === 0) { 
+    return res.status(404).json({
+      message: "Assignment not found",
+    });
+  }
+
+  return res.status(200).json({
+    data: result.rows[0], 
+  });
+});
+
+
+
 
 
 export default adminRouter;

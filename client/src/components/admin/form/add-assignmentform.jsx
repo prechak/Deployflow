@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 function AddAssignmentForm() {
   const [courses, setCourses] = useState([]);
@@ -11,28 +12,45 @@ function AddAssignmentForm() {
   const [assignmentDuration, setAssignmentDuration] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    // ดึงข้อมูลคอร์สจากระบบ
-    fetchCourses();
-  }, []);
-
   const fetchCourses = async () => {
-    // ใช้ API หรือวิธีการดึงข้อมูลจากระบบ
-    const fetchedCourses = ["Course 1", "Course 2", "Course 3"]; // ตัวอย่างข้อมูล
-    setCourses(fetchedCourses);
+    try {
+      const result = await axios.get(`http://localhost:4000/courses`);
+      const courseNames = result.data.map(course => course.coursename);
+      setCourses(courseNames);
+      console.log("Courses:", result);
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+    }
   };
 
-  const fetchLessons = async (course) => {
-    // ใช้ API หรือวิธีการดึงข้อมูลจากระบบ
-    const fetchedLessons = ["Lesson 1", "Lesson 2", "Lesson 3"]; // ตัวอย่างข้อมูล
-    setLessons(fetchedLessons);
+  const fetchLessons = async () => {
+    try {
+      const result = await axios.get(`http://localhost:4000/admin/lesson`);
+      const moduleNames = result.data.map(lesson => lesson.modulename);
+      setLessons(moduleNames);
+      console.log("Lessons:", result);
+    } catch (error) {
+      console.error("Error fetching lessons:", error);
+    }
   };
 
-  const fetchSubLessons = async (lesson) => {
-    // ใช้ API หรือวิธีการดึงข้อมูลจากระบบ
-    const fetchedSubLessons = ["Sub-lesson 1", "Sub-lesson 2", "Sub-lesson 3"]; // ตัวอย่างข้อมูล
-    setSubLessons(fetchedSubLessons);
+  const fetchSubLessons = async () => {
+    try {
+      const result = await axios.get(`http://localhost:4000/admin/sublesson`);
+      const subLessonNames = result.data.map(sublesson => sublesson.sublessonname);
+      setSubLessons(subLessonNames);
+      console.log("SubLessons:", result);
+    } catch (error) {
+      console.error("Error fetching sublessons:", error);
+    }
   };
+
+  useEffect(() => {
+    fetchCourses();
+    fetchLessons();
+    fetchSubLessons();
+  }, []);
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -43,11 +61,11 @@ function AddAssignmentForm() {
       !assignmentDetail ||
       !assignmentDuration
     ) {
-      setErrorMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+      setErrorMessage("All fields are required");
       return;
     }
 
-    // บันทึกข้อมูล
+    
     const assignmentData = {
       course: selectedCourse,
       lesson: selectedLesson,
@@ -84,11 +102,12 @@ function AddAssignmentForm() {
               className="block appearance-none w-full border text-muted-foreground py-2 px-[20px] pr-8 rounded-lg cursor-pointer"
               onChange={(e) => {
                 setSelectedCourse(e.target.value);
-                fetchLessons(e.target.value);
+                setSelectedLesson("");
+                setSelectedSubLesson("");
               }}
               value={selectedCourse}
             >
-              <option value="">Placeholder</option>
+              <option value="">Select Coures Name</option>
               {courses.map((course, index) => (
                 <option key={index} value={course}>
                   {course}
@@ -187,10 +206,10 @@ function AddAssignmentForm() {
             <p className="font-normal text-base">Assignment *</p>
             <input
               type="text"
-              className="w-[920px] h-12 border-[1px] rounded-lg"
+              className="w-[920px] h-12 border-[1px] rounded-lg pl-3"
               onChange={(e) => setAssignmentDetail(e.target.value)}
               value={assignmentDetail}
-              placeholder=" พิมพ์ไรหน่อยไหมสู"
+              placeholder="AssignmentDetail"
             />
           </div>
           <div className="mt-10">
@@ -208,9 +227,9 @@ function AddAssignmentForm() {
                 value={assignmentDuration}
               >
                 <option value="">Placeholder</option>
-                <option value="2">2 days</option>
                 <option value="3">3 days</option>
                 <option value="5">5 days</option>
+                <option value="7">7 days</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-28 flex items-center px-2 text-muted-foreground">
                 <svg
