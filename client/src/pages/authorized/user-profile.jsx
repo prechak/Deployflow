@@ -209,7 +209,7 @@ function EditProfileForm() {
         className="flex flex-col md:flex-row justify-center items-center md:gap-[3rem] md:mr-[2rem] md:-ml-[8rem] mb-[14rem]"
         onSubmit={handleSubmit}
       >
-        <div className="py-4">
+        <div className="py-8">
           {avatarUrl ? (
             <div className="relative">
               <img
@@ -369,7 +369,7 @@ function EditProfileForm() {
       <Footer />
 
       {/* Background  */}
-      <div className="absolute right-0 top-52">
+      <div className="absolute right-0 top-52 -z-20">
         <svg
           width="61"
           height="74"
@@ -380,7 +380,7 @@ function EditProfileForm() {
           <circle cx="37" cy="37" r="37" fill="#C6DCFF" />
         </svg>
       </div>
-      <div className="absolute right-[-1rem] top-28 md:right-[9rem] md:top-[9rem]">
+      <div className="absolute right-[-1rem] top-28 md:right-[9rem] md:top-[9rem] -z-20">
         <svg
           width="51"
           height="51"
@@ -395,7 +395,7 @@ function EditProfileForm() {
           />
         </svg>
       </div>
-      <div className="absolute left-[-15px] top-28 md:left-[2rem] md:top-[12rem]">
+      <div className="absolute left-[-15px] top-28 md:left-[2rem] md:top-[12rem] -z-20">
         <svg
           width="27"
           height="27"
@@ -406,7 +406,7 @@ function EditProfileForm() {
           <circle cx="13.1741" cy="13.1741" r="13.1741" fill="#C6DCFF" />
         </svg>
       </div>
-      <div className="absolute left-6 top-20 md:left-[6rem] md:top-[8rem]">
+      <div className="absolute left-6 top-20 md:left-[6rem] md:top-[8rem] -z-20">
         <svg
           width="11"
           height="11"
