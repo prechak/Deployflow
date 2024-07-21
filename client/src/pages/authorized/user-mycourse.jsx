@@ -5,14 +5,36 @@ import UserProfileCard from "../../components/mycourses/user-profile-card";
 import Navbarnonuser from "../../components/homepage/navbar-user";
 import Footer from "../../components/homepage/footer";
 import axios from "axios";
+import { useAuth } from "../../contexts/authentication";
 
 function UserMycourse() {
+  const userId = useAuth();
   const [courses, setCourses] = useState([]);
+  const [userData, setUserData] = useState([]);
 
+  //============Get user data from auth context
+  const getUserData = async () => {
+    try {
+      const result = await axios.get(
+        `http://localhost:4000/profiles/${userId.UserIdFromLocalStorage}`
+      );
+      setUserData(result.data);
+    } catch (error) {
+      console.error("Error Fetching", error);
+    }
+  };
+
+  useEffect(() => {
+    getUserData();
+  }, []);
+
+  //=============Get courses
   const getAllCourses = async () => {
     try {
-      const result = await axios.get("http://localhost:4000/courses");
-      console.log(result);
+      const result = await axios.get(
+        `http://localhost:4000/courses/user/${userId.UserIdFromLocalStorage}/subscribed`
+      );
+      console.log(result.data);
       setCourses(result.data);
     } catch (error) {
       console.error("Error Fetching", error);

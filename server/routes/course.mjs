@@ -3,6 +3,7 @@ import connectionPool from "../utils/db.mjs";
 
 const courseRouter = Router();
 
+//============Get all courses
 courseRouter.get("/", async (req, res) => {
   let result;
   try {
@@ -15,7 +16,65 @@ courseRouter.get("/", async (req, res) => {
   }
 });
 
+//=============Get all user subscribed
+courseRouter.get("/user/:id/subscribed", async (req, res) => {
+  const { id } = req.params;
 
+  try {
+    const result = await connectionPool.query(
+      `SELECT courses.courseid, courses.coursename, courses.description, courses.coursesummary,
+      courses.courselearningtime, subscriptions.subscriptiondate, courses.imagefile
+      FROM courses
+      JOIN subscriptions ON subscriptions.courseid = courses.courseid
+      WHERE userid = $1
+      ORDER BY subscriptiondate ASC`,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "User were not subscribed to any course yet." });
+    }
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while fetching the profile" });
+  }
+});
+
+//=============Get all user subscribed
+courseRouter.get("/user/:id/subscribed", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await connectionPool.query(
+      `SELECT courses.courseid, courses.coursename, courses.description, courses.coursesummary,
+      courses.courselearningtime, subscriptions.subscriptiondate, courses.imagefile
+      FROM courses
+      JOIN subscriptions ON subscriptions.courseid = courses.courseid
+      WHERE userid = $1
+      ORDER BY subscriptiondate ASC`,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "User were not subscribed to any course yet." });
+    }
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while fetching the profile" });
+  }
+});
 
 courseRouter.post("/:userid/:id/subscribe", async (req, res) => {
   const subscribe = {
@@ -71,7 +130,7 @@ courseRouter.post("/:userid/:id/desire", async (req, res) => {
       [userId, courseId, desire.desiredate]
     );
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(400).json({
       message:
         "Server could not post desire because there are missing data from client",
