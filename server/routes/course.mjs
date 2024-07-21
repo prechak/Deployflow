@@ -40,9 +40,95 @@ courseRouter.get("/user/:id/subscribed", async (req, res) => {
     res.json(result.rows);
   } catch (error) {
     console.error(error);
+    res.status(500).json({ message: "An error occurred while fetching data" });
+  }
+});
+
+//===========Get only user inprogress
+courseRouter.get("/user/:id/inprogress", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await connectionPool.query(
+      `SELECT courses.courseid, courses.coursename, courses.description, courses.coursesummary,
+      courses.courselearningtime, subscriptions.subscriptiondate, subscriptions.status, courses.imagefile
+      FROM courses
+      JOIN subscriptions ON subscriptions.courseid = courses.courseid
+      WHERE userid = $1 AND subscriptions.status = 'inprogress'
+      ORDER BY subscriptiondate ASC`,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "User were not learning to any course yet." });
+    }
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
     res
       .status(500)
-      .json({ message: "An error occurred while fetching the profile" });
+      .json({ message: "An error occurred while fetching the data" });
+  }
+});
+
+//===========Get only user completed
+courseRouter.get("/user/:id/completed", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await connectionPool.query(
+      `SELECT courses.courseid, courses.coursename, courses.description, courses.coursesummary,
+      courses.courselearningtime, subscriptions.subscriptiondate, subscriptions.status, courses.imagefile
+      FROM courses
+      JOIN subscriptions ON subscriptions.courseid = courses.courseid
+      WHERE userid = $1 AND subscriptions.status = 'completed'
+      ORDER BY subscriptiondate ASC`,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "User were not completed to any course yet." });
+    }
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while fetching the data" });
+  }
+});
+
+//============Count inprogress and completed course each user
+courseRouter.get("/user/:id/count", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await connectionPool.query(
+      `SELECT 
+      COUNT(CASE WHEN subscriptions.status = 'inprogress' THEN 1 END) AS inprogress_count,
+      COUNT(CASE WHEN subscriptions.status = 'completed' THEN 1 END) AS completed_count
+      FROM courses
+      JOIN subscriptions ON subscriptions.courseid = courses.courseid
+      WHERE userid = $1;`,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Count complete." });
+    }
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while fetching the data" });
   }
 });
 

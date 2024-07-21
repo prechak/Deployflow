@@ -7,16 +7,16 @@ import Footer from "../../components/homepage/footer";
 import axios from "axios";
 import { useAuth } from "../../contexts/authentication";
 
-function UserMycourse() {
+function UserMycourseCompleted() {
   const userId = useAuth();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  //=============Get all user subscribed courses
-  const getAllCourses = async () => {
+  //=============Get user completed courses
+  const getCompletedCourses = async () => {
     try {
       const result = await axios.get(
-        `http://localhost:4000/courses/user/${userId.UserIdFromLocalStorage}/subscribed`
+        `http://localhost:4000/courses/user/${userId.UserIdFromLocalStorage}/completed`
       );
       console.log(result.data);
       setCourses(result.data);
@@ -27,7 +27,7 @@ function UserMycourse() {
 
   useEffect(() => {
     const fetchData = async () => {
-      await getAllCourses();
+      await getCompletedCourses();
       setLoading(false);
     };
 
@@ -148,4 +148,4 @@ function UserMycourse() {
   );
 }
 
-export default UserMycourse;
+export default UserMycourseCompleted;

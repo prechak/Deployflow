@@ -1,7 +1,7 @@
 import { BookOpenIcon, ClockIcon } from "@heroicons/react/24/outline";
 import React from "react";
 
-function AllCourseCard(props) {
+function CourseCard(props) {
   return (
     <>
       <div className="z-0">
@@ -32,4 +32,4 @@ function AllCourseCard(props) {
   );
 }
 
-export default AllCourseCard;
+export default CourseCard;
