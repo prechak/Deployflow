@@ -149,22 +149,30 @@ function EditProfileForm() {
     }
   }
 
-  const validateField = (name, value) => {
+  const validateField = (text, value) => {
     let error = "";
-    if (name === "name") {
-      // Allow letters, spaces, and Unicode characters for name
-      const regex = /^[\p{L}\p{M}\s]+$/u;
-      if (!regex.test(value)) {
-        error = "Special character is not accept.";
+    if (text === "name") {
+      if (!value) {
+        error = "Name cannot be empty.";
+      } else {
+        // Allow letters, spaces, and Unicode characters for name
+        const regex = /^[\p{L}\p{M}\s]+$/u;
+        if (!regex.test(value)) {
+          error = "Special character is not accept.";
+        }
       }
-    } else if (name === "educationalBackground") {
-      // Allow letters, spaces, Unicode characters, periods, and commas for educational background
-      const regex = /^[\p{L}\s.,-]+$/u;
-      if (!regex.test(value)) {
-        error = "Special character is not accept.";
+    } else if (text === "educationalBackground") {
+      if (!value) {
+        error = "Educational background cannot be empty.";
+      } else {
+        // Allow letters, spaces, Unicode characters, periods, and commas for educational background
+        const regex = /^[\p{L}\s.,-]+$/u;
+        if (!regex.test(value)) {
+          error = "Special character is not accept.";
+        }
       }
     }
-    setErrors((prevErrors) => ({ ...prevErrors, [name]: error }));
+    setErrors((prevErrors) => ({ ...prevErrors, [text]: error }));
   };
 
   const handleChange = (e) => {
