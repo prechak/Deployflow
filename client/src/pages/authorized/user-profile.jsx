@@ -154,11 +154,17 @@ function EditProfileForm() {
 
   const validateField = (name, value) => {
     let error = "";
-    if (name === "name" || name === "educationalBackground") {
-      // Allow letters, spaces, and optionally specific characters
-      const regex = /^[a-zA-Z\s]+$/;
+    if (name === "name") {
+      // Allow letters, spaces, and Unicode characters for name
+      const regex = /^[\p{L}\p{M}\s]+$/u;
       if (!regex.test(value)) {
-        error = "Only letters and spaces are allowed.";
+        error = "Special character is not accept.";
+      }
+    } else if (name === "educationalBackground") {
+      // Allow letters, spaces, Unicode characters, periods, and commas for educational background
+      const regex = /^[\p{L}\s.,-]+$/u;
+      if (!regex.test(value)) {
+        error = "Special character is not accept.";
       }
     }
     setErrors((prevErrors) => ({ ...prevErrors, [name]: error }));
