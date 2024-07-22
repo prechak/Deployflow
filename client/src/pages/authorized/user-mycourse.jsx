@@ -70,9 +70,14 @@ function UserMycourse() {
                     coursesummary={course.coursesummary}
                     courselearningtime={course.courselearningtime}
                   />
-                );
-              })}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col justify-center items-center w-[343px] h-auto md:ml-[13rem] lg:md:ml-[3rem]">
+                <img src={emptyFolder} alt="No courses available" />
+                <p className="text-black text-2xl">This page is empty.</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
