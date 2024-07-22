@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/authentication";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 function UserProfileCard() {
   const [userData, setUserData] = useState({});
@@ -39,16 +40,18 @@ function UserProfileCard() {
 
   return (
     <div className="shadow-xl w-full h-[8rem] bg-white flex flex-col justify-center items-center pb-3  bottom-0 lg:left-[16rem] lg:top-0 lg:w-[357px] lg:h-[389px] lg:rounded-xl">
-      <div className="flex gap-3 pr-[110px] mr-8 lg:flex-col lg:justify-center lg:items-center lg:pr-0 lg:mr-0 lg:mb-5">
-        <img
-          className="object-cover w-[40px] h-[40px] border rounded-full m-4 lg:w-[120px] lg:h-[120px] lg:m-0"
-          src={userData.profilepicture}
-          alt="avatar"
-        />
-        <span className="text-Body1 mt-6 text-Blue-500 lg:text-Body1 lg:font-semibold lg:mt-1">
-          {userData.fullname}
-        </span>
-      </div>
+      <Link to="/user/profile">
+        <div className="flex gap-3 pr-[110px] mr-8 lg:flex-col lg:justify-center lg:items-center lg:pr-0 lg:mr-0 lg:mb-5">
+          <img
+            className="object-cover w-[40px] h-[40px] border rounded-full m-4 lg:w-[120px] lg:h-[120px] lg:m-0"
+            src={userData.profilepicture}
+            alt="avatar"
+          />
+          <span className="text-Body1 mt-6 text-Blue-500 lg:text-Body1 lg:font-semibold lg:mt-1">
+            {userData.fullname}
+          </span>
+        </div>
+      </Link>
 
       <div className="flex gap-3 justyfy-center items-center">
         <div className="bg-Gray-300 text-Gray-800 px-4 py-2 rounded-lg text-Body4 lg:h-[134px] lg:w-[143px] lg:text-Body2 relative ">
