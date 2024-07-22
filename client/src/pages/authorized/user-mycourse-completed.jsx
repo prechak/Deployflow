@@ -6,6 +6,7 @@ import NavbarUser from "../../components/homepage/navbar-user";
 import Footer from "../../components/homepage/footer";
 import axios from "axios";
 import { useAuth } from "../../contexts/authentication";
+import emptyFolder from "../../assets/image/empty-folder.png";
 
 function UserMycourseCompleted() {
   const userId = useAuth();
@@ -57,26 +58,30 @@ function UserMycourseCompleted() {
             </p>
             <Buttons />
           </div>
-
-          <div className="mx-auto py-2 lg:ml-[27rem] ">
-            <div className="flex flex-wrap gap-4 lg:max-w-[740px] justify-center lg:justify-start">
-              {courses.map((course) => {
-                return (
+          <div className="mx-auto py-2 lg:ml-[27rem]">
+            {courses.length > 0 ? (
+              <div className="flex flex-wrap gap-4 lg:max-w-[740px] justify-center lg:justify-start">
+                {courses.map((course) => (
                   <CourseCard
                     key={course.courseid}
+                    courseid={course.courseid}
                     photo={course.imagefile}
                     coursename={course.coursename}
                     description={course.description}
                     coursesummary={course.coursesummary}
                     courselearningtime={course.courselearningtime}
                   />
-                );
-              })}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col justify-center items-center w-[343px] h-auto md:ml-[13rem] lg:md:ml-[3rem]">
+                <img src={emptyFolder} alt="No courses available" />
+                <p className="text-black text-2xl">This page is empty.</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
-
       {/* User profile card for sm */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-10 bg-white">
         <UserProfileCard />

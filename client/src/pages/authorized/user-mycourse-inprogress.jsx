@@ -6,6 +6,7 @@ import NavbarUser from "../../components/homepage/navbar-user";
 import Footer from "../../components/homepage/footer";
 import axios from "axios";
 import { useAuth } from "../../contexts/authentication";
+import emptyFolder from "../../assets/image/empty-folder.png";
 
 function UserMycourseInprogress() {
   const userId = useAuth();
@@ -58,12 +59,13 @@ function UserMycourseInprogress() {
             <Buttons />
           </div>
 
-          <div className="mx-auto py-2 lg:ml-[27rem] ">
-            <div className="flex flex-wrap gap-4 lg:max-w-[740px] justify-center lg:justify-start">
-              {courses.map((course) => {
-                return (
+          <div className="mx-auto py-2 lg:ml-[27rem]">
+            {courses.length > 0 ? (
+              <div className="flex flex-wrap gap-4 lg:max-w-[740px] justify-center lg:justify-start">
+                {courses.map((course) => (
                   <CourseCard
                     key={course.courseid}
+                    courseid={course.courseid}
                     photo={course.imagefile}
                     coursename={course.coursename}
                     description={course.description}
