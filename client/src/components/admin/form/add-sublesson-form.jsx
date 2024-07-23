@@ -1,4 +1,4 @@
-import uploadvideo from "../../../assets/image/uploadvideo.png";
+import Uploadvideo from "../../../assets/image/Uploadvideo.png";
 import OrageButton from "../button/secondary-button";
 import drag1 from "../../../assets/icons/admin/drag1.png";
 import NavbarAddSubLesson from "../navbar/navbar-addsublesson";
@@ -97,7 +97,7 @@ function AddSubLessonFrom() {
                           Video *
                         </h1>
                         <div className="w-[160px] h-[160px] rounded-[8px] bg-Gray-200 flex items-center justify-center">
-                          <img src={uploadvideo} />
+                          <img src={Uploadvideo} />
                         </div>
                       </div>
                     </div>
