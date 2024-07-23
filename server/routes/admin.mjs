@@ -95,6 +95,127 @@ adminRouter.put("/course/:id", async (req, res) => {
   }
 });
 
+//*get lesson(modules)*//
+adminRouter.get("/lesson", async (req, res) => {
+  try {
+    const result = await connectionPool.query(
+      `SELECT * FROM modules `
+    );
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("Error occurred while fetching sublesson:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//*get sublesson all*//
+adminRouter.get("/sublesson", async (req, res) => {
+  try {
+    const result = await connectionPool.query(
+      `SELECT * FROM sublesson`
+    );
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("Error occurred while fetching sublesson:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//*get assignment all//
+adminRouter.get("/assignments", async (req, res) => {
+  try {
+    const result = await connectionPool.query(
+      `SELECT * FROM assignments`
+    );
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("Error occurred while fetching assignments:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//*post addsignments(add)*//
+adminRouter.post("/assignments", async (req, res) => {
+  const { 
+    course,
+    lesson,
+    sub_lesson,
+    title,
+    duedate
+  } = req.body;
+
+  if (!course || !lesson || !sub_lesson || !title) {
+    return res.status(400).json({ error: "All fields except due date are required" });
+  }
+
+  let finalDueDate;
+  if (!duedate) {
+    const today = new Date();
+    const defaultDurationDays = 7;
+    finalDueDate = new Date(today.setDate(today.getDate() + defaultDurationDays)).toISOString().split('T')[0];
+  } else {
+    const durationDays = parseInt(duedate.split(' ')[0]);
+    if (isNaN(durationDays)) {
+      return res.status(400).json({ error: "Invalid duration value" });
+    }
+    const today = new Date();
+    finalDueDate = new Date(today.setDate(today.getDate() + durationDays)).toISOString().split('T')[0];
+  }
+
+  try {
+    const result = await connectionPool.query(
+      `INSERT INTO assignments (submoduleid, lessonid, sublessonid, title, duedate)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [
+        course,
+        lesson,
+        sub_lesson,
+        title,
+        finalDueDate 
+      ]
+    );
+    res.status(201).json({ message: "Assignment created successfully" });
+  } catch (error) {
+    console.log(error);
+    console.error("Error occurred while saving the assignment:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+//*get addsignments by id//
+adminRouter.get("/assignments/:id", async (req, res) => {
+  const assignmentid = req.params.id;
+  let result;
+  
+  try {
+    result = await connectionPool.query(
+      `SELECT * FROM assignments WHERE assignmentid = $1`,
+      [assignmentid]
+    );
+  } catch (error) {
+    console.error("Error occurred while fetching the assignment:", error);
+    return res.status(500).json({
+      message: "Server could not read assignments due to database connection error",
+    });
+  }
+
+  if (result.rows.length === 0) { 
+    return res.status(404).json({
+      message: "Assignment not found",
+    });
+  }
+
+  return res.status(200).json({
+    data: result.rows[0], 
+  });
+});
+
+
+
 
 
 export default adminRouter;

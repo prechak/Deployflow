@@ -32,7 +32,7 @@ function Sidebar() {
                 alt="Assignment Icon"
                 className="w-6 h-6 mr-4"
               />
-              <Link to="/admin/assignment">Assignment</Link>
+              <Link to="">Assignment</Link>
             </button>
           </div>
           <div className="mt-20">
