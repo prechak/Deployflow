@@ -5,6 +5,9 @@ import axios from "axios";
 import NavbarAddCourse from "../navbar/navbar-addcourse"; // Adjust the import path as needed
 
 function AddCourseFrom() {
+
+
+
   const [courses, setCourses] = useState(" ");
   const [createForm, setCreateForm] = useState({
     coursename: " ",
@@ -38,36 +41,41 @@ function AddCourseFrom() {
 
   const createCourse = async (e) => {
     e.preventDefault();
-    const res = await axios.post("http://localhost:4000/courses", createForm)
+    const res = await axios.post("http://localhost:4000/courses", createForm);
 
     //*setCourses([...courses, res.data.course])
     console.log(res);
 
-    setCreateForm({coursename: " ",
+    setCreateForm({
+      coursename: " ",
       price: " ",
       description: " ",
       coursesummary: " ",
       courselearningtime: " ",
       videofile: " ",
-      imagefile: " "})
+      imagefile: " ",
+    });
   };
 
   const deletecourse = async (_id) => {
-    const res = await axios.delete(`http://localhost:4000/courses/${_id}`)
-    console.log(res)
+    const res = await axios.delete(`http://localhost:4000/courses/${_id}`);
+    console.log(res);
 
-    const newCourses = [...courses].filter((course)=>{
+    const newCourses = [...courses].filter((course) => {
       return course._id !== _id;
     });
     setCourses(newCourses);
-  }
-
+  };
 
   const handleCreateCourseClick = () => {
     if (formRef.current) {
       formRef.current.requestSubmit(); // Trigger form submission
     }
   };
+
+  
+
+  
 
   return (
     <div>
@@ -204,12 +212,8 @@ function AddCourseFrom() {
                 ></input>
               </label>
             </div>
-            {/*<button type="submit" className="bg-black">
-              Submit
-            </button>*/}
           </form>
         </div>
-        <button onClick={() => deletecourse(courses._id)} className="bg-red-600">delete</button>
       </div>
       <AddCourseSubLessonTable />
     </div>
