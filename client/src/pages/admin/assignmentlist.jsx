@@ -1,4 +1,3 @@
-
 import AssignmentListTable from "../../components/admin/assignmentlist-table";
 import NavbarAssignmentList from "../../components/admin/navbar/navbar-assignmentlist";
 import Sidebar from "../../components/admin/sidebar";
@@ -14,7 +13,7 @@ function AssignmentListAdmin() {
         </div>
         <div className="p-4">{<Outlet />}</div>
         <main className="p-4">
-            <AssignmentListTable />
+          <AssignmentListTable />
         </main>
       </div>
     </div>
