@@ -12,7 +12,6 @@ function AddCourseAdmin() {
         <div className=" flex flex-col w-full">
           <main className="flex-1">
             <Outlet />
-
             <AddCourseForm />
           </main>
         </div>
