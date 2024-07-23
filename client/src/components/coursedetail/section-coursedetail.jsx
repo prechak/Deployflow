@@ -4,9 +4,11 @@ import React, { useState, useEffect } from "react";
 import modal_vector from "../../assets/icons/coursedetail/modal_vector.png";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../../contexts/authentication";
 
 function SectionCourseDetail() {
   const navigate = useNavigate();
+  const userId = useAuth();
   const [modal, setModal] = useState(false);
   const [coursedetail, setCoursedetail] = useState({});
   const params = useParams();
@@ -21,7 +23,10 @@ function SectionCourseDetail() {
   }, []);
 
   const postDesireCourse = async () => {
-    await axios.post(`http://localhost:4000/courses/${params.Id}/desire`), {};
+    await axios.post(
+      `http://localhost:4000/courses/${userId.UserIdFromLocalStorage}/${params.Id}/desire`
+    ),
+      {};
     navigate("/user/desire");
   };
   const handlePostDesire = (event) => {
@@ -30,7 +35,9 @@ function SectionCourseDetail() {
   };
 
   const postSubscribe = async () => {
-    await axios.post(`http://localhost:4000/courses/${params.Id}/subscribe`),
+    await axios.post(
+      `http://localhost:4000/courses/${userId.UserIdFromLocalStorage}/${params.Id}/subscribe`
+    ),
       {};
     navigate(`/user/subscribe/coursedetail/${params.Id}`);
   };
@@ -70,7 +77,11 @@ function SectionCourseDetail() {
 
   return (
     <div>
-      <section className={`h-fit flex flex-row pt-[16px] pl-[16px] pr-[16px] xl:pl-[144px] ${modal ? "bg-gray-300 bg-opacity-50" : "opacity-100 bg-white"} `}>
+      <section
+        className={`h-fit flex flex-row pt-[16px] pl-[16px] pr-[16px] xl:pl-[144px] ${
+          modal ? "bg-gray-300 bg-opacity-50" : "opacity-100 bg-white"
+        } `}
+      >
         <div className={`${modal ? "opacity-25" : "opacity-100"}`}>
           <header className="w-[100%] h-[261.5px] md:h-[450px] xl:h-[500px] flex justify-center xl:justify-start xl:w-[739px]">
             <div className="flex flex-col">

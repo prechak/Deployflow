@@ -47,7 +47,6 @@ adminRouter.post("/login", [adminLoginValidation], async (req, res) => {
   }
 });
 
-
 //*edit course*//
 
 adminRouter.put("/course/:id", async (req, res) => {
@@ -217,5 +216,40 @@ adminRouter.get("/assignments/:id", async (req, res) => {
 
 
 
+//addLesson and sublesson
+adminRouter.post("/:courseid/lesson", async (req, res) => {
+  const lesson = {
+    ...req.body,
+    sublessondate: new Date(),
+  };
+  const courseId = req.params.courseid;
+  try {
+    await connectionPool.query(
+      `
+      with lesson as (
+      insert into modules (courseid, modulename) values ($1,$2) 
+      returning *)
+      insert into sublesson (moduleid, sublessonname, videofile, sublessondate)
+      select lesson.moduleid, $3, $4, $5 from lesson
+      `,
+      [
+        courseId,
+        lesson.modulename,
+        lesson.sublessonname,
+        lesson.videofile,
+        lesson.sublessondate,
+      ]
+    );
+    return res.status(201).json({
+      message: "Lesson created successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      message:
+        "Server could not created lesson because there are missing data from client",
+    });
+  }
+});
 
 export default adminRouter;

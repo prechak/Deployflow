@@ -1,4 +1,4 @@
-import upload from "../../../assets/image/upload.png";
+import uploadvideo from "../../../assets/image/uploadvideo.png";
 import OrageButton from "../button/secondary-button";
 import drag1 from "../../../assets/icons/admin/drag1.png";
 import { useRef, useState } from "react";
@@ -9,11 +9,13 @@ function EditSubLessonFrom() {
     { id: 2, name: "Max Walters", content: "contentstate2" },
     { id: 3, name: "Adam Smith", content: "contentstate3" },
     { id: 4, name: "Tom Johnson", content: "contentstate4" },
+    { id: 5, name: "Tom Johnson", content: "contentstate5" },
   ]);
   const dragItem = useRef(0);
   const draggedOverItem = useRef(0);
   const handleSort = () => {
     const itemClone = [...people];
+    console.log(itemClone)
     const temp = itemClone[dragItem.current];
     itemClone[dragItem.current] = itemClone[draggedOverItem.current];
     itemClone[draggedOverItem.current] = temp;
@@ -72,7 +74,7 @@ function EditSubLessonFrom() {
                         Video *
                       </h1>
                       <div className="w-[160px] h-[160px] rounded-[8px] bg-Gray-200 flex items-center justify-center">
-                        <img src={upload} />
+                        <img src={uploadvideo} />
                       </div>
                     </div>
                   </div>

@@ -16,7 +16,6 @@ function EditSubLesson() {
             <EditSubLessonFrom />
             <h1 className="ml-[1050px] mt-[80px] mb-[60px] text-Blue-500 font-[700] text-[16px]">delete lesson</h1>
         </main>
-        
       </div>
     </div>
   );

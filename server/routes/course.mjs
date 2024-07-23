@@ -15,40 +15,20 @@ courseRouter.get("/", async (req, res) => {
   }
 });
 
-courseRouter.post("/:id/desire", async (req, res) => {
-  const desire = {
-    ...req.body,
-    desiredate: new Date(),
-  };
-  const courseId = req.params.id;
-  try {
-    await connectionPool.query(
-      `insert into desirecourses (courseid, desiredate)
-      values ($1,$2)`,
-      [courseId, desire.desiredate]
-    );
-  } catch {
-    return res.status(400).json({
-      message:
-        "Server could not post because there are missing data from client",
-    });
-  }
-  return res.status(201).json({
-    message: "Desire created successfully",
-  });
-});
 
-courseRouter.post("/:id/subscribe", async (req, res) => {
+
+courseRouter.post("/:userid/:id/subscribe", async (req, res) => {
   const subscribe = {
     ...req.body,
     subscriptiondate: new Date(),
   };
   const courseId = req.params.id;
+  const userId = req.params.userid;
   try {
     await connectionPool.query(
-      `insert into subscriptions (courseid, subscriptiondate)
-      values ($1, $2)`,
-      [courseId, subscribe.subscriptiondate]
+      `insert into subscriptions (userid, courseid, subscriptiondate)
+      values ($1, $2, $3)`,
+      [userId, courseId, subscribe.subscriptiondate]
     );
   } catch {
     return res.status(400).json({
@@ -75,6 +55,31 @@ courseRouter.get("/desire", async (req, res) => {
   } catch {
     res.status(500).json({ message: `Internal server error` });
   }
+});
+
+courseRouter.post("/:userid/:id/desire", async (req, res) => {
+  const desire = {
+    ...req.body,
+    desiredate: new Date(),
+  };
+  const courseId = req.params.id;
+  const userId = req.params.userid;
+  try {
+    await connectionPool.query(
+      `insert into desirecourses (userid, courseid, desiredate)
+      values ($1, $2, $3)`,
+      [userId, courseId, desire.desiredate]
+    );
+  } catch (error) {
+    console.log(error)
+    return res.status(400).json({
+      message:
+        "Server could not post desire because there are missing data from client",
+    });
+  }
+  return res.status(201).json({
+    message: "Desire created successfully",
+  });
 });
 
 courseRouter.get("/:id", async (req, res) => {

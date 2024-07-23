@@ -1,5 +1,5 @@
 import upload from "../../../assets/image/upload.png";
-import Uplaodvideo from "../../../assets/image/Uploadvideo.png";
+import uploadvideo from "../../../assets/image/uploadvideo.png";
 import UploadPic from "../../../assets/image/UplaodPic.png";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -137,7 +137,7 @@ function EditCourseFrom() {
               id="drop"
             >
               <span>
-                <img src={Uplaodvideo} />
+                <img src={uploadvideo} />
               </span>
               <input
                 type="file"

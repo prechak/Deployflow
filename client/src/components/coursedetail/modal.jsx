@@ -1,13 +1,14 @@
 import modal_vector from "../../assets/icons/coursedetail/modal_vector.png";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../../contexts/authentication";
 
 function Modal() {
   const navigate = useNavigate();
   const params = useParams();
-
+  const userId = useAuth();
   const postSubscribe = async () => {
-    await axios.post(`http://localhost:4000/courses/${params.Id}/subscribe`),
+    await axios.post(`http://localhost:4000/courses/${userId.UserIdFromLocalStorage}/${params.Id}/subscribe`),
       {};
     navigate(`/user/subscribe/coursedetail/${params.Id}`);
   };
