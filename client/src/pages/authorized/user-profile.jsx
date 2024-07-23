@@ -43,10 +43,6 @@ function EditProfileForm() {
         avatarUrl: result.data.profilepicture || "",
       }));
       setAvatarUrl(result.data.profilepicture || "");
-
-      if (result.data.avatarUrl) {
-        downloadImage(result.data.avatarUrl);
-      }
     } catch (error) {
       console.error("Error Fetching", error);
     }
@@ -55,21 +51,6 @@ function EditProfileForm() {
   useEffect(() => {
     getUserData();
   }, []);
-
-  async function downloadImage(path) {
-    try {
-      const { data, error } = await supabase.storage
-        .from("avatars")
-        .download(path);
-      if (error) {
-        throw error;
-      }
-      const url = URL.createObjectURL(data);
-      setAvatarUrl(url);
-    } catch (error) {
-      console.log("Error downloading image: ", error.message);
-    }
-  }
 
   async function uploadAvatar(event) {
     try {
@@ -101,16 +82,9 @@ function EditProfileForm() {
         throw uploadError;
       }
 
-      const { publicURL, error: urlError } = supabase.storage
-        .from("avatars")
-        .getPublicUrl(filePath);
-
-      if (urlError) {
-        throw urlError;
-      }
-
       const profileUrl = supabase.storage.from("avatars").getPublicUrl(filePath)
         .data.publicUrl;
+      console.log(profileUrl);
       setAvatarUrl(profileUrl);
 
       setFormData((prevData) => ({ ...prevData, avatarUrl: profileUrl }));
