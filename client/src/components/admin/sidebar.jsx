@@ -40,45 +40,19 @@ function Sidebar() {
                 alt="Assignment Icon"
                 className="w-6 h-6 mr-4"
               />
-              <Link to="">Assignment</Link>
+              <Link to="/admin/assignmentlist">Assignment</Link>
             </button>
+            <div className="mt-20">
+              <button
+                onClick={handleLogout}
+                className="w-full h-[56px] pl-8 flex items-center font-small text-base md:text-sm lg:text-sm xl:text-sm text-left text-slate-500 hover:bg-gray-200"
+              >
+                <img src={logout} alt="Logout Icon" className="w-6 h-6 mr-4" />
+                Log out
+              </button>
+            </div>
           </div>
-          <div className="mt-20">
-            <button
-              onClick={handleLogoutClick}
-              className="w-full h-[56px] pl-8 flex items-center font-small text-base md:text-sm lg:text-sm xl:text-sm text-left text-slate-500 hover:bg-gray-200"
-            >
-              <img src={logout} alt="Logout Icon" className="w-6 h-6 mr-4" />
-              Log out
-            </button>
-          </div>
         </div>
-        <div className="mt-20 h-[540px] flex flex-col items-start justify-start">
-          <button className="w-full h-[56px] pl-8 flex items-center font-small text-base md:text-sm lg:text-sm xl:text-sm text-left text-slate-500 hover:bg-gray-200">
-            <img src={course} alt="Course Icon" className="w-6 h-6 mr-4" />
-            <Link to="/admin/courselist">Course</Link>
-          </button>
-          <button className="w-full h-[56px] pl-8 flex items-center font-small text-base md:text-sm lg:text-sm xl:text-sm text-left text-slate-500 hover:bg-gray-200">
-            <img
-              src={assingment}
-              alt="Assignment Icon"
-              className="w-6 h-6 mr-4"
-            />
-            <Link to="/admin/assignmentlist">Assignment</Link>
-          </button>
-        </div>
-        <div className="mt-20">
-          <button
-            onClick={handleLogout}
-            className="w-full h-[56px] pl-8 flex items-center font-small text-base md:text-sm lg:text-sm xl:text-sm text-left text-slate-500 hover:bg-gray-200"
-          >
-            <img src={logout} alt="Logout Icon" className="w-6 h-6 mr-4" />
-            Log out
-          </button>
-        </div>
-      </div>
-      <div className="flex-1">
-        <div className="bg-white"></div>
       </div>
     </div>
   );
