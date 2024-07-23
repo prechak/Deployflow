@@ -140,41 +140,51 @@ adminRouter.get("/assignments", async (req, res) => {
 //*post addsignments(add)*//
 adminRouter.post("/assignments", async (req, res) => {
   const { 
-    coursename,
+    course,
     lesson,
-    subLesson,
-    assignmentDetails,
-    duration 
+    sub_lesson,
+    title,
+    duedate
   } = req.body;
 
-  if (
-    !coursename ||
-    !lesson ||
-    !subLesson ||
-    !assignmentDetails ||
-    !duration
-  ) {
-    return res.status(400).json({ error: "All fields are required" });
+  if (!course || !lesson || !sub_lesson || !title) {
+    return res.status(400).json({ error: "All fields except due date are required" });
+  }
+
+  let finalDueDate;
+  if (!duedate) {
+    const today = new Date();
+    const defaultDurationDays = 7;
+    finalDueDate = new Date(today.setDate(today.getDate() + defaultDurationDays)).toISOString().split('T')[0];
+  } else {
+    const durationDays = parseInt(duedate.split(' ')[0]);
+    if (isNaN(durationDays)) {
+      return res.status(400).json({ error: "Invalid duration value" });
+    }
+    const today = new Date();
+    finalDueDate = new Date(today.setDate(today.getDate() + durationDays)).toISOString().split('T')[0];
   }
 
   try {
     const result = await connectionPool.query(
-      `INSERT INTO assignments (course, lesson, sub_lesson, details, duration)
+      `INSERT INTO assignments (submoduleid, lessonid, sublessonid, title, duedate)
        VALUES ($1, $2, $3, $4, $5)`,
       [
-        coursename,
+        course,
         lesson,
-        subLesson,
-        assignmentDetails,
-        duration]
+        sub_lesson,
+        title,
+        finalDueDate 
+      ]
     );
-
-    res.status(201).json({ message: "create assignment success" });
+    res.status(201).json({ message: "Assignment created successfully" });
   } catch (error) {
+    console.log(error);
     console.error("Error occurred while saving the assignment:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 //*get addsignments by id//
 adminRouter.get("/assignments/:id", async (req, res) => {

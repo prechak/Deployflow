@@ -10,7 +10,7 @@ function Addassignment() {
       <Sidebar />
       <div className="flex-1">
         <div>
-            <NavbarAddassignment />
+            {/* <NavbarAddassignment /> */}
         </div>
           <div>
             <AddAssignmentForm/>

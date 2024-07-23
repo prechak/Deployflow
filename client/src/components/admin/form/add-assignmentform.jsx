@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import SubButton from "../button/sub-button";
+import CancelButton from "../button/cancel-button";
 
 function AddAssignmentForm() {
   const [courses, setCourses] = useState([]);
@@ -15,9 +18,7 @@ function AddAssignmentForm() {
   const fetchCourses = async () => {
     try {
       const result = await axios.get(`http://localhost:4000/courses`);
-      const courseNames = result.data.map(course => course.coursename);
-      setCourses(courseNames);
-      console.log("Courses:", result);
+      setCourses(result.data);
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
@@ -26,9 +27,7 @@ function AddAssignmentForm() {
   const fetchLessons = async () => {
     try {
       const result = await axios.get(`http://localhost:4000/admin/lesson`);
-      const moduleNames = result.data.map(lesson => lesson.modulename);
-      setLessons(moduleNames);
-      console.log("Lessons:", result);
+      setLessons(result.data);
     } catch (error) {
       console.error("Error fetching lessons:", error);
     }
@@ -37,9 +36,7 @@ function AddAssignmentForm() {
   const fetchSubLessons = async () => {
     try {
       const result = await axios.get(`http://localhost:4000/admin/sublesson`);
-      const subLessonNames = result.data.map(sublesson => sublesson.sublessonname);
-      setSubLessons(subLessonNames);
-      console.log("SubLessons:", result);
+      setSubLessons(result.data);
     } catch (error) {
       console.error("Error fetching sublessons:", error);
     }
@@ -48,12 +45,15 @@ function AddAssignmentForm() {
   useEffect(() => {
     fetchCourses();
     fetchLessons();
-    fetchSubLessons();
   }, []);
-  
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    fetchSubLessons(selectedLesson);
+  }, [selectedLesson]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (
       !selectedCourse ||
       !selectedLesson ||
@@ -61,35 +61,65 @@ function AddAssignmentForm() {
       !assignmentDetail ||
       !assignmentDuration
     ) {
-      setErrorMessage("All fields are required");
+      setErrorMessage("All fields except duration are required");
       return;
     }
 
-    
-    const assignmentData = {
-      course: selectedCourse,
-      lesson: selectedLesson,
-      subLesson: selectedSubLesson,
-      detail: assignmentDetail,
-      duration: assignmentDuration,
-    };
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/admin/assignments",
+        {
+          course: selectedCourse,
+          lesson: selectedLesson,
+          sub_lesson: selectedSubLesson,
+          title: assignmentDetail,
+          duedate: assignmentDuration ? assignmentDuration : null,
+        }
+      );
 
-    console.log("Assignment Data:", assignmentData);
-    // ส่งข้อมูลไปยังระบบ
-    setErrorMessage("");
+      if (response.status === 201) {
+        alert("Assignment created successfully");
+        setSelectedCourse("");
+        setSelectedLesson("");
+        setSelectedSubLesson("");
+        setAssignmentDetail("");
+        setAssignmentDuration("");
+        setErrorMessage("");
+      } else {
+        setErrorMessage("Unexpected response status");
+      }
+    } catch (error) {
+      console.error(
+        "Error creating assignment:",
+        error.response ? error.response.data : error.message
+      );
+      setErrorMessage(
+        `Failed to create assignment: ${
+          error.response ? error.response.data.error : error.message
+        }`
+      );
+    }
   };
 
   return (
-    <div className="bg-gray-100 w-full h-full flex items-center justify-center">
+    <div className="bg-gray-100 w-full h-full flex flex-col items-center justify-center">
+      <nav className="w-full h-[92px] bg-white border-gray-400 border-l-0 border-[1px] flex justify-between items-center">
+        <span className="text-black font-medium text-2xl pl-10">
+          Add Assignment
+        </span>
+        <div className="flex gap-4 pr-10">
+          <Link to="/admin/courselist">
+            <CancelButton text="Cancel" />
+          </Link>
+          <SubButton text="Create" onClick={handleSubmit} />
+        </div>
+      </nav>
+
       <form
-        action=""
         className="w-[1120px] h-[634px] my-10 mx-10 rounded-2xl border-2 bg-white text-black"
         onSubmit={handleSubmit}
       >
-        <div
-          id="input1"
-          className="w-[440px] h-[76px] mt-10 ml-[100px] flex flex-col"
-        >
+        <div className="w-[440px] h-[76px] mt-10 ml-[100px] flex flex-col">
           <label
             htmlFor="courseSelect"
             className="text-black text-base font-normal"
@@ -99,6 +129,7 @@ function AddAssignmentForm() {
           </label>
           <div className="relative mt-1">
             <select
+              id="courseSelect"
               className="block appearance-none w-full border text-muted-foreground py-2 px-[20px] pr-8 rounded-lg cursor-pointer"
               onChange={(e) => {
                 setSelectedCourse(e.target.value);
@@ -107,10 +138,10 @@ function AddAssignmentForm() {
               }}
               value={selectedCourse}
             >
-              <option value="">Select Coures Name</option>
-              {courses.map((course, index) => (
-                <option key={index} value={course}>
-                  {course}
+              <option value="">Select Course Name</option>
+              {courses.map((course) => (
+                <option key={course.courseid} value={course.courseid}>
+                  {course.coursename}
                 </option>
               ))}
             </select>
@@ -137,17 +168,15 @@ function AddAssignmentForm() {
             </label>
             <div className="relative mt-1">
               <select
+                id="lessonSelect"
                 className="block appearance-none w-full border text-muted-foreground py-2 px-[20px] pr-8 rounded-lg cursor-pointer"
-                onChange={(e) => {
-                  setSelectedLesson(e.target.value);
-                  fetchSubLessons(e.target.value);
-                }}
+                onChange={(e) => setSelectedLesson(e.target.value)}
                 value={selectedLesson}
               >
-                <option value="">Placeholder</option>
-                {lessons.map((lesson, index) => (
-                  <option key={index} value={lesson}>
-                    {lesson}
+                <option value="">Select Lesson</option>
+                {lessons.map((lesson) => (
+                  <option key={lesson.moduleid} value={lesson.moduleid}>
+                    {lesson.modulename}
                   </option>
                 ))}
               </select>
@@ -169,21 +198,26 @@ function AddAssignmentForm() {
               className="text-black text-base font-normal"
               style={{ fontSize: "16px", fontWeight: 600, lineHeight: "24px" }}
             >
-              Sub-lesson
+              Sub-Lesson
             </label>
             <div className="relative mt-1">
               <select
+                id="subLessonSelect"
                 className="block appearance-none w-full border text-muted-foreground py-2 px-[20px] pr-8 rounded-lg cursor-pointer"
                 onChange={(e) => setSelectedSubLesson(e.target.value)}
                 value={selectedSubLesson}
               >
-                <option value="">Placeholder</option>
-                {subLessons.map((subLesson, index) => (
-                  <option key={index} value={subLesson}>
-                    {subLesson}
+                <option value="">Select Sub-Lesson</option>
+                {subLessons.map((subLesson) => (
+                  <option
+                    key={subLesson.sublessonid}
+                    value={subLesson.sublessonid}
+                  >
+                    {subLesson.sublessonname}
                   </option>
                 ))}
               </select>
+
               <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center px-2 text-muted-foreground">
                 <svg
                   className="fill-current h-4 w-4"
@@ -196,12 +230,11 @@ function AddAssignmentForm() {
             </div>
           </div>
         </div>
-        <div className="w-[920px] border-[1px] border-gray-400 mt-10 ml-[100px]">
-          {" "}
-        </div>
+
+        <div className="w-[920px] border-[1px] border-gray-400 mt-10 ml-[100px]" />
 
         <section id="assignment-detail" className="ml-[100px] ">
-          <h1 className="font-semibold text-xl mt-10">Assignment detail</h1>
+          <h1 className="font-semibold text-xl mt-10">Assignment Detail</h1>
           <div className="mt-10">
             <p className="font-normal text-base">Assignment *</p>
             <input
@@ -209,7 +242,7 @@ function AddAssignmentForm() {
               className="w-[920px] h-12 border-[1px] rounded-lg pl-3"
               onChange={(e) => setAssignmentDetail(e.target.value)}
               value={assignmentDetail}
-              placeholder="AssignmentDetail"
+              placeholder="Enter assignment detail"
             />
           </div>
           <div className="mt-10">
@@ -218,20 +251,21 @@ function AddAssignmentForm() {
               className="text-black text-base font-normal"
               style={{ fontSize: "16px", fontWeight: 600, lineHeight: "24px" }}
             >
-              Sub-Duration of assignment (day)
+              Duration of Assignment (days)
             </label>
             <div className="relative mt-1">
               <select
+                id="durationSelect"
                 className="block appearance-none w-[920px] border text-muted-foreground py-2 px-[20px] pr-8 rounded-lg cursor-pointer"
                 onChange={(e) => setAssignmentDuration(e.target.value)}
                 value={assignmentDuration}
               >
-                <option value="">Placeholder</option>
-                <option value="3">3 days</option>
-                <option value="5">5 days</option>
-                <option value="7">7 days</option>
+                <option value="">Select Day</option>
+                <option value="3 days">3 days</option>
+                <option value="5 days">5 days</option>
+                <option value="7 days">7 days</option>
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-28 flex items-center px-2 text-muted-foreground">
+              <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center px-2 text-muted-foreground">
                 <svg
                   className="fill-current h-4 w-4"
                   xmlns="http://www.w3.org/2000/svg"
@@ -243,6 +277,10 @@ function AddAssignmentForm() {
             </div>
           </div>
         </section>
+
+        {errorMessage && (
+          <p className="text-red-500 text-center mt-4">{errorMessage}</p>
+        )}
       </form>
     </div>
   );

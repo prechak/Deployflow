@@ -5,12 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 function NavbarAddAssignment() {
- const navigate = useNavigate();
-
- const handleAddAssignment = () => {
-    navigate("");
-  };
-
   return (
     <div className="w-full">
       <nav className="w-full h-[92px] bg-white border-gray-400 border-l-0 border-[1px] flex justify-between items-center">
@@ -21,7 +15,7 @@ function NavbarAddAssignment() {
         <Link to="/admin/courselist">
           <CancelButton text="Cancel" />
         </Link>
-          <SubButton text="Create" onClick={handleAddAssignment}/>
+          <SubButton text="Create"/>
         </div>
       </nav>
     </div>
