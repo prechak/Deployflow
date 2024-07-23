@@ -349,4 +349,51 @@ courseRouter.delete("/:id", async (req, res) => {
   }
 });
 
+/*Edit course*/
+
+courseRouter.put("/:id", async (req, res) => {
+  const courseIdFromClient = req.params.id;
+  const { coursename, description, price, coursesummary, courselearningtime } =
+    req.body;
+
+  if (
+    !coursename ||
+    !description ||
+    !price ||
+    !coursesummary ||
+    !courselearningtime
+  ) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
+  try {
+    const result = await connectionPool.query(
+      `UPDATE courses
+       SET coursename = $2, 
+           description = $3, 
+           price = $4, 
+           coursesummary = $5,
+           courselearningtime = $6
+       WHERE courseid = $1`,
+      [
+        courseIdFromClient,
+        coursename,
+        description,
+        price,
+        coursesummary,
+        courselearningtime,
+      ]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    res.status(200).json({ message: "Course updated successfully" });
+  } catch (error) {
+    console.error("Database query error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 export default courseRouter;
