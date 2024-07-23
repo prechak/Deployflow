@@ -23,12 +23,13 @@ function SectionDesireCourses() {
         </h1>
       </div>
       <main className="flex flex-col items-center">
-        <section className="flex flex-row items-center justify-center gap-[32px] sm:mb-[50px] xl:flex-row xl:w-[1440px] flex-wrap p-[16px]">
+        <section className="flex flex-row items-center justify-center gap-[32px] sm:mb-[50px] xl:flex-row xl:w-[1440px] flex-wrap p-[16px] ">
           {desireCourse.map((item, index) => {
             return (
               <article
                 key={index}
-                className="sm:w-[343px] sm:h-[431px] rounded-[8px] shadow-lg xl:h-[475px]"
+                className="sm:w-[343px] sm:h-[431px] rounded-[8px] shadow-lg xl:h-[475px] transition-transform transform hover:scale-105 hover:shadow-2xl 
+"
               >
                 <button
                   onClick={() => {

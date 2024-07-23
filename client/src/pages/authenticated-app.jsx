@@ -11,6 +11,7 @@ import UserCoursedetail from "./authorized/user-coursedetail";
 import UserProfile from "./authorized/user-profile";
 import UserDesireCourses from "./authorized/user-desirecourse";
 import Course from "../components/course/courselist";
+import CourselistUser from "../components/course/courselist-user";
 
 function AuthenticatedApp() {
   return (
@@ -18,6 +19,7 @@ function AuthenticatedApp() {
       <Routes>
         <Route path="/" element={<Userhomepage />} />
         <Route path="/courselist" element={<Course />} />
+        <Route path="/courselistuser" element={<CourselistUser/>} />
         <Route path="/user/coursedetail/:Id" element={<UserCoursedetail />} />
         <Route path="/user/subscribe/coursedetail/:Id" element={<SubscribeCourse />} />
         <Route
