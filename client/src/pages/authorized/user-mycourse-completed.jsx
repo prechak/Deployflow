@@ -8,16 +8,16 @@ import axios from "axios";
 import { useAuth } from "../../contexts/authentication";
 import emptyFolder from "../../assets/image/empty-folder.png";
 
-function UserMycourse() {
+function UserMycourseCompleted() {
   const userId = useAuth();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  //=============Get all user subscribed courses
-  const getAllCourses = async () => {
+  //=============Get user completed courses
+  const getCompletedCourses = async () => {
     try {
       const result = await axios.get(
-        `http://localhost:4000/courses/user/${userId.UserIdFromLocalStorage}/subscribed`
+        `http://localhost:4000/courses/user/${userId.UserIdFromLocalStorage}/completed`
       );
       console.log(result.data);
       setCourses(result.data);
@@ -28,7 +28,7 @@ function UserMycourse() {
 
   useEffect(() => {
     const fetchData = async () => {
-      await getAllCourses();
+      await getCompletedCourses();
       setLoading(false);
     };
 
@@ -58,7 +58,6 @@ function UserMycourse() {
             </p>
             <Buttons />
           </div>
-
           <div className="mx-auto py-2 lg:ml-[27rem]">
             {courses.length > 0 ? (
               <div className="flex flex-wrap gap-4 lg:max-w-[740px] justify-center lg:justify-start">
@@ -83,7 +82,6 @@ function UserMycourse() {
           </div>
         </div>
       </div>
-
       {/* User profile card for sm */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-10 bg-white">
         <UserProfileCard />
@@ -169,4 +167,4 @@ function UserMycourse() {
   );
 }
 
-export default UserMycourse;
+export default UserMycourseCompleted;
