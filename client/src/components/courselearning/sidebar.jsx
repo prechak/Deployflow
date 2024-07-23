@@ -13,6 +13,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import { linearProgressClasses } from "@mui/material/LinearProgress";
 import Navbarnonuser from "../homepage/navbar-user";
 import GeneralFooter from "../homepage/footer";
+import axios from "axios";
 
 // SVG Icons
 const NotPlayingIcon = () => (
@@ -108,6 +109,7 @@ const Sidebar = () => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isVideoEnded, setIsVideoEnded] = useState(false);
   const [progress, setProgress] = useState(50); // Initial progress value
+  const [sidebarData, setSidebarData] = useState([]);
 
   const handleToggle = (section) => {
     setOpenSections((prevOpenSections) => ({
@@ -135,6 +137,17 @@ const Sidebar = () => {
       videoElement.removeEventListener("ended", handleEnded);
     };
   }, []);
+
+  // Fetch Data
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get(
+        `http://localhost:4000/courseinfo?courseid=1`
+      );
+      const result = response.data;
+      console.log(result);
+    };
+  });
 
   return (
     <>
