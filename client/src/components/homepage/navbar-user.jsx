@@ -28,7 +28,6 @@ function NavbarUser() {
       const result = await axios.get(
         `http://localhost:4000/profiles/${userId.UserIdFromLocalStorage}`
       );
-      console.log(result.data);
       setUserData(result.data);
     } catch (error) {
       console.error("Error Fetching", error);
@@ -59,7 +58,7 @@ function NavbarUser() {
         </Link>
 
         <div className="menu flex items-center sm:mr-[16px] md:mr-[160px] xl:mr-[160px]">
-          <Link to="/courselist">
+          <Link to="/courselistuser">
             <h1 className="sm:font-bold sm:text-sm sm:mx-[16px] sm:my-[16px] xl:font-bold xl:text-base sm:text-black cursor-pointer">
               Our Courses
             </h1>
