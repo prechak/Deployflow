@@ -10,6 +10,7 @@ function SectionDesireCourseDetail() {
   const [modal, setModal] = useState(false);
   const [coursedetail, setCoursedetail] = useState({});
   const params = useParams();
+
   const getCourses = async () => {
     const result = await axios.get(
       `http://localhost:4000/courses/${params.Id}`
@@ -21,6 +22,9 @@ function SectionDesireCourseDetail() {
     getCourses();
   }, []);
 
+
+
+  
   const deleteDesireCourse = async () => {
     await axios.delete(`http://localhost:4000/courses/desire/${params.Id}`);
     navigate("/user/desire");

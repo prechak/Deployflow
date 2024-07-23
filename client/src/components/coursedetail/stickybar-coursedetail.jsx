@@ -2,17 +2,22 @@ import React, { useState } from "react";
 import arrow_drop from "../../assets/icons/coursedetail/arrow_drop.png";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../../contexts/authentication";
 
 function StickybarCoursedetail() {
   const navigate = useNavigate();
   const params = useParams();
+  const userId = useAuth();
   const [isCoursevisible, setIsCourseVisible] = useState(false);
   const toggleCourse = () => {
     setIsCourseVisible(!isCoursevisible);
   };
 
   const postDesireCourse = async () => {
-    await axios.post(`http://localhost:4000/courses/${params.Id}/desire`), {};
+    await axios.post(
+      `http://localhost:4000/courses/${userId.UserIdFromLocalStorage}/${params.Id}/desire`
+    ),
+      {};
     navigate("/user/desire");
   };
   const handlePostDesire = (event) => {

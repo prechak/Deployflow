@@ -5,13 +5,10 @@ import vector from "../../../assets/icons/vector.png";
 
 function NavbarAddSubLesson() {
   const navigate = useNavigate();
-  const handleCreateCourseClick = () => {
-    navigate("");
-  };
 
   return (
     <div className="w-full ">
-      <nav className="border-b-2 border-gray-300  bg-white flex flex-row justify-between p-4 pr-[32px]">
+      <nav className="border-b-2 border-gray-300 bg-white flex flex-row justify-between p-4 pr-[32px]">
         <div className="flex flex-row items-center gap-[20px] pl-[40px]">
           <img className="w-[24px] h-[24px]" src={vector}></img>
           <div className="flex flex-col">
@@ -27,7 +24,7 @@ function NavbarAddSubLesson() {
           </div>
         </div>
         <div className="flex flex-row items-center gap-[16px]">
-          <CancelButton text="Cancel" />
+          <CancelButton onClick={()=>{navigate("/admin/courselist")}} text="Cancel" />
           <SubButton text="Create" />
         </div>
       </nav>
