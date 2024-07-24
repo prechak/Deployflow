@@ -73,6 +73,29 @@ adminRouter.get("/lesson", async (req, res) => {
   }
 });
 
+adminRouter.get("/lesson/:id", async (req, res) => {
+  const lessonId = req.params.id;
+  let result;
+  try {
+    result = await connectionPool.query(
+      `select * from modules
+      where moduleid=$1 `,
+      [lessonId]
+    )
+  }catch {
+    return res.status(500).json({
+      message: "Server could not read lesson because database connection",
+    });
+  }
+  if (!result.rows[0]) {
+    return res.status(404).json({
+      message: "Server could not find a requested lesson",
+    });
+  }
+  return res.status(200).json({
+    data: result.rows,
+  });
+})
 //*get sublesson all*//
 adminRouter.get("/sublesson", async (req, res) => {
   try {
@@ -172,28 +195,45 @@ adminRouter.get("/assignments/:id", async (req, res) => {
 
 //addLesson and sublesson
 adminRouter.post("/:courseid/lesson", async (req, res) => {
-  const lesson = {
-    ...req.body,
-    sublessondate: new Date(),
-  };
+  const sublessondate = new Date();
+  let newModule;
   const courseId = req.params.courseid;
   try {
-    await connectionPool.query(
-      `
-      with lesson as (
-      insert into modules (courseid, modulename) values ($1,$2) 
-      returning *)
-      insert into sublesson (moduleid, sublessonname, videofile, sublessondate)
-      select lesson.moduleid, $3, $4, $5 from lesson
-      `,
-      [
-        courseId,
-        lesson.modulename,
-        lesson.sublessonname,
-        lesson.videofile,
-        lesson.sublessondate,
-      ]
+    newModule = await connectionPool.query(
+      `insert into modules (courseid, modulename) values ($1,$2) 
+      returning *`,
+      [courseId, req.body.modulename]
     );
+    req.body.sublessonname.forEach(async (v, i) => {
+      try {
+        await connectionPool.query(
+          `
+          insert into sublesson (moduleid, sublessonname, videofile, sublessondate)
+          values ($1,$2, $3, $4)
+          `,
+          [newModule.rows[0].moduleid, v, null, sublessondate]
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    });
+
+    // await connectionPool.query(
+    //   `
+    //   with lesson as (
+    //   insert into modules (courseid, modulename) values ($1,$2)
+    //   returning *)
+    //   insert into sublesson (moduleid, sublessonname, videofile, sublessondate)
+    //   select lesson.moduleid, $3, $4, $5 from lesson
+    //   `,
+    //   [
+    //     courseId,
+    //     lesson.modulename,
+    //     lesson.sublessonname,
+    //     lesson.videofile,
+    //     lesson.sublessondate,
+    //   ]
+    // );
     return res.status(201).json({
       message: "Lesson created successfully",
     });
