@@ -20,7 +20,7 @@ function Sidebar() {
   return (
     <div>
       <div className="h-full flex flex-row overflow-hidden justify-start border-r-2 border-gray-300">
-        <div className=" bg-white w-full h-full">
+        <div className=" bg-white ">
           <div>
             <h1 className=" py-2 px-8 md:text-3xl lg:text-3xl font-bold bg-gradient-to-l from-blue-700 to-blue-200 bg-clip-text text-transparent flex items-center justify-center">
               CourseFlow
@@ -42,7 +42,7 @@ function Sidebar() {
               />
               <Link to="/admin/assignmentlist">Assignment</Link>
             </button>
-            <div className="mt-20">
+            <div className="mt-[300px]">
               <button
                 onClick={handleLogout}
                 className="w-full h-[56px] pl-8 flex items-center font-small text-base md:text-sm lg:text-sm xl:text-sm text-left text-slate-500 hover:bg-gray-200"

@@ -6,7 +6,8 @@ import NavbarAddCourse from "../navbar/navbar-addcourse"; // Adjust the import p
 
 function AddCourseFrom() {
 
-
+  const [file,setFile] = useState("");
+  const [previewUrl, setPreviewUrl] = useState('');
 
   const [courses, setCourses] = useState(" ");
   const [createForm, setCreateForm] = useState({
@@ -41,6 +42,8 @@ function AddCourseFrom() {
 
   const createCourse = async (e) => {
     e.preventDefault();
+
+    
     const res = await axios.post("http://localhost:4000/courses", createForm);
 
     //*setCourses([...courses, res.data.course])
@@ -73,8 +76,29 @@ function AddCourseFrom() {
     }
   };
 
-  
+  /*const setImgFile = (e)=>{
+    console.log(e.target.files[0])
+    setFile(e.target.files[0])
 
+  }*/
+    const setImgFile = (e) => {
+      const selectedFile = e.target.files[0];
+      if (!selectedFile) {
+        return;
+      }
+      setFile(selectedFile);
+  
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        setPreviewUrl(fileReader.result);
+      };
+      fileReader.readAsDataURL(selectedFile);
+  
+      // Logging file details
+      console.log("Selected File:", selectedFile);
+      console.log("File Type:", selectedFile.type);
+      console.log("File Size:", selectedFile.size);
+    };
   
 
   return (
@@ -157,7 +181,7 @@ function AddCourseFrom() {
                 Cover image *
               </label>
               <label
-                className="r w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
+                className="w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
                 id="drop"
               >
                 <span>
@@ -169,7 +193,16 @@ function AddCourseFrom() {
                   className="hidden"
                   accept="image/png,image/jpeg"
                   id="input"
-                ></input>
+                  onChange={setImgFile}
+                />
+                {previewUrl && (
+                  <img
+                    src={previewUrl}
+                    alt="Preview"
+                    className="absolute m-auto rounded-md "
+                    style={{ maxWidth: "240px", maxHeight: "240px", objectFit: "cover" }}
+                  />
+                )}
               </label>
             </div>
             <div className="my-10 gap-8 ">
