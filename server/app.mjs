@@ -95,13 +95,13 @@ app.get("/courseinfo", async (req, res) => {
     const course = courses[0];
 
     // Fetch modules
-    const modulesQuery = "SELECT * FROM modules WHERE courseid = $1";
+    const modulesQuery = "select * from modules where courseid = $1";
     const modulesResult = await connectionPool.query(modulesQuery, [courseid]);
     const modules = modulesResult.rows;
 
     // Fetch submodules
     const submodulesQuery =
-      "SELECT * FROM submodules WHERE moduleid IN (SELECT moduleid FROM modules WHERE courseid = $1)";
+      "select * from submodules where moduleid in (select moduleid from modules where courseid = $1)";
     const submodulesResult = await connectionPool.query(submodulesQuery, [
       courseid,
     ]);
@@ -109,7 +109,7 @@ app.get("/courseinfo", async (req, res) => {
 
     // Fetch videos
     const videosQuery =
-      "SELECT * FROM videos WHERE submoduleid IN (SELECT submoduleid FROM submodules WHERE moduleid IN (SELECT moduleid FROM modules WHERE courseid = $1))";
+      "select * from videos where submoduleid in (select submoduleid from submodules where moduleid in (select moduleid from modules where courseid = $1))";
     const videosResult = await connectionPool.query(videosQuery, [courseid]);
     const videos = videosResult.rows;
 

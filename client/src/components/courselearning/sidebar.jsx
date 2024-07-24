@@ -60,7 +60,7 @@ const FinishedIcon = () => (
       cy="12"
       r="11"
       stroke="#2FAC8E"
-      stroke-width="2"
+      strokeWidth="2"
       fill="#2FAC8E"
     />
     <path d="M12 1 a 11 11 0 0 0 0 22 a 11 11 0 0 1 0 -22" fill="#2FAC8E" />
@@ -84,8 +84,6 @@ const FinishedIcon = () => (
   </svg>
 );
 
-// export { NotPlayingIcon, PlayingIcon, FinishedIcon };
-
 const Sidebar = () => {
   const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
     height: 10,
@@ -108,8 +106,12 @@ const Sidebar = () => {
 
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isVideoEnded, setIsVideoEnded] = useState(false);
-  const [progress, setProgress] = useState(50); // Initial progress value
+  const [progress, setProgress] = useState(0); // Initial progress value
   const [sidebarData, setSidebarData] = useState([]);
+  const [selectedSubmodule, setSelectedSubmodule] = useState(null);
+  const [selectedVideoUrl, setSelectedVideoUrl] = useState("");
+  const [currentModuleName, setCurrentModuleName] = useState("");
+  const [currentSubmoduleName, setCurrentSubmoduleName] = useState("");
 
   const handleToggle = (section) => {
     setOpenSections((prevOpenSections) => ({
@@ -122,32 +124,79 @@ const Sidebar = () => {
 
   useEffect(() => {
     const videoElement = videoRef.current;
+    if (!videoElement) return; // Exit if videoRef.current is null
+
+    const updateProgress = () => {
+      if (videoElement.duration > 0) {
+        const progress =
+          (videoElement.currentTime / videoElement.duration) * 100;
+        setProgress(progress);
+      }
+    };
+
     const handlePlay = () => setIsVideoPlaying(true);
     const handleEnded = () => {
       setIsVideoPlaying(false);
       setIsVideoEnded(true);
-      setProgress(100); // Update progress to 100% when the video ends
+      setProgress(100); // Set progress to 100% when the video ends
     };
 
     videoElement.addEventListener("play", handlePlay);
     videoElement.addEventListener("ended", handleEnded);
+    videoElement.addEventListener("timeupdate", updateProgress);
 
     return () => {
-      videoElement.removeEventListener("play", handlePlay);
-      videoElement.removeEventListener("ended", handleEnded);
+      if (videoElement) {
+        videoElement.removeEventListener("play", handlePlay);
+        videoElement.removeEventListener("ended", handleEnded);
+        videoElement.removeEventListener("timeupdate", updateProgress);
+      }
     };
-  }, []);
+  }, [selectedVideoUrl]); // Re-run effect when `selectedVideoUrl` changes
 
-  // Fetch Data
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios.get(
         `http://localhost:4000/courseinfo?courseid=1`
       );
-      const result = response.data;
-      console.log(result);
+      const data = response.data;
+      setSidebarData(data);
+
+      // Set the first submodule as selected by default
+      const firstSubmodule = data.modules.flatMap(
+        (module) => module.submodules
+      )[0];
+      if (firstSubmodule) {
+        setSelectedSubmodule(firstSubmodule.submoduleid);
+      }
     };
-  });
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (selectedSubmodule) {
+      const module = sidebarData.modules.find((mod) =>
+        mod.submodules.find((sub) => sub.submoduleid === selectedSubmodule)
+      );
+      const submodule = module.submodules.find(
+        (sub) => sub.submoduleid === selectedSubmodule
+      );
+      if (module) {
+        setCurrentModuleName(module.modulename);
+      }
+      if (submodule && submodule.videos.length > 0) {
+        setCurrentSubmoduleName(module.title);
+        setSelectedVideoUrl(submodule.videos[0].videourl);
+      } else {
+        setSelectedVideoUrl("");
+      }
+    }
+  }, [selectedSubmodule, sidebarData]);
+
+  const { coursename, coursedescription, modules } = sidebarData;
+  const selectedSubmoduleData = sidebarData.modules
+    ?.flatMap((module) => module.submodules)
+    .find((submodule) => submodule.submoduleid === selectedSubmodule);
 
   return (
     <>
@@ -157,15 +206,11 @@ const Sidebar = () => {
         <div className="md:w-1/4 bg-white text-black shadow-md h-auto md:h-screen p-4">
           <div className="mb-6">
             <h2 className="text-sm font-bold text-orange-500">Course</h2>
-            <h3 className="text-2xl font-bold mt-4">
-              Service Design Essentials
-            </h3>
-            <p className="text-gray-600 text-base mt-2">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </p>
+            <h3 className="text-2xl font-bold mt-4">{coursename}</h3>
+            <p className="text-gray-600 text-base mt-2">{coursedescription}</p>
             <div className="mt-4">
               <span className="text-sm text-gray-600">
-                {progress}% Complete
+                {progress.toFixed(1)}% Complete
               </span>
               <div className="flex items-center">
                 <BorderLinearProgress
@@ -178,99 +223,74 @@ const Sidebar = () => {
           </div>
 
           <List component="nav">
-            <ListItem button onClick={() => handleToggle("introduction")}>
-              <ListItemText
-                primary="01 Introduction"
-                className="text-lg font-bold"
-              />
-              {openSections.introduction ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Collapse
-              in={openSections.introduction}
-              timeout="auto"
-              unmountOnExit
-            >
-              <List component="div" disablePadding>
-                <ListItem button>
-                  <ListItemIcon className="mr-[-2rem]">
-                    {isVideoEnded ? (
-                      <FinishedIcon />
-                    ) : isVideoPlaying ? (
-                      <PlayingIcon />
+            {Array.isArray(modules) &&
+              modules.map((module) => (
+                <div key={module.moduleid}>
+                  <ListItem
+                    button
+                    onClick={() => handleToggle(module.moduleid)}
+                  >
+                    <ListItemText
+                      primary={`${module.modulename}`}
+                      className="text-lg font-bold"
+                    />
+                    {openSections[module.moduleid] ? (
+                      <ExpandLess />
                     ) : (
-                      <NotPlayingIcon />
+                      <ExpandMore />
                     )}
-                  </ListItemIcon>
-                  <ListItemText primary="Welcome to the Course" />
-                </ListItem>
-                {/* Other list items */}
-              </List>
-            </Collapse>
-
-            <ListItem button onClick={() => handleToggle("theories")}>
-              <ListItemText
-                primary="02 Service Design Theories and Principles"
-                className="text-lg font-bold"
-              />
-              {openSections.theories ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Collapse in={openSections.theories} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <ListItem button>
-                  <ListItemIcon>
-                    <NotPlayingIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Theory 1" />
-                </ListItem>
-                <ListItem button>
-                  <ListItemIcon>
-                    <NotPlayingIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Theory 2" />
-                </ListItem>
-              </List>
-            </Collapse>
-
-            <ListItem button onClick={() => handleToggle("scope")}>
-              <ListItemText
-                primary="03 Scope of Service Design"
-                className="text-lg font-bold"
-              />
-              {openSections.scope ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Collapse in={openSections.scope} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <ListItem button>
-                  <ListItemIcon>
-                    <NotPlayingIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Scope 1" />
-                </ListItem>
-                <ListItem button>
-                  <ListItemIcon>
-                    <NotPlayingIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Scope 2" />
-                </ListItem>
-              </List>
-            </Collapse>
+                  </ListItem>
+                  <Collapse
+                    in={openSections[module.moduleid]}
+                    timeout="auto"
+                    unmountOnExit
+                  >
+                    <List component="div" disablePadding>
+                      {module.submodules.map((submodule) => (
+                        <ListItem
+                          button
+                          key={submodule.submoduleid}
+                          onClick={() =>
+                            setSelectedSubmodule(submodule.submoduleid)
+                          }
+                        >
+                          <ListItemIcon>
+                            {isVideoEnded ? (
+                              <FinishedIcon />
+                            ) : isVideoPlaying ? (
+                              <PlayingIcon />
+                            ) : (
+                              <NotPlayingIcon />
+                            )}
+                          </ListItemIcon>
+                          <ListItemText primary={submodule.title} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Collapse>
+                </div>
+              ))}
           </List>
         </div>
 
-        {/* Main content */}
+        {/* Video content */}
         <div className="flex-1 p-4 lg:p-6 text-black">
-          <h1 className="text-2xl font-bold mb-4">Korean bbq pork</h1>
+          <h1 className="text-2xl font-bold mb-4">
+            {selectedSubmoduleData ? selectedSubmoduleData.title : coursename}
+          </h1>
           <div className="mb-4 flex justify-center">
-            <video
-              ref={videoRef}
-              width="739"
-              height="460"
-              src="https://videos.pexels.com/video-files/6007892/6007892-hd_1920_1080_30fps.mp4"
-              title="Service Design Video"
-              controls
-              muted
-              className="rounded-lg shadow-md w-full max-w-full"
-            ></video>
+            {selectedVideoUrl && (
+              <video
+                ref={videoRef}
+                width="739"
+                height="460"
+                src={selectedVideoUrl}
+                title="Course Video"
+                controls
+                muted
+                className="rounded-lg shadow-md w-full max-w-full"
+              ></video>
+            )}
           </div>
           {/* Assignment */}
           <div className="bg-blue-50 border border-gray-300 rounded-lg p-4 lg:p-6 shadow-md">
