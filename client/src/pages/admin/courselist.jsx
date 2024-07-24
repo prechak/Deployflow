@@ -6,12 +6,12 @@ import { useState } from "react";
 
 function CourseListAdmin() {
   return (
-    <div className="h-[1200px] flex flex-row bg-gray-100 w-[1900px] overflow-hidden">
+    <div className="h-full flex flex-row bg-gray-100 w-[1900px]">
       <Sidebar />
       <div className="flex-1">
         <div>{<Outlet />}</div>
         <main>
-          <CourseListTable/>
+          <CourseListTable />
         </main>
       </div>
     </div>
