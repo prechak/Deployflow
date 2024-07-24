@@ -1,57 +1,56 @@
+import { useForm, useFieldArray, Controller } from "react-hook-form";
 import Uploadvideo from "../../../assets/image/Uploadvideo.png";
-import OrageButton from "../button/secondary-button";
+import NavbarAddSubLesson from "../navbar/navbar-addsublesson";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 import drag1 from "../../../assets/icons/admin/drag1.png";
-import { useRef, useState } from "react";
+import NavbarEditSubLesson from "../../admin/navbar/navbar-editsublesson";
 
-function EditSubLessonFrom() {
-  const [people, setPeople] = useState([
-    { id: 1, name: "John Deo", content: "contentstate1" },
-    { id: 2, name: "Max Walters", content: "contentstate2" },
-    { id: 3, name: "Adam Smith", content: "contentstate3" },
-    { id: 4, name: "Tom Johnson", content: "contentstate4" },
-    { id: 5, name: "Tom Johnson", content: "contentstate5" },
-  ]);
-  const dragItem = useRef(0);
-  const draggedOverItem = useRef(0);
-  const handleSort = () => {
-    const itemClone = [...people];
-    console.log(itemClone)
-    const temp = itemClone[dragItem.current];
-    itemClone[dragItem.current] = itemClone[draggedOverItem.current];
-    itemClone[draggedOverItem.current] = temp;
-    setPeople(itemClone);
-  };
+function AddSubLessonFrom() {
+  
+  const { control, handleSubmit, register, reset } = useForm({
+    defaultValues: {
+      lessonName: "",
+      subLessons: [{ name: "" }],
+    },
+  });
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "subLessons",
+  });
+
+  const params = useParams();
+
   return (
-    <div className="mx-8 w-[1120px] h-fit bg-white rounded-[16px] border-[1px]">
-      <div className=" mx-8 p-8">
-        <form>
-          <div>
-            <div className="mx-[40px] w-[920px] h-[76px]">
-              <label className="w-full h-[24px] text-black text-[16px]">
-                Lesson name *
-              </label>
-              <input
-                className="w-full h-[48px] bg-white text-black border-[1px] rounded-[8px] pl-[20px] placeholder:text-black"
-                placeholder="Introduction"
-              />
+    <div className="flex flex-col justify-between w-full h-full">
+      <nav>
+        <NavbarEditSubLesson text="Edit" />
+      </nav>
+      <div className="mt-[50px] mx-8 w-[1120px] h-fit bg-white rounded-[16px] border-[1px] mb-[100px]">
+        <div className=" mx-8 p-8">
+          <form>
+            <div>
+              <div className="mx-[40px] w-[920px] h-[76px]">
+                <label className="w-full h-[24px] text-black text-[16px]">
+                  Lesson name *
+                </label>
+                <input
+                  className="w-full h-[48px] bg-white text-black border-[1px] rounded-[8px] pl-[20px]"
+                  placeholder="Place Holder"
+                  {...register("lessonName")}
+                />
+              </div>
+              <div className="mx-[40px]">
+                <hr className="my-8 border-1 " />
+              </div>
+              <div className="mx-[40px] text-[20px] font-[600] text-[#646D89]">
+                Sub-Lesson
+              </div>
             </div>
-            <div className="mx-[40px]">
-              <hr className="my-8 border-1 " />
-            </div>
-            <div className="mx-[40px] text-[20px] font-[600] text-[#646D89]">
-              Sub-Lesson
-            </div>
-          </div>
-          {people.map((item, index) => {
-            return (
-              <article
-                key={index}
-                className="relative mt-[30px] mx-[40px] w-[920px] h-[340px] bg-Gray-100 flex justify-center items-center rounded-[16px] border-[1px]"
-                draggable
-                onDragStart={() => (dragItem.current = index)}
-                onDragEnter={() => (draggedOverItem.current = index)}
-                onDragEnd={handleSort}
-                onDragOver={(e) => e.preventDefault()}
+            {fields.map((field, index) => (
+              <aside
+                key={field.id}
+                className="mt-[30px] mx-[40px] w-[920px] h-[340px] bg-Gray-100 flex justify-center items-center rounded-[16px] border-[1px]"
               >
                 <div className="w-[888px] h-[292px] flex gap-[24px]">
                   <div className="w-[26px] h-[76px] text-[#C8CCDB]">
@@ -59,14 +58,18 @@ function EditSubLessonFrom() {
                   </div>
                   <div className="w-[747px] flex flex-col justify-center gap-[23px]">
                     <div className="flex flex-col gap-[4px]">
-                      <label className="text-Body2 font-Body2 text-[#08090D]">
+                      <label
+                        htmlFor={`sub-lesson-name-${field.id}`}
+                        className="text-Body2 font-Body2 text-[#08090D]"
+                      >
                         Sub-Lesson name *
                       </label>
-                      <input
-                        id="sub-lesson-name"
-                        type="text"
-                        className="w-[530px] h-[48px] bg-white text-black border-[1px] border-[#D6D9E4] rounded-[8px] pl-[20px] placeholder:text-black"
-                        placeholder={item.content}
+                      <Controller
+                        render={({ field }) => (
+                          <input className="text-black" {...field} />
+                        )}
+                        name={`subLessons.${index}.name`}
+                        control={control}
                       />
                     </div>
                     <div className="flex flex-col gap-[8px]">
@@ -78,20 +81,38 @@ function EditSubLessonFrom() {
                       </div>
                     </div>
                   </div>
-                  <div className=" w-[67px] h-[32px] text-center text-[16px] font-[700] text-Blue-500">
-                    Delete
+                  <div className=" w-[67px] h-[32px] text-center text-[16px] font-[700] text-Gray-500">
+                    {index > 0 ? (
+                      <button type="button" onClick={() => remove(index)}>
+                        Delete
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          alert("Cannot delete the only sub-lesson")
+                        }
+                      >
+                        Delete
+                      </button>
+                    )}
                   </div>
                 </div>
-              </article>
-            );
-          })}
-          <div className="mx-[40px] mt-[32px]">
-            <OrageButton text="+ Add Sub-lesson" />
-          </div>
-        </form>
+              </aside>
+            ))}
+            
+            <button
+              className="mx-[40px] mt-[32px] border-[1px] border-Orange-500 shadow-md bg-white text-Orange-500 rounded-[12px] w-[208px] h-[60px] text-[16px] font-[700]"
+              type="button"
+              onClick={() => append({ name: "" })}
+            >
+              Add Sub-Lesson
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
 }
 
-export default EditSubLessonFrom;
+export default AddSubLessonFrom;

@@ -3,12 +3,12 @@ import CancelButton from "../button/cancel-button";
 import { useNavigate } from "react-router-dom";
 import vector from "../../../assets/icons/vector.png";
 
-function NavbarAddSubLesson() {
+function NavbarAddSubLesson({text, handleSubmit}) {
   const navigate = useNavigate();
 
   return (
-    <div className="w-full ">
-      <nav className="border-b-2 border-gray-300 bg-white flex flex-row justify-between p-4 pr-[32px]">
+    <div>
+      <nav className="w-full h-[92px] bg-white border-gray-300 border-b-2 border-[1px] flex justify-between items-center p-4 pr-[32px]">
         <div className="flex flex-row items-center gap-[20px] pl-[40px]">
           <img className="w-[24px] h-[24px]" src={vector}></img>
           <div className="flex flex-col">
@@ -24,8 +24,13 @@ function NavbarAddSubLesson() {
           </div>
         </div>
         <div className="flex flex-row items-center gap-[16px]">
-          <CancelButton onClick={()=>{navigate("/admin/courselist")}} text="Cancel" />
-          <SubButton text="Create" />
+          <CancelButton
+            onClick={() => {
+              navigate("/admin/courselist");
+            }}
+            text="Cancel"
+          />
+          <SubButton onClick={handleSubmit} text={text} />
         </div>
       </nav>
     </div>

@@ -29,7 +29,7 @@ function UnauthenticatedApp() {
         <Route path="/admin/addcourse" element={<AddCourseAdmin />} />
         <Route path="/admin/editcourse/:id" element={<EditCourse />} />
         <Route path="/admin/:courseId/addsublesson" element={<AddSubLesson />} />
-        <Route path="/admin/editsublesson" element={<EditSubLesson />} />
+        <Route path="/admin/:lessonId/editsublesson" element={<EditSubLesson />} />
         <Route path="/admin/addassignment" element={<AddAssignment/>}/>
         <Route path="/admin/assignmentlist" element={<AssignmentListAdmin />} />
         <Route path="*" element={<Login />} />

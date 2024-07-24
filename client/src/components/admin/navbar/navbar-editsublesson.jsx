@@ -3,7 +3,7 @@ import CancelButton from "../button/cancel-button";
 import { useNavigate } from "react-router-dom";
 import vector from "../../../assets/icons/vector.png";
 
-function NavbarEditSubLesson() {
+function NavbarEditSubLesson({text, handleSubmit}) {
   const navigate = useNavigate();
 
   return (
@@ -31,7 +31,7 @@ function NavbarEditSubLesson() {
         </div>
         <div className="flex flex-row items-center gap-[16px]">
           <CancelButton text="Cancel" onClick={()=>{navigate("/admin/courselist")}} />
-          <SubButton text="Edit" onClick={()=>{navigate("/admin/courselist")}} />
+          <SubButton onClick={handleSubmit} text={text} />
         </div>
       </nav>
     </div>
