@@ -12,6 +12,8 @@ import UserProfile from "./authorized/user-profile";
 import UserDesireCourses from "./authorized/user-desirecourse";
 import Course from "../components/course/courselist";
 import CourselistUser from "../components/course/courselist-user";
+import UserMycourseCompleted from "./authorized/user-mycourse-completed";
+import UserMycourseInprogress from "./authorized/user-mycourse-inprogress";
 
 function AuthenticatedApp() {
   return (
@@ -36,6 +38,14 @@ function AuthenticatedApp() {
         <Route path="/usercourse" element={<Usercourse />} />
         <Route path="/user/profile" element={<UserProfile />} />
         <Route path="/user/my_course/" element={<UserMycourse />} />
+        <Route
+          path="/user/my_course/inprogress"
+          element={<UserMycourseInprogress />}
+        />
+        <Route
+          path="/user/my_course/completed"
+          element={<UserMycourseCompleted />}
+        />
         <Route path="*" element={<Userhomepage />} />
       </Routes>
     </div>

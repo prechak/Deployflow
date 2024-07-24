@@ -12,7 +12,7 @@ function CourseCard(props) {
   return (
     <>
       <div className="z-0 cursor-pointer" onClick={handleCardClick}>
-        <div className="flex flex-col gap-7 shadow-xl transition-transform transform hover:scale-105 hover:shadow-2xl">
+        <div className="flex flex-col gap-7 shadow-xl rounded-xl transition-transform transform hover:scale-105 hover:shadow-2xl">
           <div className="bg-white pb-3 rounded-lg w-[357px]">
             <div className="text-black font-medium">
               <img
