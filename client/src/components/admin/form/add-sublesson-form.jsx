@@ -118,7 +118,7 @@ function AddSubLessonFrom() {
               type="button"
               onClick={() => append({ name: "" })}
             >
-              Add Sub-Lesson
+              + Add Sub-Lesson
             </button>
           </form>
         </div>

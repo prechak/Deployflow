@@ -81,8 +81,8 @@ adminRouter.get("/lesson/:id", async (req, res) => {
       `select * from modules
       where moduleid=$1 `,
       [lessonId]
-    )
-  }catch {
+    );
+  } catch {
     return res.status(500).json({
       message: "Server could not read lesson because database connection",
     });
@@ -95,7 +95,30 @@ adminRouter.get("/lesson/:id", async (req, res) => {
   return res.status(200).json({
     data: result.rows,
   });
-})
+});
+
+adminRouter.delete("/lesson/:id", async (req, res) => {
+  const lessonId = req.params.id;
+  try {
+    await connectionPool.query(
+      `delete from modules
+      where moduleid=$1`,
+      [lessonId]
+    );
+    await connectionPool.query(
+      `delete from sublesson
+      where moduleid=$1`,
+      [lessonId]
+    );
+  } catch {
+    return res.status(500).json({
+      message: "Server could not delete lesson because database connection",
+    });
+  }
+  return res.status(201).json({
+    message: "Deleted lesson sucessfully",
+  });
+});
 //*get sublesson all*//
 adminRouter.get("/sublesson", async (req, res) => {
   try {
@@ -108,6 +131,101 @@ adminRouter.get("/sublesson", async (req, res) => {
   }
 });
 
+adminRouter.delete("/sublesson/:id", async (req, res) => {
+  const sublessonId = req.params.id;
+  try {
+    await connectionPool.query(
+      `delete from sublesson
+      where sublessonid=$1`,
+      [sublessonId]
+    );
+  } catch {
+    return res.status(500).json({
+      message: "Server could not delete sublesson because database connection",
+    });
+  }
+  return res.status(201).json({
+    message: "Deleted sublesson sucessfully",
+  });
+});
+
+adminRouter.put("/sublesson/:lessonid", async (req, res) => {
+  const lessonId = req.params.lessonid;
+  const newSublesson = {
+    ...req.body,
+    sublessondate: new Date(),
+  };
+  // console.log(newSublesson)
+  const editLesson = req.body[0];
+  const editSublesson = req.body[1];
+  // console.log(editLesson)
+  // console.log(editSublesson)
+  try {
+    await connectionPool.query(
+      `update modules
+      set modulename=$2
+      where moduleid=$1
+      returning *`,
+      [lessonId, editLesson.modulename]
+    );
+    editSublesson.forEach(async (value, i) => {
+      console.log(value)
+      try {
+        await connectionPool.query(
+          `insert into sublesson (sublessonid, moduleid, sublessonname, videofile, sublessondate)
+           values ($1, $2, $3, $4, $5)
+           ON CONFLICT (sublessonid) DO UPDATE SET
+           moduleid=EXCLUDED.moduleid,
+           sublessonname=EXCLUDED.sublessonname,
+           videofile=EXCLUDED.videofile,
+           sublessondate=EXCLUDED.sublessondate `,
+
+          [
+            value.sublessonid,
+            lessonId,
+            value.sublessonname,
+            value.videofile,
+            value.sublessondate,
+          ]
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    });
+    
+  } catch {
+    return res.status(500).json({
+      message: "Server could not put sublesson because database connection",
+    });
+  }
+  return res.status(201).json({
+    message: "Put sublesson sucessfully",
+  });
+});
+
+adminRouter.get("/sublesson/:lessonid", async (req, res) => {
+  const LessonId = req.params.lessonid;
+  let result;
+  try {
+    result = await connectionPool.query(
+      `select * from sublesson
+      where moduleid=$1 `,
+      [LessonId]
+    );
+  } catch {
+    return res.status(500).json({
+      message: "Server could not read lesson because database connection",
+    });
+  }
+  if (!result.rows[0]) {
+    return res.status(404).json({
+      message: "Server could not find a requested lesson",
+    });
+  }
+  return res.status(200).json({
+    data: result.rows,
+  });
+});
 //*get assignment all//
 adminRouter.get("/assignments", async (req, res) => {
   try {
