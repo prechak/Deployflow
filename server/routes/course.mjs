@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, text } from "express";
 import connectionPool from "../utils/db.mjs";
 
 const courseRouter = Router();
@@ -262,6 +262,7 @@ courseRouter.post("/", async (req, res) => {
     courselearningtime,
     videofile,
     imagefile,
+    pdffile,
   } = req.body;
 
   try {
@@ -274,8 +275,8 @@ courseRouter.post("/", async (req, res) => {
 
     const result = await connectionPool.query(
       `
-        INSERT INTO courses (coursename, price, description, coursesummary, courselearningtime, videofile, imagefile)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        INSERT INTO courses (coursename, price, description, coursesummary, courselearningtime, videofile, imagefile, pdffile)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING *`,
       [
         coursename,
@@ -285,6 +286,7 @@ courseRouter.post("/", async (req, res) => {
         courselearningtime,
         videofile,
         imagefile,
+        pdffile,
       ]
     );
 
@@ -292,7 +294,9 @@ courseRouter.post("/", async (req, res) => {
       return res.status(404).json({ error: "Course not found" });
     }*/
 
-    return res.status(201).json(result.rows[0]);
+    return res
+      .status(201)
+      .json({ message: "Created course successful", data: result.rows });
   } catch (error) {
     console.error("Database error:", error);
 
@@ -318,6 +322,94 @@ courseRouter.delete("/desire/:id", async (req, res) => {
   return res.status(201).json({
     message: "Deleted desire sucessfully",
   });
+});
+
+/**Delete course admin */
+
+courseRouter.delete("/:id", async (req, res) => {
+  const courseId = req.params.id;
+  try {
+    const result = await connectionPool.query(
+      `
+      DELETE FROM courses WHERE courseid = $1
+      `,
+      [courseId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    return res.status(200).json({
+      message: "Deleted course successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting course:", error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+});
+
+/*Edit course*/
+
+courseRouter.put("/:id", async (req, res) => {
+  const courseIdFromClient = req.params.id;
+  const {
+    coursename,
+    description,
+    price,
+    coursesummary,
+    courselearningtime,
+    videofile,
+    imagefile,
+    pdffile,
+  } = req.body;
+
+  if (
+    !coursename ||
+    !description ||
+    !price ||
+    !coursesummary ||
+    !courselearningtime
+  ) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
+  try {
+    const result = await connectionPool.query(
+      `UPDATE courses
+       SET coursename = $2, 
+           description = $3, 
+           price = $4, 
+           coursesummary = $5,
+           courselearningtime = $6,
+          videofile = $7,
+          imagefile = $8,
+          pdffile = $9,
+       WHERE courseid = $1`,
+      [
+        courseIdFromClient,
+        coursename,
+        description,
+        price,
+        coursesummary,
+        courselearningtime,
+        videofile,
+        imagefile,
+        pdffile,
+      ]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    res.status(200).json({ message: "Course updated successfully" });
+  } catch (error) {
+    console.error("Database query error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 export default courseRouter;

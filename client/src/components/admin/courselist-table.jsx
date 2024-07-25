@@ -3,26 +3,42 @@ import axios from "axios";
 import edit from "../../assets/image/edit.png";
 import bin from "../../assets/image/Bin.png";
 import { Link } from "react-router-dom";
+import NavbarCourseList from "./navbar/navbar-courselist";
 
 function CourseListTable() {
-  const [users, setUsers] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [search, setSearch] = useState("");
+  console.log(search);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:4000/courses")
-      .then((res) => {
-        setUsers(res.data);
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the data!", error);
-      });
+    fetchCourses();
   }, []);
 
+  const fetchCourses = async () => {
+    try {
+      const res = await axios.get("http://localhost:4000/courses");
+      setCourses(res.data);
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+    }
+  };
+
+  const deleteCourse = async (id) => {
+    try {
+      await axios.delete(`http://localhost:4000/courses/${id}`);
+      setCourses(courses.filter((course) => course.courseid !== id));
+    } catch (error) {
+      console.error("Error deleting course:", error);
+    }
+  };
+
   return (
-    <div className="m-10">
-      <table className=" text-black text-sm  ">
+    
+    <div>
+      <NavbarCourseList search={search} onSearchChange={setSearch}/>
+      <table className="m-10 text-black text-sm">
         <thead className="w-[1120px] h-[41px] bg-slate-200 rounded-lg">
-          <tr className="">
+          <tr>
             <th className="w-[48px] text-left"></th>
             <th className="w-[96px] text-left">Image</th>
             <th className="w-[268px] text-left">Course name</th>
@@ -34,38 +50,43 @@ function CourseListTable() {
           </tr>
         </thead>
         <tbody>
-          {users.map((item, index) => (
-            <tr key={index} className="w-[1120px] h-[88px]">
-              <td className="w-[48px]">{item.courseid}</td>
-              <td className="w-[96px]">
-                <img
-                  src={item.imagefile}
-                  alt="avatar"
-                  style={{ width: "64px", height: "47px" }}
-                />
-              </td>
-              <td className="w-[268px] text-left">{item.coursename}</td>
-              <td className="w-[105px] text-left">{item.courselearningtime}</td>
-              <td className="w-[105px] text-left">{item.price}</td>
-              <td className="w-[188px] text-left"></td>
-              <td className="w-[188px] text-left"></td>
-              <td className="w-[120px] text-left">
-                <button>
-                  <Link to="">
-                    <img src={bin} />
-                  </Link>
-                </button>
-                <button>
-                  <Link to={`/admin/editcourse/${item.courseid}`}>
-                    <img src={edit} />
-                  </Link>
-                </button>
-              </td>
-            </tr>
-          ))}
+        {courses
+            .filter((item) => {
+              return search.trim() === ""
+                ? true
+                : item.coursename.toLowerCase().includes(search.toLowerCase());
+            })
+            .map((item) => (
+              <tr key={item.courseid} className="w-[1120px] h-[88px]">
+                <td className="w-[48px]">{item.courseid}</td>
+                <td className="w-[96px]">
+                  <img
+                    src={item.imagefile}
+                    alt="image"
+                    style={{ width: "64px", height: "47px" }}
+                  />
+                </td>
+                <td className="w-[268px] text-left">{item.coursename}</td>
+                <td className="w-[105px] text-left">
+                  {item.courselearningtime}
+                </td>
+                <td className="w-[105px] text-left">{item.price}</td>
+                <td className="w-[188px] text-left">{item.createddate}</td>
+                <td className="w-[188px] text-left">{item.updateddate}</td>
+                <td className="w-[120px] text-left">
+                  <button onClick={() => deleteCourse(item.courseid)}>
+                    <img src={bin} alt="delete" />
+                  </button>
+                  <button>
+                    <Link to={`/admin/editcourse/${item.courseid}`}>
+                      <img src={edit} alt="edit" />
+                    </Link>
+                  </button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
-      <button>Create</button>
     </div>
   );
 }
