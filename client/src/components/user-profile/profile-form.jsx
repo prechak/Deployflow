@@ -24,6 +24,8 @@ function ProfileForm() {
     educationalBackground: "",
   });
 
+  const currentYear = new Date().getFullYear();
+  const maxDate = `${currentYear}-12-31`;
   const CDNURL =
     "https://igdllimavmpalwpkphmh.supabase.co/storage/v1/object/public/avatars/";
 
@@ -130,6 +132,17 @@ function ProfileForm() {
     }
   }
 
+  const validateAge = (age) => {
+    const birthDate = new Date(age);
+    const today = new Date();
+    const sixYearsAgo = new Date(today.setFullYear(today.getFullYear() - 6));
+
+    if (birthDate > sixYearsAgo) {
+      return "You must be at least 6 years old.";
+    }
+    return "";
+  };
+
   const validateField = (text, value) => {
     let error = "";
     if (text === "name") {
@@ -152,6 +165,8 @@ function ProfileForm() {
           error = "Special character is not accept.";
         }
       }
+    } else if (text === "age") {
+      error = validateAge(value); // Validate age here
     }
     setErrors((prevErrors) => ({ ...prevErrors, [text]: error }));
   };
@@ -161,6 +176,7 @@ function ProfileForm() {
     if (name === "age") {
       const formattedDate = new Date(value).toISOString().split("T")[0]; // Format date to yyyy-mm-dd
       setFormData((prevData) => ({ ...prevData, [name]: formattedDate }));
+      validateField(name, formattedDate); // Validate age when it changes
     } else {
       validateField(name, value);
       setFormData((prevData) => ({ ...prevData, [name]: value }));
@@ -169,7 +185,7 @@ function ProfileForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (errors.name || errors.educationalBackground) {
+    if (errors.name || errors.educationalBackground || errors.age) {
       alert("Please correct the errors before submitting.");
       return;
     }
@@ -204,7 +220,6 @@ function ProfileForm() {
       alert("Error updating profile");
     }
   };
-
   return (
     <>
       <form
@@ -293,8 +308,12 @@ function ProfileForm() {
                   className="border border-gray-300 text-gray-900 text-sm rounded-lg outline-Blue-400 outline-2 block w-full p-3"
                   placeholder="Date of Birth"
                   format="true"
+                  max={maxDate} // Add this line
                   required
                 />
+                {errors.age && (
+                  <p className="text-red-500 text-sm">{errors.age}</p>
+                )}
               </p>
             </label>
           </div>
