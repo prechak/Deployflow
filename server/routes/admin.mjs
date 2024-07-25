@@ -238,9 +238,15 @@ adminRouter.get("/assignments", async (req, res) => {
   }
 });
 
-//*post addsignments(add)*//
+//*post assignments(add)*//
 adminRouter.post("/assignments", async (req, res) => {
-  const { course, lesson, sub_lesson, title, duedate } = req.body;
+  const { 
+    course,
+    lesson,
+    sub_lesson,
+    title,
+    duedate
+  } = req.body;
 
   if (!course || !lesson || !sub_lesson || !title) {
     return res
@@ -282,8 +288,9 @@ adminRouter.post("/assignments", async (req, res) => {
   }
 });
 
-//*get addsignments by id//
-adminRouter.get("/assignments/:id", async (req, res) => {
+
+//*get assignments by id//
+adminRouter.get("/assignment/:id", async (req, res) => {
   const assignmentid = req.params.id;
   let result;
 
@@ -310,6 +317,157 @@ adminRouter.get("/assignments/:id", async (req, res) => {
     data: result.rows[0],
   });
 });
+
+
+//*edit assignments 
+adminRouter.put("/assignment/:id", async (req, res) => {
+  const assignmentid = req.params.id;
+  const {
+    course,
+    lesson,
+    sub_lesson,
+    title,
+    duedate
+  } = req.body;
+
+  if (!course || !lesson || !sub_lesson || !title) {
+    return res
+      .status(400)
+      .json({ error: "All fields except due date are required" });
+  }
+
+  let finalDueDate;
+  if (!duedate) {
+    const today = new Date();
+    const defaultDurationDays = 7;
+    finalDueDate = new Date(
+      today.setDate(today.getDate() + defaultDurationDays)
+    )
+      .toISOString()
+      .split("T")[0];
+  } else {
+    const durationDays = parseInt(duedate.split(" ")[0]);
+    if (isNaN(durationDays)) {
+      return res.status(400).json({ error: "Invalid duration value" });
+    }
+    const today = new Date();
+    finalDueDate = new Date(today.setDate(today.getDate() + durationDays))
+      .toISOString()
+      .split("T")[0];
+  }
+
+  try {
+    const result = await connectionPool.query(
+      `UPDATE assignments
+       SET submoduleid = $1, lessonid = $2, sublessonid = $3, title = $4, duedate = $5
+       WHERE assignmentid = $6`,
+      [
+        course,
+        lesson,
+        sub_lesson,
+        title,
+        finalDueDate,
+        assignmentid
+      ]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Assignment not found" });
+    }
+
+    res.status(200).json({ message: "Assignment updated successfully" });
+  } catch (error) {
+    console.error("Error occurred while updating the assignment:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+//*get addsignments by id//
+adminRouter.get("/assignments/:id", async (req, res) => {
+  const assignmentid = req.params.id;
+  let result;
+  
+  try {
+    result = await connectionPool.query(
+      `SELECT * FROM assignments WHERE assignmentid = $1`,
+      [assignmentid]
+    );
+  } catch (error) {
+    console.error("Error occurred while fetching the assignment:", error);
+    return res.status(500).json({
+      message:
+        "Server could not read assignments due to database connection error",
+    });
+  }
+
+  if (result.rows.length === 0) {
+    return res.status(404).json({
+      message: "Assignment not found",
+    });
+  }
+
+  return res.status(200).json({
+    data: result.rows[0],
+  });
+});
+
+
+//*edit assignments 
+adminRouter.put("/assignment/:id", async (req, res) => {
+  const assignmentid = req.params.id;
+  const {
+    course,
+    lesson,
+    sub_lesson,
+    title,
+    duedate
+  } = req.body;
+
+  if (!course || !lesson || !sub_lesson || !title) {
+    return res.status(400).json({ error: "All fields except due date are required" });
+  }
+
+  let finalDueDate;
+  if (!duedate) {
+    const today = new Date();
+    const defaultDurationDays = 7;
+    finalDueDate = new Date(today.setDate(today.getDate() + defaultDurationDays)).toISOString().split('T')[0];
+  } else {
+    const durationDays = parseInt(duedate.split(' ')[0]);
+    if (isNaN(durationDays)) {
+      return res.status(400).json({ error: "Invalid duration value" });
+    }
+    const today = new Date();
+    finalDueDate = new Date(today.setDate(today.getDate() + durationDays)).toISOString().split('T')[0];
+  }
+
+  try {
+    const result = await connectionPool.query(
+      `UPDATE assignments
+       SET submoduleid = $1, lessonid = $2, sublessonid = $3, title = $4, duedate = $5
+       WHERE assignmentid = $6`,
+      [
+        course,
+        lesson,
+        sub_lesson,
+        title,
+        finalDueDate,
+        assignmentid
+      ]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Assignment not found" });
+    }
+
+    res.status(200).json({ message: "Assignment updated successfully" });
+  } catch (error) {
+    console.error("Error occurred while updating the assignment:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 
 //addLesson and sublesson
 adminRouter.post("/:courseid/lesson", async (req, res) => {
