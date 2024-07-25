@@ -1,5 +1,7 @@
+import Sidebar from "../../components/courselearning/sidebar";
+
 function StartLearning() {
-  return <div>Start Learning Course</div>;
+  return <Sidebar />;
 }
 
 export default StartLearning;
