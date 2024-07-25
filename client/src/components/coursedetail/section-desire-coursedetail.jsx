@@ -21,9 +21,6 @@ function SectionDesireCourseDetail() {
   useEffect(() => {
     getCourses();
   }, []);
-
-
-
   
   const deleteDesireCourse = async () => {
     await axios.delete(`http://localhost:4000/courses/desire/${params.Id}`);
