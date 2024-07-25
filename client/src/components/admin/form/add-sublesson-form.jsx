@@ -4,26 +4,38 @@ import NavbarAddSubLesson from "../navbar/navbar-addsublesson";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import drag1 from "../../../assets/icons/admin/drag1.png";
-
+import { useState } from "react";
+import supabase from "../../../utils/supabaseClient";
+import { v4 as uuidv4 } from "uuid";
 
 function AddSubLessonFrom() {
+  const [videoFile, setVideoFileState] = useState("");
+  const [videoPreviewUrl, setVideoPreviewUrl] = useState("");
   const { control, handleSubmit, register, reset } = useForm({
     defaultValues: {
       lessonName: "",
-      subLessons: [{name: "" }],
+      subLessons: [{ name: "" }],
     },
   });
   const { fields, append, remove } = useFieldArray({
     control,
     name: "subLessons",
+    vname: "videofile",
   });
 
   const params = useParams();
 
   const onSubmit = async (data) => {
     try {
+      // Upload the image before submitting the form
+      const videoUrl = await uploadVideoFile(videoFile);
+      const videoData = {
+        videofile: videoUrl,
+      };
+
       await axios.post(
         `http://localhost:4000/admin/${params.courseId}/lesson`,
+        videoData,
         {
           modulename: data.lessonName,
           sublessonname: data.subLessons.map((subLesson) => subLesson.name),
@@ -37,6 +49,66 @@ function AddSubLessonFrom() {
         error
       );
     }
+  };
+
+  // Replace any non-alphanumeric characters in the course name with underscores
+  // const sanitizeFileName = (name) => {
+  //   return name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
+  // };
+  //===========Upload VDO section
+  async function uploadVideoFile(file) {
+    try {
+      if (!file) {
+        throw new Error("You must select a video to upload.");
+      }
+      const fileExt = file.name.split(".").pop();
+      // const sanitizedCourseName = sanitizeFileName(
+      //   createForm.coursename.trim()
+      // );
+      const fileName = `${uuidv4()}.${fileExt}`;
+      const filePath = `course/lesson/${fileName}`;
+      const { error: uploadError } = await supabase.storage
+        .from("course")
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+      const { error: urlError } = supabase.storage
+        .from("course")
+        .getPublicUrl(filePath);
+
+      if (urlError) {
+        throw urlError;
+      }
+
+      const videoUrl = supabase.storage.from("course").getPublicUrl(filePath)
+        .data.publicUrl;
+
+      return videoUrl;
+    } catch (error) {
+      alert(error.message);
+      throw error;
+    }
+  }
+
+  const handleVideoFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (!selectedFile) {
+      return;
+    }
+    setVideoFileState(selectedFile);
+
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      setVideoPreviewUrl(fileReader.result);
+    };
+    fileReader.readAsDataURL(selectedFile);
+
+    // Logging file details
+    console.log("Selected File:", selectedFile);
+    console.log("File Type:", selectedFile.type);
+    console.log("File Size:", selectedFile.size);
   };
 
   return (
@@ -87,7 +159,10 @@ function AddSubLessonFrom() {
                       </label>
                       <Controller
                         render={({ field }) => (
-                          <input className="text-black" {...field} />
+                          <input
+                            className="w-[530px] h-[48px] bg-white text-black border-[1px] border-[#D6D9E4] rounded-[8px] pl-[20px] placeholder:text-black"
+                            {...field}
+                          />
                         )}
                         name={`subLessons.${index}.name`}
                         control={control}
@@ -97,16 +172,46 @@ function AddSubLessonFrom() {
                       <h1 className="font-[400] text-[16px] text-[#07090D]">
                         Video *
                       </h1>
-                      <div className="w-[160px] h-[160px] rounded-[8px] bg-Gray-200 flex items-center justify-center">
+                      <label className="cursor-pointer w-[160px] h-[160px] rounded-[8px] bg-Gray-200 flex items-center justify-center">
                         <img src={Uploadvideo} />
-                      </div>
+                        <input
+                          type="file"
+                          name="videofile"
+                          className="hidden"
+                          accept="video/mp4"
+                          id="input"
+                          onChange={handleVideoFileChange}
+                        />
+                        {videoPreviewUrl && (
+                          <video
+                            src={videoPreviewUrl}
+                            alt="Preview"
+                            className="absolute m-auto rounded-md"
+                            style={{
+                              maxWidth: "240px",
+                              maxHeight: "240px",
+                              objectFit: "cover",
+                            }}
+                            controls
+                          />
+                        )}
+                      </label>
                     </div>
                   </div>
                   <div className=" w-[67px] h-[32px] text-center text-[16px] font-[700] text-Gray-500">
-                  {index > 0 ? (
-                      <button type="button" onClick={() => remove(index)}>Delete</button>
+                    {index > 0 ? (
+                      <button type="button" onClick={() => remove(index)}>
+                        Delete
+                      </button>
                     ) : (
-                      <button type="button" onClick={() => alert("Cannot delete the only sub-lesson")}>Delete</button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          alert("Cannot delete the only sub-lesson")
+                        }
+                      >
+                        Delete
+                      </button>
                     )}
                   </div>
                 </div>
