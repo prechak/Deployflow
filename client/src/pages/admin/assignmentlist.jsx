@@ -6,7 +6,7 @@ import { Outlet } from "react-router-dom";
 
 function AssignmentListAdmin() {
   return (
-    <div className="flex flex-row bg-gray-100 h-screen w-screen overflow-hidden">
+    <div className="h-full flex flex-row bg-gray-100 w-screen overflow-hidden">
       <Sidebar />
       <div className="flex-1">
         <div>

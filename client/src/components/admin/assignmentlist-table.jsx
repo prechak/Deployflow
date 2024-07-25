@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 function AssignmentListTable() {
   const [assignments, setAssignments] = useState([]);
 
-
   useEffect(() => {
     fetchAssignments();
   }, []);
@@ -20,6 +19,18 @@ function AssignmentListTable() {
       setAssignments(res.data);
     } catch (error) {
       console.error("Error fetching courses:", error);
+    }
+  };
+
+  const deleteAssignment = async (id) => {
+    try {
+      await axios.delete(`http://localhost:4000/admin/assignments/${id}`);
+      setAssignments(
+        assignments.filter((assignment) => assignment.assignmentid !== id)
+      );
+    } catch (error) {
+      console.error("Error deleting assignment:", error);
+      console.log(error);
     }
   };
 
@@ -43,13 +54,13 @@ function AssignmentListTable() {
               <td className="w-[200px] text-left">{item.title}</td>
               <td className="w-[200px] text-left">{item.modulename}</td>
               <td className="w-[200px] text-left">{item.sublessonname}</td>
-              <td className="w-[200px] text-left"></td>
+              <td className="w-[200px] text-left">{item.createddate}</td>
               <td className="w-[120px] text-left">
-                <button /*onClick={() => deleteCourse(item.courseid)}*/>
+                <button onClick={() => deleteAssignment(item.assignmentid)}>
                   <img src={bin} alt="delete" />
                 </button>
                 <button>
-                  <Link>
+                  <Link to={`/admin/assignment/${item.assignmentid}`}>
                     <img src={edit} alt="edit" />
                   </Link>
                 </button>

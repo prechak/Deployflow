@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Button from "../button/button";
+import { Link } from "react-router-dom";
 
 function NavbarAssignmentList() {
   const navigate = useNavigate();
@@ -19,7 +20,9 @@ function NavbarAssignmentList() {
             placeholder="Search..."
             className="w-full md:w-[320px] h-[40px] p-3 md:mr-4 mb-2 md:mb-0 text-sm rounded-md border border-gray-300 bg-white focus:ring-blue-500 focus:border-blue-500"
           />
-          <Button text="+ Add Assignment" />
+          <Link to="/admin/addassignment">
+            <Button text="+ Add Assignment" />
+          </Link>
         </div>
       </nav>
     </div>

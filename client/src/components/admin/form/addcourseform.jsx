@@ -1,15 +1,23 @@
 import { useState, useEffect, useRef } from "react";
 import upload from "../../../assets/image/upload.png";
+import pdf from "../../../assets/image/pdf.png";
 import AddCourseSubLessonTable from "../addcourse-sublesson";
 import axios from "axios";
 import NavbarAddCourse from "../navbar/navbar-addcourse"; // Adjust the import path as needed
+import supabase from "../../../utils/supabaseClient";
+import { v4 as uuidv4 } from "uuid";
+import { useNavigate } from "react-router-dom";
 
 function AddCourseFrom() {
-
-  const [file,setFile] = useState("");
-  const [previewUrl, setPreviewUrl] = useState('');
-
+  const navigate = useNavigate();
+  const [file, setFile] = useState("");
+  const [pdfFile, setPdfFileUpload] = useState(" ");
+  const [previewUrl, setPreviewUrl] = useState("");
+  const [pdfUrl, setPdfUrl] = useState("");
+  const [previewVideoUrl, setPreviewVideoUrl] = useState("");
   const [courses, setCourses] = useState(" ");
+  const [videoFile, setVideoFileState] = useState("");
+  const [videoPreviewUrl, setVideoPreviewUrl] = useState("");
   const [createForm, setCreateForm] = useState({
     coursename: " ",
     price: " ",
@@ -18,6 +26,7 @@ function AddCourseFrom() {
     courselearningtime: " ",
     videofile: " ",
     imagefile: " ",
+    pdfFile: " ",
   });
 
   const formRef = useRef(null);
@@ -43,21 +52,38 @@ function AddCourseFrom() {
   const createCourse = async (e) => {
     e.preventDefault();
 
-    
-    const res = await axios.post("http://localhost:4000/courses", createForm);
+    try {
+      // Upload the image before submitting the form
+      const imageUrl = await UploadPreviewImage(file);
+      const pdfFileUrl = await UploadPDF(pdfFile);
+      const videoUrl = await uploadVideoFile(videoFile);
 
-    //*setCourses([...courses, res.data.course])
-    console.log(res);
+      const formData = {
+        ...createForm,
+        imagefile: imageUrl,
+        pdffile: pdfFileUrl,
+        videofile: videoUrl,
+      };
 
-    setCreateForm({
-      coursename: " ",
-      price: " ",
-      description: " ",
-      coursesummary: " ",
-      courselearningtime: " ",
-      videofile: " ",
-      imagefile: " ",
-    });
+      const res = await axios.post("http://localhost:4000/courses", formData);
+
+      console.log(res);
+
+      setCreateForm({
+        coursename: " ",
+        price: " ",
+        description: " ",
+        coursesummary: " ",
+        courselearningtime: " ",
+        videofile: " ",
+        imagefile: " ",
+        pdffile: " ",
+      });
+      // navigate("/admin/courselist");
+    } catch (error) {
+      console.error("Error creating course:", error);
+      alert("Failed to create course. Please try again.");
+    }
   };
 
   const deletecourse = async (_id) => {
@@ -74,32 +100,196 @@ function AddCourseFrom() {
     if (formRef.current) {
       formRef.current.requestSubmit(); // Trigger form submission
     }
+    alert("Add course complete");
   };
 
-  /*const setImgFile = (e)=>{
-    console.log(e.target.files[0])
-    setFile(e.target.files[0])
+  // Replace any non-alphanumeric characters in the course name with underscores
+  const sanitizeFileName = (name) => {
+    return name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
+  };
 
-  }*/
-    const setImgFile = (e) => {
-      const selectedFile = e.target.files[0];
-      if (!selectedFile) {
-        return;
+  async function UploadPreviewImage(file) {
+    try {
+      if (!file) {
+        throw new Error("You must select an image to upload.");
       }
-      setFile(selectedFile);
-  
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        setPreviewUrl(fileReader.result);
-      };
-      fileReader.readAsDataURL(selectedFile);
-  
-      // Logging file details
-      console.log("Selected File:", selectedFile);
-      console.log("File Type:", selectedFile.type);
-      console.log("File Size:", selectedFile.size);
+      const fileExt = file.name.split(".").pop();
+      const sanitizedCourseName = sanitizeFileName(
+        createForm.coursename.trim()
+      );
+      const fileName = `${uuidv4()}.${fileExt}`;
+      const filePath = `course/${sanitizedCourseName}/cover_img/${fileName}`;
+      const { error: uploadError } = await supabase.storage
+        .from("course")
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+      const { error: urlError } = supabase.storage
+        .from("course")
+        .getPublicUrl(filePath);
+
+      if (urlError) {
+        throw urlError;
+      }
+
+      const profileUrl = supabase.storage.from("course").getPublicUrl(filePath)
+        .data.publicUrl;
+
+      return profileUrl;
+    } catch (error) {
+      alert(error.message);
+      throw error;
+    }
+  }
+
+  const setImgFile = (e) => {
+    const selectedFile = e.target.files[0];
+    if (!selectedFile) {
+      return;
+    }
+    setFile(selectedFile);
+
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      setPreviewUrl(fileReader.result);
     };
-  
+    fileReader.readAsDataURL(selectedFile);
+
+    // Logging file details
+    console.log("Selected File:", selectedFile);
+    console.log("File Type:", selectedFile.type);
+    console.log("File Size:", selectedFile.size);
+  };
+
+  //uplaod pdf file
+
+  async function UploadPDF(pdfFile) {
+    try {
+      if (!pdfFile) {
+        throw new Error("You must select a PDF file to upload.");
+      }
+
+      const sanitizedFileName = sanitizeFileName(createForm.coursename.trim());
+      const fileName = `${uuidv4()}.pdf`; // Use .pdf extension for PDF files
+      const filePath = `course/${sanitizedFileName}/pdf_files/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("course")
+        .upload(filePath, pdfFile);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data, error: urlError } = await supabase.storage
+        .from("course")
+        .getPublicUrl(filePath);
+
+      if (urlError) {
+        throw urlError;
+      }
+
+      const pdfUrl = data.publicUrl;
+      return pdfUrl;
+    } catch (error) {
+      alert(error.message);
+      throw error;
+    }
+  }
+
+  const setPdfFile = (e) => {
+    const selectedFile = e.target.files[0];
+    if (!selectedFile) {
+      return;
+    }
+
+    /*UploadPDF(selectedFile)
+      .then((pdfUrl) => {
+
+        console.log("Uploaded PDF URL:", pdfUrl);
+      })
+      .catch((error) => {
+        console.error("PDF Upload Error:", error);
+      });
+
+    console.log("Selected PDF File:", selectedFile);
+    console.log("File Type:", selectedFile.type);
+    console.log("File Size:", selectedFile.size);
+  };*/
+
+    setPdfFileUpload(selectedFile);
+
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      setPdfUrl(fileReader.result);
+    };
+    fileReader.readAsDataURL(selectedFile);
+
+    // Logging file details
+    console.log("Selected File:", selectedFile);
+    console.log("File Type:", selectedFile.type);
+    console.log("File Size:", selectedFile.size);
+  };
+
+  async function uploadVideoFile(file) {
+    try {
+      if (!file) {
+        throw new Error("You must select a video to upload.");
+      }
+      const fileExt = file.name.split(".").pop();
+      const sanitizedCourseName = sanitizeFileName(
+        createForm.coursename.trim()
+      );
+      const fileName = `${uuidv4()}.${fileExt}`;
+      const filePath = `course/${sanitizedCourseName}/preview_video/${fileName}`;
+      const { error: uploadError } = await supabase.storage
+        .from("course")
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+      const { error: urlError } = supabase.storage
+        .from("course")
+        .getPublicUrl(filePath);
+
+      if (urlError) {
+        throw urlError;
+      }
+
+      const videoUrl = supabase.storage.from("course").getPublicUrl(filePath)
+        .data.publicUrl;
+
+      return videoUrl;
+    } catch (error) {
+      alert(error.message);
+      throw error;
+    }
+  }
+  //Video preview
+  const handleVideoFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (!selectedFile) {
+      return;
+    }
+    setVideoFileState(selectedFile);
+
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      setVideoPreviewUrl(fileReader.result);
+    };
+    fileReader.readAsDataURL(selectedFile);
+
+    // Logging file details
+    console.log("Selected File:", selectedFile);
+    console.log("File Type:", selectedFile.type);
+    console.log("File Size:", selectedFile.size);
+  };
+
+
+
 
   return (
     <div>
@@ -177,7 +367,7 @@ function AddCourseFrom() {
             </div>
 
             <div className="my-10 gap-8 ">
-              <label className="w-full h-[24px] text-black ">
+              <label className="w-full h-[24px] text-black">
                 Cover image *
               </label>
               <label
@@ -200,7 +390,11 @@ function AddCourseFrom() {
                     src={previewUrl}
                     alt="Preview"
                     className="absolute m-auto rounded-md "
-                    style={{ maxWidth: "240px", maxHeight: "240px", objectFit: "cover" }}
+                    style={{
+                      maxWidth: "240px",
+                      maxHeight: "240px",
+                      objectFit: "cover",
+                    }}
                   />
                 )}
               </label>
@@ -222,7 +416,21 @@ function AddCourseFrom() {
                   className="hidden"
                   accept="video/mp4"
                   id="input"
-                ></input>
+                  onChange={handleVideoFileChange}
+                />
+                {videoPreviewUrl && (
+                  <video
+                    src={videoPreviewUrl}
+                    alt="Preview"
+                    className="absolute m-auto rounded-md"
+                    style={{
+                      maxWidth: "240px",
+                      maxHeight: "240px",
+                      objectFit: "cover",
+                    }}
+                    controls
+                  />
+                )}
               </label>
             </div>
             <div className="my-10 gap-8 ">
@@ -230,19 +438,42 @@ function AddCourseFrom() {
                 Attach File (Optional) *
               </label>
               <label
-                className="r w-[160px] h-[192px] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
+                className=" w-[160px] h-[192px] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
                 id="drop"
               >
-                <span>
-                  <img src={upload} alt="upload" />
-                </span>
+                {!pdfUrl ? (
+                  <span>
+                    <img src={upload} alt="upload" />
+                  </span>
+                ) : (
+                  <div className="mt-4 text-blue-400">
+                    <a href={pdfUrl} target="_blank" rel="noopener noreferrer">
+                      <img
+                        src={pdf}
+                        className="w-full h-full rounded-md justify-center"
+                        alt="PDF Preview"
+                      />
+                    </a>
+                  </div>
+                )}
+
                 <input
                   type="file"
-                  name="file_upload"
+                  name="pdffile"
                   className="hidden"
                   accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                   id="input"
-                ></input>
+                  onChange={setPdfFile}
+                />
+                {pdfUrl && (
+                  <div className="mt-4 text-blue-400">
+                    <a
+                      href={pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    ></a>
+                  </div>
+                )}
               </label>
             </div>
           </form>

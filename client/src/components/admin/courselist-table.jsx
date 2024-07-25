@@ -71,8 +71,8 @@ function CourseListTable() {
                   {item.courselearningtime}
                 </td>
                 <td className="w-[105px] text-left">{item.price}</td>
-                <td className="w-[188px] text-left"></td>
-                <td className="w-[188px] text-left"></td>
+                <td className="w-[188px] text-left">{item.createddate}</td>
+                <td className="w-[188px] text-left">{item.updateddate}</td>
                 <td className="w-[120px] text-left">
                   <button onClick={() => deleteCourse(item.courseid)}>
                     <img src={bin} alt="delete" />
