@@ -314,6 +314,7 @@ adminRouter.get("/assignments/:id", async (req, res) => {
 //addLesson and sublesson
 adminRouter.post("/:courseid/lesson", async (req, res) => {
   const sublessondate = new Date();
+ 
   let newModule;
   const courseId = req.params.courseid;
   try {
@@ -322,14 +323,15 @@ adminRouter.post("/:courseid/lesson", async (req, res) => {
       returning *`,
       [courseId, req.body.modulename]
     );
-    req.body.sublessonname.forEach(async (v, i) => {
+    req.body.sublessonname.forEach(async (value, i) => {
+      
       try {
         await connectionPool.query(
           `
           insert into sublesson (moduleid, sublessonname, videofile, sublessondate)
           values ($1,$2, $3, $4)
           `,
-          [newModule.rows[0].moduleid, v, null, sublessondate]
+          [newModule.rows[0].moduleid, value, null, sublessondate]
         );
       } catch (error) {
         console.log(error);
