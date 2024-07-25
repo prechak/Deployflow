@@ -61,6 +61,9 @@ export default {
         shadow1: "2px 2px 12px 0 rgba(0, 0, 0, 0.08)",
         shadow2: "2px 2px 12px 0 rgba(64, 50, 133, 0.12)",
       },
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
+      },
     },
   },
   plugins: [],

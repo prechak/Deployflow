@@ -7,6 +7,7 @@ import {
   ListItemText,
   Collapse,
   LinearProgress,
+  Typography,
 } from "@mui/material";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
@@ -104,6 +105,7 @@ const Sidebar = () => {
     scope: false,
   });
 
+  const [videoStates, setVideoStates] = useState({});
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isVideoEnded, setIsVideoEnded] = useState(false);
   const [progress, setProgress] = useState(0); // Initial progress value
@@ -112,6 +114,8 @@ const Sidebar = () => {
   const [selectedVideoUrl, setSelectedVideoUrl] = useState("");
   const [currentModuleName, setCurrentModuleName] = useState("");
   const [currentSubmoduleName, setCurrentSubmoduleName] = useState("");
+  const [watchedVideos, setWatchedVideos] = useState(new Set());
+  const [totalVideos, setTotalVideos] = useState(0);
 
   const handleToggle = (section) => {
     setOpenSections((prevOpenSections) => ({
@@ -124,7 +128,7 @@ const Sidebar = () => {
 
   useEffect(() => {
     const videoElement = videoRef.current;
-    if (!videoElement) return; // Exit if videoRef.current is null
+    if (!videoElement) return;
 
     const updateProgress = () => {
       if (videoElement.duration > 0) {
@@ -134,11 +138,35 @@ const Sidebar = () => {
       }
     };
 
-    const handlePlay = () => setIsVideoPlaying(true);
+    const handlePlay = () => {
+      setIsVideoPlaying(true);
+      setVideoStates((prevState) => ({
+        ...prevState,
+        [selectedSubmodule]: { isPlaying: true, isEnded: false },
+      }));
+    };
+
     const handleEnded = () => {
       setIsVideoPlaying(false);
       setIsVideoEnded(true);
-      setProgress(100); // Set progress to 100% when the video ends
+      setProgress(100);
+
+      setVideoStates((prevState) => ({
+        ...prevState,
+        [selectedSubmodule]: { isPlaying: false, isEnded: true },
+      }));
+
+      setWatchedVideos((prevWatchedVideos) => {
+        const newWatchedVideos = new Set(prevWatchedVideos);
+        newWatchedVideos.add(selectedVideoUrl);
+        return newWatchedVideos;
+      });
+
+      const { nextSubmoduleId, nextVideoUrl } = getNextVideoDetails();
+      if (nextVideoUrl) {
+        setSelectedSubmodule(nextSubmoduleId);
+        setSelectedVideoUrl(nextVideoUrl);
+      }
     };
 
     videoElement.addEventListener("play", handlePlay);
@@ -146,13 +174,65 @@ const Sidebar = () => {
     videoElement.addEventListener("timeupdate", updateProgress);
 
     return () => {
-      if (videoElement) {
-        videoElement.removeEventListener("play", handlePlay);
-        videoElement.removeEventListener("ended", handleEnded);
-        videoElement.removeEventListener("timeupdate", updateProgress);
-      }
+      videoElement.removeEventListener("play", handlePlay);
+      videoElement.removeEventListener("ended", handleEnded);
+      videoElement.removeEventListener("timeupdate", updateProgress);
     };
-  }, [selectedVideoUrl]); // Re-run effect when `selectedVideoUrl` changes
+  }, [selectedVideoUrl]);
+
+  useEffect(() => {
+    if (sidebarData.modules) {
+      const allVideos = sidebarData.modules.flatMap((module) =>
+        module.submodules.flatMap((submodule) =>
+          submodule.videos.map((video) => video.videourl)
+        )
+      );
+      setTotalVideos(allVideos.length);
+    }
+  }, [sidebarData]);
+
+  useEffect(() => {
+    if (totalVideos > 0) {
+      setProgress((watchedVideos.size / totalVideos) * 100);
+    }
+  }, [watchedVideos, totalVideos]);
+
+  const getNextVideoDetails = () => {
+    let nextSubmoduleId = null;
+    let nextVideoUrl = null;
+
+    if (selectedSubmodule && sidebarData.modules) {
+      for (let i = 0; i < sidebarData.modules.length; i++) {
+        const module = sidebarData.modules[i];
+        for (let j = 0; j < module.submodules.length; j++) {
+          const submodule = module.submodules[j];
+          if (submodule.submoduleid === selectedSubmodule) {
+            if (j < module.submodules.length - 1) {
+              // Next submodule in the current module
+              const nextSubmodule = module.submodules[j + 1];
+              if (nextSubmodule.videos.length > 0) {
+                nextSubmoduleId = nextSubmodule.submoduleid;
+                nextVideoUrl = nextSubmodule.videos[0].videourl;
+              }
+            } else if (i < sidebarData.modules.length - 1) {
+              // First submodule of the next module
+              const nextModule = sidebarData.modules[i + 1];
+              if (nextModule.submodules.length > 0) {
+                nextSubmoduleId = nextModule.submodules[0].submoduleid;
+                if (nextModule.submodules[0].videos.length > 0) {
+                  nextVideoUrl = nextModule.submodules[0].videos[0].videourl;
+                }
+              }
+            }
+            break;
+          }
+        }
+        if (nextSubmoduleId) break;
+      }
+    }
+
+    return { nextSubmoduleId, nextVideoUrl };
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -185,25 +265,51 @@ const Sidebar = () => {
         setCurrentModuleName(module.modulename);
       }
       if (submodule && submodule.videos.length > 0) {
-        setCurrentSubmoduleName(module.title);
+        setCurrentSubmoduleName(submodule.title);
         setSelectedVideoUrl(submodule.videos[0].videourl);
       } else {
         setSelectedVideoUrl("");
       }
+
+      // Update the openSections to expand the current module
+      setOpenSections((prevOpenSections) => ({
+        ...prevOpenSections,
+        [module.moduleid]: true,
+      }));
     }
   }, [selectedSubmodule, sidebarData]);
 
+  const handleSubmoduleClick = (submoduleid, moduleid) => {
+    setSelectedSubmodule(submoduleid);
+    // Ensure the module containing the submodule is expanded
+    setOpenSections((prevOpenSections) => ({
+      ...prevOpenSections,
+      [moduleid]: true,
+    }));
+  };
+
   const { coursename, coursedescription, modules } = sidebarData;
+
   const selectedSubmoduleData = sidebarData.modules
     ?.flatMap((module) => module.submodules)
     .find((submodule) => submodule.submoduleid === selectedSubmodule);
 
+  const getVideoIcon = (submoduleid) => {
+    const state = videoStates[submoduleid] || {
+      isPlaying: false,
+      isEnded: false,
+    };
+    if (state.isEnded) return <FinishedIcon />;
+    if (state.isPlaying) return <PlayingIcon />;
+    return <NotPlayingIcon />;
+  };
+
   return (
     <>
       <Navbarnonuser />
-      <div className="flex flex-col md:flex-row mx-4 lg:mx-20 xl:mx-40 mt-[128px] md:mt-[188px] min-h-screen ">
+      <div className="flex flex-col md:flex-row mx-4 lg:mx-20 xl:mx-40 mt-[128px] md:mt-[188px] min-h-screen">
         {/* Sidebar */}
-        <div className="md:w-1/4 bg-white text-black shadow-md h-auto md:h-screen p-4">
+        <div className="md:w-1/4 bg-white text-black shadow-md h-auto md:h-screen p-4 font-sans">
           <div className="mb-6">
             <h2 className="text-sm font-bold text-orange-500">Course</h2>
             <h3 className="text-2xl font-bold mt-4">{coursename}</h3>
@@ -231,8 +337,9 @@ const Sidebar = () => {
                     onClick={() => handleToggle(module.moduleid)}
                   >
                     <ListItemText
+                      disableTypography
                       primary={`${module.modulename}`}
-                      className="text-lg font-bold"
+                      className="text-base font-sans"
                     />
                     {openSections[module.moduleid] ? (
                       <ExpandLess />
@@ -246,26 +353,42 @@ const Sidebar = () => {
                     unmountOnExit
                   >
                     <List component="div" disablePadding>
-                      {module.submodules.map((submodule) => (
-                        <ListItem
-                          button
-                          key={submodule.submoduleid}
-                          onClick={() =>
-                            setSelectedSubmodule(submodule.submoduleid)
-                          }
-                        >
-                          <ListItemIcon>
-                            {isVideoEnded ? (
-                              <FinishedIcon />
-                            ) : isVideoPlaying ? (
-                              <PlayingIcon />
-                            ) : (
-                              <NotPlayingIcon />
-                            )}
-                          </ListItemIcon>
-                          <ListItemText primary={submodule.title} />
-                        </ListItem>
-                      ))}
+                      {module.submodules.map((submodule) => {
+                        const isCurrentSubmodule =
+                          selectedSubmodule === submodule.submoduleid;
+                        return (
+                          <ListItem
+                            button
+                            key={submodule.submoduleid}
+                            onClick={() =>
+                              handleSubmoduleClick(
+                                submodule.submoduleid,
+                                module.moduleid
+                              )
+                            }
+                            style={{
+                              backgroundColor: isCurrentSubmodule
+                                ? "#F6F7FC"
+                                : "transparent",
+                              borderRadius: "8px", // Adjust the radius as needed
+                            }}
+                          >
+                            <ListItemIcon>
+                              {getVideoIcon(submodule.submoduleid)}
+                            </ListItemIcon>
+                            <ListItemText
+                              disableTypography
+                              primary={submodule.title}
+                              style={{
+                                color: isCurrentSubmodule
+                                  ? "#646D89"
+                                  : "#646D89",
+                                fontFamily: "Inter",
+                              }} // Optional: Change text color for better contrast
+                            />
+                          </ListItem>
+                        );
+                      })}
                     </List>
                   </Collapse>
                 </div>
@@ -282,6 +405,7 @@ const Sidebar = () => {
             {selectedVideoUrl && (
               <video
                 ref={videoRef}
+                autoPlay
                 width="739"
                 height="460"
                 src={selectedVideoUrl}
