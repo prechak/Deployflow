@@ -214,7 +214,7 @@ function ProfileForm() {
       );
 
       alert("Profile updated successfully");
-      // window.location.reload();
+      window.location.reload();
     } catch (error) {
       console.error("Error updating profile", error);
       alert("Error updating profile");
