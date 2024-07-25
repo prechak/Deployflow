@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import {
   List,
@@ -86,6 +87,7 @@ const FinishedIcon = () => (
 );
 
 const Sidebar = () => {
+  const { courseid } = useParams();
   const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
     height: 10,
     borderRadius: 5,
@@ -234,24 +236,49 @@ const Sidebar = () => {
     return { nextSubmoduleId, nextVideoUrl };
   };
 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const response = await axios.get(
+  //       `http://localhost:4000/courseinfo?courseid=1`
+  //     );
+  //     const data = response.data;
+  //     setSidebarData(data);
+
+  //     // Set the first submodule as selected by default
+  //     const firstSubmodule = data.modules.flatMap(
+  //       (module) => module.submodules
+  //     )[0];
+  //     if (firstSubmodule) {
+  //       setSelectedSubmodule(firstSubmodule.submoduleid);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
+
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get(
-        `http://localhost:4000/courseinfo?courseid=1`
-      );
-      const data = response.data;
-      setSidebarData(data);
+      try {
+        const response = await axios.get(
+          `http://localhost:4000/courseinfo/${courseid}`
+        );
+        const data = response.data;
+        setSidebarData(data);
 
-      // Set the first submodule as selected by default
-      const firstSubmodule = data.modules.flatMap(
-        (module) => module.submodules
-      )[0];
-      if (firstSubmodule) {
-        setSelectedSubmodule(firstSubmodule.submoduleid);
+        // Set the first submodule as selected by default
+        const firstSubmodule = data.modules.flatMap(
+          (module) => module.submodules
+        )[0];
+        if (firstSubmodule) {
+          setSelectedSubmodule(firstSubmodule.submoduleid);
+        }
+        console.log(response);
+      } catch (error) {
+        console.error("Error fetching course data:", error);
       }
     };
+
     fetchData();
-  }, []);
+  }, [courseid]);
 
   useEffect(() => {
     if (selectedSubmodule) {
