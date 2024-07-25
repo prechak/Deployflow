@@ -262,6 +262,7 @@ courseRouter.post("/", async (req, res) => {
     courselearningtime,
     videofile,
     imagefile,
+    pdffile,
   } = req.body;
 
   try {
@@ -274,8 +275,8 @@ courseRouter.post("/", async (req, res) => {
 
     const result = await connectionPool.query(
       `
-        INSERT INTO courses (coursename, price, description, coursesummary, courselearningtime, videofile, imagefile)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        INSERT INTO courses (coursename, price, description, coursesummary, courselearningtime, videofile, imagefile, pdffile)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING *`,
       [
         coursename,
@@ -285,6 +286,7 @@ courseRouter.post("/", async (req, res) => {
         courselearningtime,
         videofile,
         imagefile,
+        pdffile,
       ]
     );
 
@@ -353,8 +355,16 @@ courseRouter.delete("/:id", async (req, res) => {
 
 courseRouter.put("/:id", async (req, res) => {
   const courseIdFromClient = req.params.id;
-  const { coursename, description, price, coursesummary, courselearningtime } =
-    req.body;
+  const {
+    coursename,
+    description,
+    price,
+    coursesummary,
+    courselearningtime,
+    videofile,
+    imagefile,
+    pdffile,
+  } = req.body;
 
   if (
     !coursename ||
@@ -373,7 +383,10 @@ courseRouter.put("/:id", async (req, res) => {
            description = $3, 
            price = $4, 
            coursesummary = $5,
-           courselearningtime = $6
+           courselearningtime = $6,
+          videofile = $7,
+          imagefile = $8,
+          pdffile = $9,
        WHERE courseid = $1`,
       [
         courseIdFromClient,
@@ -382,6 +395,9 @@ courseRouter.put("/:id", async (req, res) => {
         price,
         coursesummary,
         courselearningtime,
+        videofile,
+        imagefile,
+        pdffile,
       ]
     );
 
