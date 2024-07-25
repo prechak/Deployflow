@@ -14,7 +14,7 @@ function ProfileForm() {
   const [avatarUrl, setAvatarUrl] = useState("");
   const [formData, setFormData] = useState({
     name: "",
-    dateOfBirth: "",
+    age: "",
     educationalBackground: "",
     email: "",
     avatarUrl: "",
@@ -32,11 +32,16 @@ function ProfileForm() {
       const result = await axios.get(
         `http://localhost:4000/profiles/${UserIdFromLocalStorage}`
       );
+      const dateOfBirth = result.data.age;
+      // Format the date as yyyy-mm-dd if necessary
+      const formattedDateOfBirth = new Date(dateOfBirth)
+        .toISOString()
+        .split("T")[0];
       setUserData(result.data);
       setFormData((prevData) => ({
         ...prevData,
         name: result.data.fullname,
-        dateOfBirth: result.data.age,
+        age: formattedDateOfBirth || "", // Use formatted date
         educationalBackground: result.data.educationalbackground || "",
         email: result.data.email || "",
         avatarUrl: result.data.profilepicture || "",
@@ -153,25 +158,39 @@ function ProfileForm() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    validateField(name, value);
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    if (name === "age") {
+      const formattedDate = new Date(value).toISOString().split("T")[0]; // Format date to yyyy-mm-dd
+      setFormData((prevData) => ({ ...prevData, [name]: formattedDate }));
+    } else {
+      validateField(name, value);
+      setFormData((prevData) => ({ ...prevData, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Perform final validation before submission
     if (errors.name || errors.educationalBackground) {
       alert("Please correct the errors before submitting.");
       return;
     }
+
     try {
+      // Extract the date part from formData.dateOfBirth and set time to 17:00:00.000Z
+      const date = new Date(formData.age);
+      date.setUTCHours(17, 0, 0, 0); // Set time to 17:00:00.000Z
+
+      // Convert dateOfBirth to ISO 8601 format
+      const formattedDateOfBirth = date.toISOString();
+      console.log("Formatted Date of Birth:", formattedDateOfBirth); // Debug log
+
       const updatedProfile = {
         fullname: formData.name,
-        dateOfBirth: formData.dateOfBirth,
+        age: formattedDateOfBirth, // Use ISO 8601 format
         educationalbackground: formData.educationalBackground,
         email: formData.email,
         profilepicture: formData.avatarUrl,
       };
+      console.log(updatedProfile);
 
       await axios.put(
         `http://localhost:4000/profiles/${UserIdFromLocalStorage}/update`,
@@ -179,7 +198,7 @@ function ProfileForm() {
       );
 
       alert("Profile updated successfully");
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.error("Error updating profile", error);
       alert("Error updating profile");
@@ -189,7 +208,7 @@ function ProfileForm() {
   return (
     <>
       <form
-        className="flex flex-col md:flex-row justify-center items-center md:gap-[3rem] mb-[14rem]"
+        className="flex flex-col md:flex-row justify-center items-center md:gap-[3rem] mb-[1rem]"
         onSubmit={handleSubmit}
       >
         <div className="py-8">
@@ -266,14 +285,15 @@ function ProfileForm() {
               Date of Birth
               <p>
                 <input
-                  id="date"
-                  name="dateOfBirth"
-                  value={formData.dateOfBirth.split("T")[0].replace(/-/g, "/")}
+                  id="age"
+                  name="age"
+                  type="date"
+                  value={formData.age}
                   onChange={handleChange}
                   className="border border-gray-300 text-gray-900 text-sm rounded-lg outline-Blue-400 outline-2 block w-full p-3"
                   placeholder="Date of Birth"
+                  format="true"
                   required
-                  disabled
                 />
               </p>
             </label>
