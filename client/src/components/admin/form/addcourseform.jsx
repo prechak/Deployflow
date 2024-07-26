@@ -18,6 +18,7 @@ function AddCourseFrom() {
   const [previewUrl, setPreviewUrl] = useState("");
   const [pdfUrl, setPdfUrl] = useState("");
   const [courses, setCourses] = useState(" ");
+  const [loading, setLoading] = useState(false);
   const [videoFile, setVideoFileState] = useState("");
   const [videoPreviewUrl, setVideoPreviewUrl] = useState("");
   const [createForm, setCreateForm] = useState({
@@ -53,7 +54,7 @@ function AddCourseFrom() {
 
   const createCourse = async (e) => {
     e.preventDefault();
-
+    setLoading(true); // Start the spinner
     try {
       // Upload the image before submitting the form
       const imageUrl = await UploadPreviewImage(file);
@@ -82,11 +83,13 @@ function AddCourseFrom() {
         pdffile: "",
       });
       console.log(setCreateForm);
-      alert("Add course complete");
-      // navigate("/admin/courselist");
+      alert("Add course successfully");
+      setLoading(false);
+      navigate("/admin/courselist");
     } catch (error) {
       console.error("Error creating course:", error);
       alert("Failed to create course. Please try again.");
+      setLoading(false);
     }
   };
 
@@ -167,7 +170,6 @@ function AddCourseFrom() {
   };
 
   //uplaod pdf file
-
   async function UploadPDF(pdfFile) {
     try {
       if (!pdfFile) {
@@ -307,6 +309,55 @@ function AddCourseFrom() {
 
   return (
     <div>
+      {/* Loading Section */}
+      {loading && (
+        <div className="spinner-container">
+          <style>
+            {`
+            @keyframes spin {
+              to {
+                transform: rotate(360deg);
+              }
+            }
+            .spin {
+              transform-origin: center;
+              animation: spin 2s linear infinite;
+            }
+            .spinner-container {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: rgba(255, 255, 255, 0.8);
+              z-index: 1000;
+            }
+          `}
+          </style>
+          <svg
+            viewBox="0 0 800 800"
+            xmlns="http://www.w3.org/2000/svg"
+            width="100"
+            height="100"
+          >
+            <circle
+              className="spin"
+              cx="400"
+              cy="400"
+              fill="none"
+              r="220"
+              strokeWidth="50"
+              stroke="#595959"
+              strokeDasharray="683 1400"
+              strokeLinecap="round"
+            />
+          </svg>
+          <p className="text-black">Creating Course...</p>
+        </div>
+      )}
       <NavbarAddCourse onCreateCourseClick={handleCreateCourseClick} />
       <div className="mt-8 mx-8 w-[1120px] bg-white rounded-md border-2">
         <div className="mx-8 p-8">
@@ -317,8 +368,8 @@ function AddCourseFrom() {
                 Course name *
               </label>
               <input
-                className="w-full h-[48px] bg-white text-black border-2 rounded-md"
-                placeholder="     Place Holder"
+                className="w-full h-[48px] bg-white text-black border-2 rounded-md pl-2"
+                placeholder="Course name"
                 value={createForm.coursename}
                 name="coursename"
                 type="text"
@@ -331,8 +382,8 @@ function AddCourseFrom() {
                   Price *
                 </label>
                 <input
-                  className="w-full h-[48px] bg-white text-black border-2 rounded-md"
-                  placeholder="       Place Holder"
+                  className="w-full h-[48px] bg-white text-black border-2 rounded-md pl-2"
+                  placeholder="Price"
                   value={createForm.price}
                   name="price"
                   type="text"
@@ -344,8 +395,8 @@ function AddCourseFrom() {
                   Total learning time *
                 </label>
                 <input
-                  className="w-full h-[48px] bg-white text-black border-2 rounded-md"
-                  placeholder="   Place Holder"
+                  className="w-full h-[48px] bg-white text-black border-2 rounded-md pl-2"
+                  placeholder="Total learning time"
                   value={createForm.courselearningtime}
                   name="courselearningtime"
                   type="text"
@@ -358,8 +409,8 @@ function AddCourseFrom() {
                 Course summary *
               </label>
               <input
-                className="w-full h-[72px] bg-white text-black border-2 rounded-md"
-                placeholder="     Place Holder"
+                className="w-full h-[72px] bg-white text-black border-2 rounded-md pl-2"
+                placeholder="Course summary "
                 value={createForm.coursesummary}
                 name="coursesummary"
                 type="text"
@@ -372,8 +423,8 @@ function AddCourseFrom() {
                 Course detail *
               </label>
               <textarea
-                className="w-full h-[192px] bg-white text-black border-2 rounded-md"
-                placeholder="     Place Holder"
+                className="w-full h-[192px] bg-white text-black border-2 rounded-md resize-none p-2"
+                placeholder="Course detail"
                 value={createForm.description}
                 name="description"
                 onChange={updateCreateFormField}
