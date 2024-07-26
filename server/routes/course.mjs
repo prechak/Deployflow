@@ -384,9 +384,9 @@ courseRouter.put("/:id", async (req, res) => {
            price = $4, 
            coursesummary = $5,
            courselearningtime = $6,
-          videofile = $7,
-          imagefile = $8,
-          pdffile = $9,
+           videofile = $7,
+           imagefile = $8,
+           pdffile = $9
        WHERE courseid = $1`,
       [
         courseIdFromClient,
