@@ -24,7 +24,7 @@ function AddCourseSubLessonTable() {
         <div className="text-lg justify-center">Lesson</div>
         <div className="justify-center">
           <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition w-[171px] h-[60px]">
-            <Link to="/admin/addsublesson">+Add lesson</Link>
+            <Link to="/admin/:courseId/addsublesson">+Add lesson</Link>
           </button>
         </div>
       </div>
@@ -52,7 +52,7 @@ function AddCourseSubLessonTable() {
                     <img src={bin} />
                   </button>
                   <button>
-                    <Link to="/admin/addsublesson">
+                    <Link to="/admin/:lessonId/editsublesson">
                       <img src={edit} />
                     </Link>
                   </button>

@@ -2,16 +2,16 @@ import { useForm, useFieldArray, Controller } from "react-hook-form";
 import Uploadvideo from "../../../assets/image/Uploadvideo.png";
 import NavbarAddSubLesson from "../navbar/navbar-addsublesson";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import drag1 from "../../../assets/icons/admin/drag1.png";
 import { useState } from "react";
 import supabase from "../../../utils/supabaseClient";
 import { v4 as uuidv4 } from "uuid";
 
 function AddSubLessonFrom() {
-  const [videoFile, setVideoFileState] = useState("");
-  const [videoPreviewUrl, setVideoPreviewUrl] = useState("");
-  const { control, handleSubmit, register, reset } = useForm({
+  const [videoFiles, setVideoFiles] = useState([]);
+  const [videoPreviewUrls, setVideoPreviewUrls] = useState([]);
+  const { control, handleSubmit, register, reset, getValues } = useForm({
     defaultValues: {
       lessonName: "",
       subLessons: [{ name: "" }],
@@ -20,28 +20,42 @@ function AddSubLessonFrom() {
   const { fields, append, remove } = useFieldArray({
     control,
     name: "subLessons",
-    vname: "videofile",
   });
 
   const params = useParams();
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
+    
     try {
-      // Upload the image before submitting the form
-      const videoUrl = await uploadVideoFile(videoFile);
+      // Upload videos and get URLs
+      const videoUrls = await Promise.all(
+        videoFiles.map((file) => uploadVideoFile(file))
+      );
+      // Add video URLs to each sub-lesson
+      data.subLessons = data.subLessons.map((subLesson, index) => ({
+        ...subLesson,
+        videoUrl: videoUrls[index],
+      }));
+      console.log(data);
+      // Prepare data to send
       const videoData = {
-        videofile: videoUrl,
+        videofile: videoUrls,
       };
-
+      // console.log(videoUrls);
+      // console.log(videoData);
+      // Send data to backend
       await axios.post(
         `http://localhost:4000/admin/${params.courseId}/lesson`,
-        videoData,
         {
           modulename: data.lessonName,
           sublessonname: data.subLessons.map((subLesson) => subLesson.name),
+          videos: data.subLessons.map((video)=> video.videoUrl),
         }
       );
+
       alert("Add Lesson and SubLesson Successfully");
+      navigate("/admin/courselist");
       reset("");
     } catch (error) {
       console.error(
@@ -49,22 +63,15 @@ function AddSubLessonFrom() {
         error
       );
     }
+    
   };
 
-  // Replace any non-alphanumeric characters in the course name with underscores
-  // const sanitizeFileName = (name) => {
-  //   return name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
-  // };
-  //===========Upload VDO section
   async function uploadVideoFile(file) {
     try {
       if (!file) {
         throw new Error("You must select a video to upload.");
       }
       const fileExt = file.name.split(".").pop();
-      // const sanitizedCourseName = sanitizeFileName(
-      //   createForm.coursename.trim()
-      // );
       const fileName = `${uuidv4()}.${fileExt}`;
       const filePath = `course/lesson/${fileName}`;
       const { error: uploadError } = await supabase.storage
@@ -92,23 +99,23 @@ function AddSubLessonFrom() {
     }
   }
 
-  const handleVideoFileChange = (e) => {
+  const handleVideoFileChange = (e, index) => {
     const selectedFile = e.target.files[0];
     if (!selectedFile) {
       return;
     }
-    setVideoFileState(selectedFile);
+
+    const newVideoFiles = [...videoFiles];
+    newVideoFiles[index] = selectedFile;
+    setVideoFiles(newVideoFiles);
 
     const fileReader = new FileReader();
     fileReader.onload = () => {
-      setVideoPreviewUrl(fileReader.result);
+      const newVideoPreviewUrls = [...videoPreviewUrls];
+      newVideoPreviewUrls[index] = fileReader.result;
+      setVideoPreviewUrls(newVideoPreviewUrls);
     };
     fileReader.readAsDataURL(selectedFile);
-
-    // Logging file details
-    console.log("Selected File:", selectedFile);
-    console.log("File Type:", selectedFile.type);
-    console.log("File Size:", selectedFile.size);
   };
 
   return (
@@ -120,7 +127,7 @@ function AddSubLessonFrom() {
         />
       </nav>
       <div className="mt-[50px] mx-8 w-[1120px] h-fit bg-white rounded-[16px] border-[1px] mb-[100px]">
-        <div className=" mx-8 p-8">
+        <div className="mx-8 p-8">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div>
               <div className="mx-[40px] w-[920px] h-[76px]">
@@ -147,7 +154,7 @@ function AddSubLessonFrom() {
               >
                 <div className="w-[888px] h-[292px] flex gap-[24px]">
                   <div className="w-[26px] h-[76px] text-[#C8CCDB]">
-                    <img src={drag1}></img>
+                    <img src={drag1} alt="drag icon" />
                   </div>
                   <div className="w-[747px] flex flex-col justify-center gap-[23px]">
                     <div className="flex flex-col gap-[4px]">
@@ -173,18 +180,18 @@ function AddSubLessonFrom() {
                         Video *
                       </h1>
                       <label className="cursor-pointer w-[160px] h-[160px] rounded-[8px] bg-Gray-200 flex items-center justify-center">
-                        <img src={Uploadvideo} />
+                        <img src={Uploadvideo} alt="upload video icon" />
                         <input
                           type="file"
-                          name="videofile"
+                          name={`videofile-${index}`}
                           className="hidden"
                           accept="video/mp4"
-                          id="input"
-                          onChange={handleVideoFileChange}
+                          id={`input-${index}`}
+                          onChange={(e) => handleVideoFileChange(e, index)}
                         />
-                        {videoPreviewUrl && (
+                        {videoPreviewUrls[index] && (
                           <video
-                            src={videoPreviewUrl}
+                            src={videoPreviewUrls[index]}
                             alt="Preview"
                             className="absolute m-auto rounded-md"
                             style={{
@@ -198,7 +205,7 @@ function AddSubLessonFrom() {
                       </label>
                     </div>
                   </div>
-                  <div className=" w-[67px] h-[32px] text-center text-[16px] font-[700] text-Gray-500">
+                  <div className="w-[67px] h-[32px] text-center text-[16px] font-[700] text-Gray-500">
                     {index > 0 ? (
                       <button type="button" onClick={() => remove(index)}>
                         Delete
@@ -217,7 +224,6 @@ function AddSubLessonFrom() {
                 </div>
               </aside>
             ))}
-            ;
             <button
               className="mx-[40px] mt-[32px] border-[1px] border-Orange-500 shadow-md bg-white text-Orange-500 rounded-[12px] w-[208px] h-[60px] text-[16px] font-[700]"
               type="button"
@@ -225,6 +231,12 @@ function AddSubLessonFrom() {
             >
               + Add Sub-Lesson
             </button>
+            {/* <button
+              className="mx-[40px] mt-[32px] border-[1px] border-Blue-500 shadow-md bg-white text-Blue-500 rounded-[12px] w-[208px] h-[60px] text-[16px] font-[700]"
+              type="submit"
+            >
+              Submit
+            </button> */}
           </form>
         </div>
       </div>

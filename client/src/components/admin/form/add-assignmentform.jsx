@@ -108,10 +108,12 @@ function AddAssignmentForm() {
           Add Assignment
         </span>
         <div className="flex gap-4 pr-10">
-          <Link to="/admin/courselist">
+          <Link to="/admin/assignmentlist">
             <CancelButton text="Cancel" />
           </Link>
-          <SubButton text="Create" onClick={handleSubmit} />
+          <Link to="/admin/assignmentlist">
+            <SubButton text="Create" onClick={handleSubmit} />
+          </Link>
         </div>
       </nav>
 
