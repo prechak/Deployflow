@@ -4,8 +4,6 @@ import Background from "../../components/user-profile/background";
 import ProfileFrom from "../../components/user-profile/profile-form";
 
 function EditProfileForm() {
-<<<<<<< HEAD
-=======
   const [userData, setUserData] = useState({});
   const { UserIdFromLocalStorage } = useAuth();
   const [uploading, setUploading] = useState(false);
@@ -210,7 +208,6 @@ function EditProfileForm() {
     }
   };
 
->>>>>>> 4179cb5 (feat: new validate logic)
   return (
     <>
       <div className="sticky top-0 bg-white z-40">
