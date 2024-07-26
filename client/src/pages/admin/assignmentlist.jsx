@@ -9,11 +9,16 @@ function AssignmentListAdmin() {
       <Sidebar />
       <div className="flex-1">
         <div>
-          <NavbarAssignmentList />
         </div>
+<<<<<<< HEAD
         <div className="p-4">{<Outlet />}</div>
         <main className="p-4">
           <AssignmentListTable />
+=======
+        <div >{<Outlet />}</div>
+        <main >
+            <AssignmentListTable />
+>>>>>>> 3ee855d (feat add lesson sublesson table)
         </main>
       </div>
     </div>

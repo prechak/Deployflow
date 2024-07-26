@@ -3,9 +3,12 @@ import axios from "axios";
 import edit from "../../assets/image/edit.png";
 import bin from "../../assets/image/Bin.png";
 import { Link } from "react-router-dom";
+import NavbarAssignmentList from "./navbar/navbar-assignmentlist";
 
 function AssignmentListTable() {
   const [assignments, setAssignments] = useState([]);
+  const [search, setSearch] = useState("");
+  console.log(search);
 
   useEffect(() => {
     fetchAssignments();
@@ -35,8 +38,9 @@ function AssignmentListTable() {
   };
 
   return (
-    <div className="m-12">
-      <table className="text-black text-sm">
+    <div>
+      <NavbarAssignmentList search={search} onSearchChange={setSearch}/>
+      <table className="text-black text-sm m-20">
         <thead className="w-[1120px] h-[41px] bg-slate-200 rounded-lg">
           <tr>
             <th className="w-[200px] text-left">Assignment detail</th>
@@ -48,7 +52,13 @@ function AssignmentListTable() {
           </tr>
         </thead>
         <tbody>
-          {assignments.map((item) => (
+        {assignments
+            .filter((item) => {
+              return search.trim() === ""
+                ? true
+                : (item.detail,item.title,item.modulename,item.sublessonname).toLowerCase().includes(search.toLowerCase());
+            })
+            .map((item) => (
             <tr key={item.assignmentid} className="w-[1120px] h-[88px]">
               <td className="w-[200px] text-left">{item.detail}</td>
               <td className="w-[200px] text-left">{item.title}</td>

@@ -9,19 +9,12 @@ import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
 
 function AddCourseFrom() {
-<<<<<<< HEAD
   const navigate = useNavigate();
   const [file, setFile] = useState("");
   const [pdfFile, setPdfFileUpload] = useState(" ");
   const [previewUrl, setPreviewUrl] = useState("");
   const [pdfUrl, setPdfUrl] = useState("");
   const [previewVideoUrl, setPreviewVideoUrl] = useState("");
-=======
-
-  const [file,setFile] = useState("");
-  const [previewUrl, setPreviewUrl] = useState('');
-
->>>>>>> f1e0b7a (feat:add preview cover image add course)
   const [courses, setCourses] = useState(" ");
   const [videoFile, setVideoFileState] = useState("");
   const [videoPreviewUrl, setVideoPreviewUrl] = useState("");
@@ -58,12 +51,6 @@ function AddCourseFrom() {
 
   const createCourse = async (e) => {
     e.preventDefault();
-<<<<<<< HEAD
-=======
-
-    
-    const res = await axios.post("http://localhost:4000/courses", createForm);
->>>>>>> f1e0b7a (feat:add preview cover image add course)
 
     try {
       // Upload the image before submitting the form
@@ -116,7 +103,6 @@ function AddCourseFrom() {
     alert("Add course complete");
   };
 
-<<<<<<< HEAD
   // Replace any non-alphanumeric characters in the course name with underscores
   const sanitizeFileName = (name) => {
     return name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
@@ -301,32 +287,6 @@ function AddCourseFrom() {
     console.log("File Type:", selectedFile.type);
     console.log("File Size:", selectedFile.size);
   };
-=======
-  /*const setImgFile = (e)=>{
-    console.log(e.target.files[0])
-    setFile(e.target.files[0])
-
-  }*/
-    const setImgFile = (e) => {
-      const selectedFile = e.target.files[0];
-      if (!selectedFile) {
-        return;
-      }
-      setFile(selectedFile);
-  
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        setPreviewUrl(fileReader.result);
-      };
-      fileReader.readAsDataURL(selectedFile);
-  
-      // Logging file details
-      console.log("Selected File:", selectedFile);
-      console.log("File Type:", selectedFile.type);
-      console.log("File Size:", selectedFile.size);
-    };
-  
->>>>>>> f1e0b7a (feat:add preview cover image add course)
 
   return (
     <div>
@@ -427,15 +387,11 @@ function AddCourseFrom() {
                     src={previewUrl}
                     alt="Preview"
                     className="absolute m-auto rounded-md "
-<<<<<<< HEAD
                     style={{
                       maxWidth: "240px",
                       maxHeight: "240px",
                       objectFit: "cover",
                     }}
-=======
-                    style={{ maxWidth: "240px", maxHeight: "240px", objectFit: "cover" }}
->>>>>>> f1e0b7a (feat:add preview cover image add course)
                   />
                 )}
               </label>
