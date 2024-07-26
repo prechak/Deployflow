@@ -8,7 +8,13 @@ import supabase from "../../../utils/supabaseClient";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate, Link } from "react-router-dom";
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import { DocumentIcon } from "@heroicons/react/24/outline";
+import {
+  validateFile,
+  MAX_IMAGE_SIZE_MB,
+  MAX_VIDEO_SIZE_MB,
+  IMAGE_FORMATS,
+  VIDEO_FORMATS,
+} from "../../../utils/fileValidations";
 
 function AddCourseFrom() {
   const navigate = useNavigate();
@@ -56,6 +62,13 @@ function AddCourseFrom() {
     e.preventDefault();
     setLoading(true); // Start the spinner
     try {
+      // Check if required files are present
+      if (!file || !videoFile) {
+        alert("Please upload require file.");
+        setLoading(false);
+        return; // Stop execution if any file is missing
+      }
+
       // Upload the image before submitting the form
       const imageUrl = await UploadPreviewImage(file);
       const pdfFileUrl = await UploadPDF(pdfFile);
@@ -116,9 +129,8 @@ function AddCourseFrom() {
 
   async function UploadPreviewImage(file) {
     try {
-      if (!file) {
-        throw new Error("You must select an image to upload.");
-      }
+      validateFile(file, IMAGE_FORMATS, MAX_IMAGE_SIZE_MB);
+
       const fileExt = file.name.split(".").pop();
       const sanitizedCourseName = sanitizeFileName(
         createForm.coursename.trim()
@@ -236,9 +248,8 @@ function AddCourseFrom() {
 
   async function uploadVideoFile(file) {
     try {
-      if (!file) {
-        throw new Error("You must select a video to upload.");
-      }
+      validateFile(file, VIDEO_FORMATS, MAX_VIDEO_SIZE_MB);
+
       const fileExt = file.name.split(".").pop();
       const sanitizedCourseName = sanitizeFileName(
         createForm.coursename.trim()
@@ -509,7 +520,7 @@ function AddCourseFrom() {
             </div>
             <div className="my-10 gap-8 relative">
               <label className="w-full h-[24px] text-black">
-                Attach File (Optional) *
+                Attach File (Optional)
               </label>
               <label
                 className="w-[190px] h-[192px] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"

@@ -18,6 +18,7 @@ function CourseListTable() {
     try {
       const res = await axios.get("http://localhost:4000/courses");
       setCourses(res.data);
+      console.log(res);
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
