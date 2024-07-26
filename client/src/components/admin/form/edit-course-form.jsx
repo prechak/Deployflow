@@ -56,11 +56,11 @@ function EditCourseForm() {
     setLoading(true); // Start the spinner
     try {
       // Check if required files are present
-      if (!file || !videoFile) {
-        alert("Please upload require file.");
-        setLoading(false);
-        return; // Stop execution if any file is missing
-      }
+      // if (!videoUrl || !imageUrl) {
+      //   alert("Please upload require file.");
+      //   setLoading(false);
+      //   return; // Stop execution if any file is missing
+      // }
 
       let imageUrl = inputData.imagefile;
       let videoUrl = inputData.videofile;
@@ -355,15 +355,15 @@ function EditCourseForm() {
         </div>
       )}
       <NavbarEditCourse handleSubmit={handleSubmit} text={"Edit"} />
-      <div className="mt-8 mx-8 w-[1120px] bg-white rounded-md border-2">
+      <div className="mt-8 mx-8 w-[1120px] bg-white rounded-md border-2 ">
         <div className="mx-8 p-8">
           <form>
             <div className="w-[920px] h-[76px]">
-              <label className="w-full h-[24px] text-black">
+              <label className="w-full h-[24px] text-black ">
                 Course name *
               </label>
               <input
-                className="w-full h-[48px] bg-white text-black border-2 rounded-md"
+                className="w-full h-[48px] bg-white text-black border-2 rounded-md pl-2"
                 placeholder="Course Name"
                 name="coursename"
                 type="text"
@@ -377,7 +377,7 @@ function EditCourseForm() {
               <div className="w-[420px] h-[76px]">
                 <label className="w-full h-[24px] text-black">Price *</label>
                 <input
-                  className="w-full h-[48px] bg-white text-black border-2 rounded-md"
+                  className="w-full h-[48px] bg-white text-black border-2 rounded-md pl-2"
                   placeholder="Price"
                   name="price"
                   type="text"
@@ -392,7 +392,7 @@ function EditCourseForm() {
                   Total learning time *
                 </label>
                 <input
-                  className="w-full h-[48px] bg-white text-black border-2 rounded-md"
+                  className="w-full h-[48px] bg-white text-black border-2 rounded-md pl-2"
                   placeholder="Learning Time"
                   name="courselearningtime"
                   type="text"
@@ -411,7 +411,7 @@ function EditCourseForm() {
                 Course summary *
               </label>
               <input
-                className="w-full h-[72px] bg-white text-black border-2 rounded-md"
+                className="w-full h-[72px] bg-white text-black border-2 rounded-md pl-2"
                 placeholder="Course Summary"
                 name="coursesummary"
                 type="text"
@@ -426,7 +426,7 @@ function EditCourseForm() {
                 Course detail *
               </label>
               <textarea
-                className="w-full h-[192px] bg-white text-black border-2 rounded-md"
+                className="w-full h-[192px] bg-white text-black border-2 rounded-md pl-2"
                 placeholder="Course Detail"
                 name="description"
                 value={inputData.description}

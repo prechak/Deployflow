@@ -352,9 +352,9 @@ courseRouter.delete("/:id", async (req, res) => {
 });
 
 /*Edit course*/
-
 courseRouter.put("/:id", async (req, res) => {
   const courseIdFromClient = req.params.id;
+
   const {
     coursename,
     description,
@@ -386,7 +386,8 @@ courseRouter.put("/:id", async (req, res) => {
            courselearningtime = $6,
            videofile = $7,
            imagefile = $8,
-           pdffile = $9
+           pdffile = $9,
+           updateddate = $10
        WHERE courseid = $1`,
       [
         courseIdFromClient,
@@ -398,6 +399,7 @@ courseRouter.put("/:id", async (req, res) => {
         videofile,
         imagefile,
         pdffile,
+        new Date(), // Add the updated date here
       ]
     );
 
