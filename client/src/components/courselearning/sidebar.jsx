@@ -387,14 +387,14 @@ const Sidebar = () => {
       <Navbarnonuser />
       <div className="flex flex-col md:flex-row mx-4 lg:mx-20 xl:mx-40 mt-[128px] md:mt-[188px] min-h-screen">
         {/* Sidebar */}
-        <div className="md:w-1/4 bg-white text-black shadow-md h-auto md:h-screen p-4 font-sans">
+        <div className="md:w-1/4 bg-white text-black shadow-md h-auto  p-4 font-sans">
           <div className="mb-6">
             <h2 className="text-sm font-bold text-orange-500">Course</h2>
             <h3 className="text-2xl font-bold mt-4">{coursename}</h3>
             <p className="text-gray-600 text-base mt-2">{coursedescription}</p>
             <div className="mt-4">
               <span className="text-sm text-gray-600">
-                {progress.toFixed(1)}% Complete
+                {progress}% Complete
               </span>
               <div className="flex items-center">
                 <BorderLinearProgress
