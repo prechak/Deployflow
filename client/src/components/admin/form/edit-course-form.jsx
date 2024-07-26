@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import upload from "../../../assets/image/upload.png";
-import pdf from "../../../assets/image/pdf.png";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import AddCourseSubLessonTable from "../addcourse-sublesson";
@@ -16,6 +15,7 @@ function EditCourseForm() {
   const [pdfUrl, setPdfUrl] = useState("");
   const [videoFile, setVideoFileState] = useState("");
   const [videoPreviewUrl, setVideoPreviewUrl] = useState("");
+  const [imageUrl, setImageUrl] = useState();
   const { id } = useParams();
   const [inputData, setInputData] = useState({
     coursename: "",
@@ -82,6 +82,26 @@ function EditCourseForm() {
   const [videofile,setVideoFile] = useState('')
   const [pdffile, setPdfFile] = useState('')*/
 
+  useEffect(() => {
+    const fetchCoursesFile = async () => {
+      const { data, error } = await supabase
+        .from("courses")
+        .select()
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        console.error(error);
+      }
+      if (data) {
+        setImgFile(data.imagefile);
+        setVideoFile(data.videofile);
+        setPdfFile(data.pdffile);
+        console.log(data);
+      }
+    };
+    fetchCoursesFile;
+  }, [id]);
   const sanitizeFileName = (name) => {
     return name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
   };
@@ -281,50 +301,6 @@ function EditCourseForm() {
     console.log("File Type:", selectedFile.type);
     console.log("File Size:", selectedFile.size);
   };
-
-  // Delete preview image
-  const deletePreviewImage = async () => {
-    const filePath = inputData.imagefile.replace(CDNURL, "");
-    await deleteFileFromSupabase(filePath);
-    setInputData({ ...inputData, imagefile: "" });
-    setPreviewUrl("");
-  };
-
-  // Delete PDF file
-  const deletePdfFile = async () => {
-    const filePath = inputData.pdffile.replace(CDNURL, "");
-    await deleteFileFromSupabase(filePath);
-    setInputData({ ...inputData, pdffile: "" });
-    setPdfUrl("");
-  };
-
-  // Delete video file
-  const deleteVideoFile = async () => {
-    const filePath = inputData.videofile.replace(CDNURL, "");
-    await deleteFileFromSupabase(filePath);
-    setInputData({ ...inputData, videofile: "" });
-    setVideoPreviewUrl("");
-  };
-
-  const CDNURL =
-    "https://igdllimavmpalwpkphmh.supabase.co/storage/v1/object/public/course/course/";
-
-  async function deleteFileFromSupabase(filePath) {
-    try {
-      const { data, error } = await supabase.storage
-        .from("course")
-        .remove([filePath]);
-
-      if (error) {
-        throw error;
-      }
-
-      return data;
-    } catch (error) {
-      console.error("Error deleting file:", error);
-      alert("Error deleting file.");
-    }
-  }
 
   return (
     <div>

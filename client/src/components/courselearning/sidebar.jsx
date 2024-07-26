@@ -17,9 +17,9 @@ import Navbarnonuser from "../homepage/navbar-user";
 import GeneralFooter from "../homepage/footer";
 import axios from "axios";
 
-// SVG Icons
+// Icon Components
 const NotPlayingIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+  <svg width="16.25" height="16.25" viewBox="0 0 24 24" fill="none">
     <circle
       cx="12"
       cy="12"
@@ -33,8 +33,8 @@ const NotPlayingIcon = () => (
 
 const PlayingIcon = () => (
   <svg
-    width="16"
-    height="16"
+    width="16.25"
+    height="16.25"
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
   >
@@ -52,8 +52,8 @@ const PlayingIcon = () => (
 
 const FinishedIcon = () => (
   <svg
-    width="16"
-    height="16"
+    width="16.25"
+    height="16.25"
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
   >
@@ -86,7 +86,9 @@ const FinishedIcon = () => (
   </svg>
 );
 
+// Sidebar Component
 const Sidebar = () => {
+  // State and Hooks
   const { courseid } = useParams();
   const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
     height: 10,
@@ -106,7 +108,6 @@ const Sidebar = () => {
     theories: false,
     scope: false,
   });
-
   const [videoStates, setVideoStates] = useState({});
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isVideoEnded, setIsVideoEnded] = useState(false);
@@ -118,7 +119,11 @@ const Sidebar = () => {
   const [currentSubmoduleName, setCurrentSubmoduleName] = useState("");
   const [watchedVideos, setWatchedVideos] = useState(new Set());
   const [totalVideos, setTotalVideos] = useState(0);
+  const [isComplete, setIsComplete] = useState(false);
 
+  const videoRef = useRef(null);
+
+  // Event Handlers
   const handleToggle = (section) => {
     setOpenSections((prevOpenSections) => ({
       ...prevOpenSections,
@@ -126,8 +131,56 @@ const Sidebar = () => {
     }));
   };
 
-  const videoRef = useRef(null);
+  const handlePlay = () => {
+    setIsVideoPlaying(true);
+    setVideoStates((prevState) => ({
+      ...prevState,
+      [selectedSubmodule]: { isPlaying: true, isEnded: false },
+    }));
+  };
 
+  const handleEnded = () => {
+    setIsVideoPlaying(false);
+    setIsVideoEnded(true);
+    setProgress(100);
+
+    setVideoStates((prevState) => ({
+      ...prevState,
+      [selectedSubmodule]: { isPlaying: false, isEnded: true },
+    }));
+
+    setWatchedVideos((prevWatchedVideos) => {
+      const newWatchedVideos = new Set(prevWatchedVideos);
+      newWatchedVideos.add(selectedVideoUrl);
+      return newWatchedVideos;
+    });
+
+    const { nextSubmoduleId, nextVideoUrl } = getNextVideoDetails();
+    if (nextVideoUrl) {
+      setSelectedSubmodule(nextSubmoduleId);
+      setSelectedVideoUrl(nextVideoUrl);
+    }
+  };
+
+  const handlePreviousLesson = () => {
+    const { previousSubmoduleId, previousVideoUrl } = getPreviousVideoDetails();
+    if (previousSubmoduleId && previousVideoUrl) {
+      setSelectedSubmodule(previousSubmoduleId);
+      // Assuming playVideo is a function to play the video
+      // playVideo(previousVideoUrl);
+    }
+  };
+
+  const handleNextLesson = () => {
+    const { nextSubmoduleId, nextVideoUrl } = getNextVideoDetails();
+    if (nextSubmoduleId && nextVideoUrl) {
+      setSelectedSubmodule(nextSubmoduleId);
+      // Assuming playVideo is a function to play the video
+      // playVideo(nextVideoUrl);
+    }
+  };
+
+  // useEffect Hooks
   useEffect(() => {
     const videoElement = videoRef.current;
     if (!videoElement) return;
@@ -136,38 +189,8 @@ const Sidebar = () => {
       if (videoElement.duration > 0) {
         const progress =
           (videoElement.currentTime / videoElement.duration) * 100;
-        setProgress(progress);
-      }
-    };
-
-    const handlePlay = () => {
-      setIsVideoPlaying(true);
-      setVideoStates((prevState) => ({
-        ...prevState,
-        [selectedSubmodule]: { isPlaying: true, isEnded: false },
-      }));
-    };
-
-    const handleEnded = () => {
-      setIsVideoPlaying(false);
-      setIsVideoEnded(true);
-      setProgress(100);
-
-      setVideoStates((prevState) => ({
-        ...prevState,
-        [selectedSubmodule]: { isPlaying: false, isEnded: true },
-      }));
-
-      setWatchedVideos((prevWatchedVideos) => {
-        const newWatchedVideos = new Set(prevWatchedVideos);
-        newWatchedVideos.add(selectedVideoUrl);
-        return newWatchedVideos;
-      });
-
-      const { nextSubmoduleId, nextVideoUrl } = getNextVideoDetails();
-      if (nextVideoUrl) {
-        setSelectedSubmodule(nextSubmoduleId);
-        setSelectedVideoUrl(nextVideoUrl);
+        // Realtime Update with video time
+        // setProgress(progress);
       }
     };
 
@@ -198,62 +221,6 @@ const Sidebar = () => {
       setProgress((watchedVideos.size / totalVideos) * 100);
     }
   }, [watchedVideos, totalVideos]);
-
-  const getNextVideoDetails = () => {
-    let nextSubmoduleId = null;
-    let nextVideoUrl = null;
-
-    if (selectedSubmodule && sidebarData.modules) {
-      for (let i = 0; i < sidebarData.modules.length; i++) {
-        const module = sidebarData.modules[i];
-        for (let j = 0; j < module.submodules.length; j++) {
-          const submodule = module.submodules[j];
-          if (submodule.submoduleid === selectedSubmodule) {
-            if (j < module.submodules.length - 1) {
-              // Next submodule in the current module
-              const nextSubmodule = module.submodules[j + 1];
-              if (nextSubmodule.videos.length > 0) {
-                nextSubmoduleId = nextSubmodule.submoduleid;
-                nextVideoUrl = nextSubmodule.videos[0].videourl;
-              }
-            } else if (i < sidebarData.modules.length - 1) {
-              // First submodule of the next module
-              const nextModule = sidebarData.modules[i + 1];
-              if (nextModule.submodules.length > 0) {
-                nextSubmoduleId = nextModule.submodules[0].submoduleid;
-                if (nextModule.submodules[0].videos.length > 0) {
-                  nextVideoUrl = nextModule.submodules[0].videos[0].videourl;
-                }
-              }
-            }
-            break;
-          }
-        }
-        if (nextSubmoduleId) break;
-      }
-    }
-
-    return { nextSubmoduleId, nextVideoUrl };
-  };
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const response = await axios.get(
-  //       `http://localhost:4000/courseinfo?courseid=1`
-  //     );
-  //     const data = response.data;
-  //     setSidebarData(data);
-
-  //     // Set the first submodule as selected by default
-  //     const firstSubmodule = data.modules.flatMap(
-  //       (module) => module.submodules
-  //     )[0];
-  //     if (firstSubmodule) {
-  //       setSelectedSubmodule(firstSubmodule.submoduleid);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -306,6 +273,89 @@ const Sidebar = () => {
     }
   }, [selectedSubmodule, sidebarData]);
 
+  // Helper Functions
+  const getNextVideoDetails = () => {
+    let nextSubmoduleId = null;
+    let nextVideoUrl = null;
+
+    if (selectedSubmodule && sidebarData.modules) {
+      for (let i = 0; i < sidebarData.modules.length; i++) {
+        const module = sidebarData.modules[i];
+        for (let j = 0; j < module.submodules.length; j++) {
+          const submodule = module.submodules[j];
+          if (submodule.submoduleid === selectedSubmodule) {
+            if (j < module.submodules.length - 1) {
+              // Next submodule in the current module
+              const nextSubmodule = module.submodules[j + 1];
+              if (nextSubmodule.videos.length > 0) {
+                nextSubmoduleId = nextSubmodule.submoduleid;
+                nextVideoUrl = nextSubmodule.videos[0].videourl;
+              }
+            } else if (i < sidebarData.modules.length - 1) {
+              // First submodule of the next module
+              const nextModule = sidebarData.modules[i + 1];
+              if (nextModule.submodules.length > 0) {
+                nextSubmoduleId = nextModule.submodules[0].submoduleid;
+                if (nextModule.submodules[0].videos.length > 0) {
+                  nextVideoUrl = nextModule.submodules[0].videos[0].videourl;
+                }
+              }
+            }
+            break;
+          }
+        }
+        if (nextSubmoduleId) break;
+      }
+    }
+
+    return { nextSubmoduleId, nextVideoUrl };
+  };
+
+  const getPreviousVideoDetails = () => {
+    let previousSubmoduleId = null;
+    let previousVideoUrl = null;
+
+    if (selectedSubmodule && sidebarData.modules) {
+      for (let i = 0; i < sidebarData.modules.length; i++) {
+        const module = sidebarData.modules[i];
+        for (let j = 0; j < module.submodules.length; j++) {
+          const submodule = module.submodules[j];
+          if (submodule.submoduleid === selectedSubmodule) {
+            if (j > 0) {
+              // Previous submodule in the current module
+              const previousSubmodule = module.submodules[j - 1];
+              if (previousSubmodule.videos.length > 0) {
+                previousSubmoduleId = previousSubmodule.submoduleid;
+                previousVideoUrl =
+                  previousSubmodule.videos[previousSubmodule.videos.length - 1]
+                    .videourl;
+              }
+            } else if (i > 0) {
+              // Last submodule of the previous module
+              const previousModule = sidebarData.modules[i - 1];
+              if (previousModule.submodules.length > 0) {
+                const lastSubmodule =
+                  previousModule.submodules[
+                    previousModule.submodules.length - 1
+                  ];
+                previousSubmoduleId = lastSubmodule.submoduleid;
+                if (lastSubmodule.videos.length > 0) {
+                  previousVideoUrl =
+                    lastSubmodule.videos[lastSubmodule.videos.length - 1]
+                      .videourl;
+                }
+              }
+            }
+            break;
+          }
+        }
+        if (previousSubmoduleId) break;
+      }
+    }
+
+    return { previousSubmoduleId, previousVideoUrl };
+  };
+
   const handleSubmoduleClick = (submoduleid, moduleid) => {
     setSelectedSubmodule(submoduleid);
     // Ensure the module containing the submodule is expanded
@@ -314,12 +364,6 @@ const Sidebar = () => {
       [moduleid]: true,
     }));
   };
-
-  const { coursename, coursedescription, modules } = sidebarData;
-
-  const selectedSubmoduleData = sidebarData.modules
-    ?.flatMap((module) => module.submodules)
-    .find((submodule) => submodule.submoduleid === selectedSubmodule);
 
   const getVideoIcon = (submoduleid) => {
     const state = videoStates[submoduleid] || {
@@ -331,19 +375,26 @@ const Sidebar = () => {
     return <NotPlayingIcon />;
   };
 
+  // Render Methods
+  const { coursename, coursedescription, modules } = sidebarData;
+
+  const selectedSubmoduleData = sidebarData.modules
+    ?.flatMap((module) => module.submodules)
+    .find((submodule) => submodule.submoduleid === selectedSubmodule);
+
   return (
     <>
       <Navbarnonuser />
       <div className="flex flex-col md:flex-row mx-4 lg:mx-20 xl:mx-40 mt-[128px] md:mt-[188px] min-h-screen">
         {/* Sidebar */}
-        <div className="md:w-1/4 bg-white text-black shadow-md h-auto md:h-screen p-4 font-sans">
+        <div className="md:w-1/4 bg-white text-black shadow-md h-auto  p-4 font-sans">
           <div className="mb-6">
             <h2 className="text-sm font-bold text-orange-500">Course</h2>
             <h3 className="text-2xl font-bold mt-4">{coursename}</h3>
             <p className="text-gray-600 text-base mt-2">{coursedescription}</p>
             <div className="mt-4">
               <span className="text-sm text-gray-600">
-                {progress.toFixed(1)}% Complete
+                {progress}% Complete
               </span>
               <div className="flex items-center">
                 <BorderLinearProgress
@@ -474,11 +525,19 @@ const Sidebar = () => {
       </div>
       {/* Footer */}
       <footer className="bg-white py-4 flex justify-between items-center border-t border-gray-300 mt-6 md:mt-0">
-        <button className="text-blue-600 ml-4 md:ml-16 my-2 md:my-9">
+        <button
+          className="text-blue-600 ml-4 md:ml-16 my-2 md:my-9"
+          onClick={handlePreviousLesson}
+        >
           Previous Lesson
         </button>
-        <button className="bg-[#2F5FAC] mr-4 md:mr-14 my-2 md:my-5 text-white py-2 px-4 rounded-lg">
-          Next Lesson
+        <button
+          className={`bg-[#2F5FAC] mr-4 md:mr-14 my-2 md:my-5 text-white py-2 px-4 rounded-lg ${
+            isComplete ? "bg-green-500" : ""
+          }`}
+          onClick={handleNextLesson}
+        >
+          {isComplete ? "Complete Lesson" : "Next Lesson"}
         </button>
       </footer>
       {/* General Footer */}

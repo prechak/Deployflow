@@ -33,9 +33,8 @@ function CourseListTable() {
   };
 
   return (
-    
     <div>
-      <NavbarCourseList search={search} onSearchChange={setSearch}/>
+      <NavbarCourseList search={search} onSearchChange={setSearch} />
       <table className="m-10 text-black text-sm">
         <thead className="w-[1120px] h-[41px] bg-slate-200 rounded-lg">
           <tr>
@@ -50,7 +49,7 @@ function CourseListTable() {
           </tr>
         </thead>
         <tbody>
-        {courses
+          {courses
             .filter((item) => {
               return search.trim() === ""
                 ? true
