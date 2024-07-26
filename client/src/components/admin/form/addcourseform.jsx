@@ -7,6 +7,8 @@ import NavbarAddCourse from "../navbar/navbar-addcourse"; // Adjust the import p
 import supabase from "../../../utils/supabaseClient";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
+import { XMarkIcon } from "@heroicons/react/24/solid";
+import { DocumentIcon } from "@heroicons/react/24/outline";
 
 function AddCourseFrom() {
   const navigate = useNavigate();
@@ -14,7 +16,6 @@ function AddCourseFrom() {
   const [pdfFile, setPdfFileUpload] = useState(" ");
   const [previewUrl, setPreviewUrl] = useState("");
   const [pdfUrl, setPdfUrl] = useState("");
-  const [previewVideoUrl, setPreviewVideoUrl] = useState("");
   const [courses, setCourses] = useState(" ");
   const [videoFile, setVideoFileState] = useState("");
   const [videoPreviewUrl, setVideoPreviewUrl] = useState("");
@@ -70,15 +71,17 @@ function AddCourseFrom() {
       console.log(res);
 
       setCreateForm({
-        coursename: " ",
-        price: " ",
-        description: " ",
-        coursesummary: " ",
-        courselearningtime: " ",
-        videofile: " ",
-        imagefile: " ",
-        pdffile: " ",
+        coursename: "",
+        price: "",
+        description: "",
+        coursesummary: "",
+        courselearningtime: "",
+        videofile: "",
+        imagefile: "",
+        pdffile: "",
       });
+      console.log(setCreateForm);
+      alert("Add course complete");
       // navigate("/admin/courselist");
     } catch (error) {
       console.error("Error creating course:", error);
@@ -100,7 +103,6 @@ function AddCourseFrom() {
     if (formRef.current) {
       formRef.current.requestSubmit(); // Trigger form submission
     }
-    alert("Add course complete");
   };
 
   // Replace any non-alphanumeric characters in the course name with underscores
@@ -199,12 +201,11 @@ function AddCourseFrom() {
     }
   }
 
-  const setPdfFile = (e) => {
+  const handlePdfFileChange = async (e) => {
     const selectedFile = e.target.files[0];
     if (!selectedFile) {
       return;
     }
-
     /*UploadPDF(selectedFile)
       .then((pdfUrl) => {
 
@@ -288,6 +289,24 @@ function AddCourseFrom() {
     console.log("File Size:", selectedFile.size);
   };
 
+  // Delete preview image
+  const deletePreviewImage = () => {
+    setCreateForm({ ...createForm, imagefile: "" });
+    setPreviewUrl("");
+  };
+
+  // Delete PDF file
+  const deletePdfFile = () => {
+    setCreateForm({ ...createForm, pdffile: "" });
+    setPdfUrl(null);
+  };
+
+  // Delete video file
+  const deleteVideoFile = () => {
+    setCreateForm({ ...createForm, videofile: "" });
+    setVideoPreviewUrl("");
+  };
+
   return (
     <div>
       <NavbarAddCourse onCreateCourseClick={handleCreateCourseClick} />
@@ -363,12 +382,12 @@ function AddCourseFrom() {
               />
             </div>
 
-            <div className="my-10 gap-8 ">
+            <div className="my-10 gap-8 relative">
               <label className="w-full h-[24px] text-black">
                 Cover image *
               </label>
               <label
-                className="w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
+                className="w-[240px] h-[240px] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
                 id="drop"
               >
                 <span>
@@ -383,20 +402,29 @@ function AddCourseFrom() {
                   onChange={setImgFile}
                 />
                 {previewUrl && (
-                  <img
-                    src={previewUrl}
-                    alt="Preview"
-                    className="absolute m-auto rounded-md "
-                    style={{
-                      maxWidth: "240px",
-                      maxHeight: "240px",
-                      objectFit: "cover",
-                    }}
-                  />
+                  <>
+                    <img
+                      src={previewUrl}
+                      alt="Preview"
+                      className="absolute m-auto rounded-md"
+                      style={{
+                        maxWidth: "240px",
+                        maxHeight: "240px",
+                        objectFit: "cover",
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={deletePreviewImage}
+                      className=""
+                    >
+                      <XMarkIcon className="size-5 text-white bg-purple-700 rounded-full absolute top-7 left-[13.5rem]" />
+                    </button>
+                  </>
                 )}
               </label>
             </div>
-            <div className="my-10 gap-8 ">
+            <div className="my-10 gap-8 relative">
               <label className="w-full h-[24px] text-black">
                 Video Trailer *
               </label>
@@ -411,31 +439,40 @@ function AddCourseFrom() {
                   type="file"
                   name="videofile"
                   className="hidden"
-                  accept="video/mp4"
+                  accept="video/*"
                   id="input"
                   onChange={handleVideoFileChange}
                 />
                 {videoPreviewUrl && (
-                  <video
-                    src={videoPreviewUrl}
-                    alt="Preview"
-                    className="absolute m-auto rounded-md"
-                    style={{
-                      maxWidth: "240px",
-                      maxHeight: "240px",
-                      objectFit: "cover",
-                    }}
-                    controls
-                  />
+                  <>
+                    <video
+                      src={videoPreviewUrl}
+                      alt="Preview"
+                      className="absolute m-auto rounded-md"
+                      style={{
+                        maxWidth: "240px",
+                        maxHeight: "240px",
+                        objectFit: "cover",
+                      }}
+                      controls
+                    />
+                    <button
+                      type="button"
+                      onClick={deleteVideoFile}
+                      className=""
+                    >
+                      <XMarkIcon className="size-5 text-white bg-purple-700 rounded-full absolute top-7 left-[13.5rem]" />
+                    </button>
+                  </>
                 )}
               </label>
             </div>
-            <div className="my-10 gap-8 ">
-              <label className=" w-full h-[24px] text-black">
+            <div className="my-10 gap-8 relative">
+              <label className="w-full h-[24px] text-black">
                 Attach File (Optional) *
               </label>
               <label
-                className=" w-[160px] h-[192px] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
+                className="w-[190px] h-[192px] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
                 id="drop"
               >
                 {!pdfUrl ? (
@@ -443,33 +480,32 @@ function AddCourseFrom() {
                     <img src={upload} alt="upload" />
                   </span>
                 ) : (
-                  <div className="mt-4 text-blue-400">
-                    <a href={pdfUrl} target="_blank" rel="noopener noreferrer">
-                      <img
-                        src={pdf}
-                        className="w-full h-full rounded-md justify-center"
-                        alt="PDF Preview"
-                      />
-                    </a>
+                  <div className="bg-slate-200 p-4 flex flex-col items-center">
+                    <DocumentIcon className="text-blue-400 w-10" />
+                    <span className="text-black">test</span>
                   </div>
                 )}
-
                 <input
                   type="file"
                   name="pdffile"
                   className="hidden"
                   accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                  id="input"
-                  onChange={setPdfFile}
+                  id="pdfInput"
+                  onChange={handlePdfFileChange}
                 />
                 {pdfUrl && (
-                  <div className="mt-4 text-blue-400">
-                    <a
-                      href={pdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    ></a>
-                  </div>
+                  <>
+                    <div className="mt-4 text-blue-400">
+                      <a
+                        href={pdfUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      ></a>
+                    </div>
+                    <button type="button" onClick={deletePdfFile} className="">
+                      <XMarkIcon className="size-5 text-white bg-purple-700 rounded-full absolute top-7 left-[10rem]" />
+                    </button>
+                  </>
                 )}
               </label>
             </div>
