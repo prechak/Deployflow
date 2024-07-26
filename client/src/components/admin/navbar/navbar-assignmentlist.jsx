@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../button/button";
 import { Link } from "react-router-dom";
 
-function NavbarAssignmentList() {
+function NavbarAssignmentList({ search, onSearchChange }) {
   const navigate = useNavigate();
 
   const handleAddCourseClick = () => {
@@ -17,6 +17,8 @@ function NavbarAssignmentList() {
           <input
             type="text"
             id="search"
+            value={search}
+            onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search..."
             className="w-full md:w-[320px] h-[40px] p-3 md:mr-4 mb-2 md:mb-0 text-sm rounded-md border border-gray-300 bg-white focus:ring-blue-500 focus:border-blue-500"
           />

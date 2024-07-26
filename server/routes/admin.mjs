@@ -395,4 +395,34 @@ adminRouter.delete("/assignments/:id", async (req, res) => {
   }
 });
 
+//Get Sub lesson list
+adminRouter.get("/sublessonlist", async (req, res) => {
+  try {
+    const result = await connectionPool.query(`select modulename as lessonname,modules.moduleid,sublessonname,sublessonid from modules 
+inner join sublesson on modules.moduleid = sublesson.moduleid; `);
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("Error occurred while fetching lesson and sublesson:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//Get modules-sublesson list from id
+adminRouter.get("/sublessonlist/:id", async (req, res) => {
+  const moduleId = req.params.id
+  try {
+    const result = await connectionPool.query(`select modulename as lessonname,modules.moduleid,sublessonname,sublessonid from modules 
+inner join sublesson on modules.moduleid = sublesson.moduleid
+where sublesson.sublessonid = $1`,[moduleId]);
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("Error occurred while fetching lesson and sublesson:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+
 export default adminRouter;

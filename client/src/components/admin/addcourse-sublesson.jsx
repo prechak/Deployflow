@@ -6,17 +6,23 @@ import { Link } from "react-router-dom";
 
 function AddCourseSubLessonTable() {
   const [users, setUsers] = useState([]);
+  const [subLesson, setSublesson] = useState([])
 
   useEffect(() => {
-    axios
-      .get("https://www.melivecode.com/api/users")
-      .then((res) => {
-        setUsers(res.data);
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the data!", error);
-      });
+    fetchSubLesson();
   }, []);
+
+  const fetchSubLesson = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:4000/admin/sublessonlist"
+      );
+      setSublesson(res.data);
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+    }
+  };
+
 
   return (
     <div className="m-10 w-[1120px] text-black">
@@ -35,17 +41,17 @@ function AddCourseSubLessonTable() {
               <th className="w-[56px]"></th>
               <th className="w-[56px]"></th>
               <th className="w-[500px] text-left">Lesson name</th>
-              <th className="w-[396px] text-left">Sub-lesoon</th>
+              <th className="w-[396px] text-left">Sub-lesson</th>
               <th className="w-[120px] text-left">Actions</th>
             </tr>
           </thead>
           <tbody className="">
-            {users.slice(0, 5).map((item, index) => (
+            {subLesson.slice(0, 5).map((item, index) => (
               <tr key={index} className="bg-white border-2">
                 <td className="w-[56px] h-[88px] "></td>
-                <td className="w-[56px]">{item.id}</td>
-                <td>{item.fname}</td>
-                <td className="expand">{item.username}</td>
+                <td className="w-[56px]"></td>
+                <td>{item.lessonname}</td>
+                <td className="expand">{item.sublessonname}</td>
 
                 <td>
                   <button>
