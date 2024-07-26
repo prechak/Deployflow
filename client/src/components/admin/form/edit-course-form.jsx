@@ -8,7 +8,13 @@ import NavbarEditCourse from "../navbar/navbar-editcourse";
 import supabase from "../../../utils/supabaseClient";
 import { v4 as uuidv4 } from "uuid";
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import { DocumentIcon } from "@heroicons/react/24/outline";
+import {
+  validateFile,
+  MAX_IMAGE_SIZE_MB,
+  MAX_VIDEO_SIZE_MB,
+  IMAGE_FORMATS,
+  VIDEO_FORMATS,
+} from "../../../utils/fileValidations";
 
 function EditCourseForm() {
   const [file, setFile] = useState("");
@@ -17,6 +23,7 @@ function EditCourseForm() {
   const [previewUrl, setPreviewUrl] = useState("");
   const [pdfUrl, setPdfUrl] = useState("");
   const [videoFile, setVideoFileState] = useState("");
+  const [loading, setLoading] = useState(false);
   const [videoPreviewUrl, setVideoPreviewUrl] = useState("");
   const { id } = useParams();
   const [inputData, setInputData] = useState({
@@ -46,8 +53,15 @@ function EditCourseForm() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    setLoading(true); // Start the spinner
     try {
+      // Check if required files are present
+      if (!file || !videoFile) {
+        alert("Please upload require file.");
+        setLoading(false);
+        return; // Stop execution if any file is missing
+      }
+
       let imageUrl = inputData.imagefile;
       let videoUrl = inputData.videofile;
       let pdfUrl = inputData.pdffile;
@@ -72,11 +86,12 @@ function EditCourseForm() {
       };
       console.log("Update data", updatedData);
       await axios.put(`http://localhost:4000/courses/${id}`, updatedData);
-
+      setLoading(false);
       alert("Data Updated Successfully!");
-      // navigate("/admin/courselist");
+      navigate("/admin/courselist");
     } catch (error) {
       console.error("Error updating data:", error);
+      setLoading(false);
     }
   };
 
@@ -90,9 +105,7 @@ function EditCourseForm() {
 
   async function UploadPreviewImage(file) {
     try {
-      if (!file) {
-        throw new Error("You must select an image to upload.");
-      }
+      validateFile(file, IMAGE_FORMATS, MAX_IMAGE_SIZE_MB);
       const fileExt = file.name.split(".").pop();
       const sanitizedCourseName = sanitizeFileName(inputData.coursename.trim());
       const fileName = `${uuidv4()}.${fileExt}`;
@@ -188,9 +201,7 @@ function EditCourseForm() {
 
   async function uploadVideoFile(file) {
     try {
-      if (!file) {
-        throw new Error("You must select a video to upload.");
-      }
+      validateFile(file, VIDEO_FORMATS, MAX_VIDEO_SIZE_MB);
       const fileExt = file.name.split(".").pop();
       const sanitizedCourseName = sanitizeFileName(inputData.coursename.trim());
       const fileName = `${uuidv4()}.${fileExt}`;
@@ -294,6 +305,55 @@ function EditCourseForm() {
 
   return (
     <div>
+      {/* Loading Section */}
+      {loading && (
+        <div className="spinner-container">
+          <style>
+            {`
+            @keyframes spin {
+              to {
+                transform: rotate(360deg);
+              }
+            }
+            .spin {
+              transform-origin: center;
+              animation: spin 2s linear infinite;
+            }
+            .spinner-container {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: rgba(255, 255, 255, 0.8);
+              z-index: 1000;
+            }
+          `}
+          </style>
+          <svg
+            viewBox="0 0 800 800"
+            xmlns="http://www.w3.org/2000/svg"
+            width="100"
+            height="100"
+          >
+            <circle
+              className="spin"
+              cx="400"
+              cy="400"
+              fill="none"
+              r="220"
+              strokeWidth="50"
+              stroke="#595959"
+              strokeDasharray="683 1400"
+              strokeLinecap="round"
+            />
+          </svg>
+          <p className="text-black">Editing Course...</p>
+        </div>
+      )}
       <NavbarEditCourse handleSubmit={handleSubmit} text={"Edit"} />
       <div className="mt-8 mx-8 w-[1120px] bg-white rounded-md border-2">
         <div className="mx-8 p-8">
@@ -508,7 +568,7 @@ function EditCourseForm() {
 
             <div className="my-10 gap-8 relative">
               <label className="w-full h-[24px] text-black">
-                Attach File (Optional) *
+                Attach File (Optional)
               </label>
               {inputData.pdffile || pdfFile ? (
                 <label
