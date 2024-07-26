@@ -30,7 +30,7 @@ function NavbarEditSubLesson({text, handleSubmit}) {
           </div>
         </div>
         <div className="flex flex-row items-center gap-[16px]">
-          <CancelButton text="Cancel" onClick={()=>{navigate("/admin/courselist")}} />
+          <CancelButton text="Cancel" onClick={()=>{navigate("/admin/addcourse")}} />
           <SubButton onClick={handleSubmit} text={text} />
         </div>
       </nav>
