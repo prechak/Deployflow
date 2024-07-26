@@ -323,6 +323,7 @@ adminRouter.post("/:courseid/lesson", async (req, res) => {
       returning *`,
       [courseId, req.body.modulename]
     );
+    console.log(req.body)
     req.body.sublessonname.forEach(async (value, i) => {
       
       try {
@@ -331,8 +332,9 @@ adminRouter.post("/:courseid/lesson", async (req, res) => {
           insert into sublesson (moduleid, sublessonname, videofile, sublessondate)
           values ($1,$2, $3, $4)
           `,
-          [newModule.rows[0].moduleid, value, null, sublessondate]
+          [newModule.rows[0].moduleid, value, req.body.videos[i], sublessondate]
         );
+
       } catch (error) {
         console.log(error);
       }

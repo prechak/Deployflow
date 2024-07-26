@@ -9,13 +9,13 @@ function NavbarAddAssignment() {
     <div className="w-full">
       <nav className="w-full h-[92px] bg-white border-gray-400 border-l-0 border-[1px] flex justify-between items-center">
         <span className="text-black font-medium text-2xl pl-10">
-        Add Assignment
+          Add Assignment
         </span>
         <div className="flex gap-4 pr-10">
-        <Link to="/admin/courselist">
-          <CancelButton text="Cancel" />
-        </Link>
-          <SubButton text="Create"/>
+          <Link to="/admin/assignmentlist">
+            <CancelButton text="Cancel" />
+          </Link>
+          <SubButton text="Create" />
         </div>
       </nav>
     </div>

@@ -6,7 +6,7 @@ import NavbarEditSubLesson from "../../admin/navbar/navbar-editsublesson";
 import { useState, useEffect } from "react";
 import modal_vector from "../../../assets/icons/coursedetail/modal_vector.png";
 
-function AddSubLessonFrom() {
+function EditSubLessonFrom() {
   const [lessons, setLessons] = useState([]);
   const [subLessons, setSubLessons] = useState([]);
   const [modal, setModal] = useState(false);
@@ -60,13 +60,14 @@ function AddSubLessonFrom() {
     console.log(editLesson);
     console.log(editSublesson);
     try {
-      await axios.put(`http://localhost:4000/admin/sublesson/${params.lessonId}`, [
-        editLesson,
-        editSublesson,
-      ]);
+      await axios.put(
+        `http://localhost:4000/admin/sublesson/${params.lessonId}`,
+        [editLesson, editSublesson]
+      );
     } catch (error) {
       console.log("Error putLessonAndSublesson", error);
     }
+    navigate("/admin/addcourse");
   };
   useEffect(() => {
     getLesson();
@@ -160,12 +161,13 @@ function AddSubLessonFrom() {
                         </div>
                       </div>
                       <button
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.preventDefault();
                           deleteSublesson(item.sublessonid);
                         }}
                         className=" w-[67px] h-[32px] text-center text-[16px] font-[700] text-Blue-500 cursor-pointer"
                       >
-                        Delete {item.sublessonid}
+                        Delete
                       </button>
                     </div>
                   </article>
@@ -195,13 +197,13 @@ function AddSubLessonFrom() {
           </form>
         </div>
       </div>
-      <button onClick={toggleModal} className=" pl-[520px] mb-[80px]">
+      <button onClick={toggleModal} className="mb-[80px] mr-[450px]">
         <h1 className="text-Blue-500 text-[16px] font-[700] cursor-pointer">
           Delete lesson
         </h1>
       </button>
       <aside className={`${modal ? "block" : "hidden"} mt-[16px]`}>
-        <div className="flex items-center justify-center relative right-[140px] bottom-[240px]">
+        <div className="flex items-center justify-center relative right-[600px] bottom-[300px]">
           <div className="border-solid border-2 bg-white rounded-[24px] w-[528px] h-[212px]">
             <div className="flex items-center justify-between pl-[16px] pr-[16px] h-[56px] border-solid border-b-[1px] border-[#E4E6ED] ">
               <h1 className="text-Body1 font-Body1 text-black">Confirmation</h1>
@@ -235,4 +237,4 @@ function AddSubLessonFrom() {
   );
 }
 
-export default AddSubLessonFrom;
+export default EditSubLessonFrom;
