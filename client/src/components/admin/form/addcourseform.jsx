@@ -173,9 +173,9 @@ function AddCourseFrom() {
         throw new Error("You must select a PDF file to upload.");
       }
 
+      const originalFileName = pdfFile.name; // Use the original file name
       const sanitizedFileName = sanitizeFileName(createForm.coursename.trim());
-      const fileName = `${uuidv4()}.pdf`; // Use .pdf extension for PDF files
-      const filePath = `course/${sanitizedFileName}/pdf_files/${fileName}`;
+      const filePath = `course/${sanitizedFileName}/pdf_files/${originalFileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from("course")
@@ -206,19 +206,14 @@ function AddCourseFrom() {
     if (!selectedFile) {
       return;
     }
-    /*UploadPDF(selectedFile)
-      .then((pdfUrl) => {
 
-        console.log("Uploaded PDF URL:", pdfUrl);
-      })
-      .catch((error) => {
-        console.error("PDF Upload Error:", error);
-      });
-
-    console.log("Selected PDF File:", selectedFile);
-    console.log("File Type:", selectedFile.type);
-    console.log("File Size:", selectedFile.size);
-  };*/
+    // Upload PDF file and set URL
+    try {
+      const pdfUrl = await UploadPDF(selectedFile);
+      console.log("Uploaded PDF URL:", pdfUrl);
+    } catch (error) {
+      console.error("PDF Upload Error:", error);
+    }
 
     setPdfFileUpload(selectedFile);
 
