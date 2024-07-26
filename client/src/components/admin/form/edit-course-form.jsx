@@ -11,7 +11,7 @@ import { DocumentIcon } from "@heroicons/react/24/outline";
 
 function EditCourseForm() {
   const [file, setFile] = useState("");
-  const [pdfFile, setPdfFileUpload] = useState(" ");
+  const [pdfFile, setPdfFileUpload] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
   const [pdfUrl, setPdfUrl] = useState("");
   const [videoFile, setVideoFileState] = useState("");
