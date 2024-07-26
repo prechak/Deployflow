@@ -33,9 +33,10 @@ function AddCourseSubLessonTable() {
       <div className="flex justify-between">
         <div className="text-lg justify-center">Lesson</div>
         <div className="justify-center">
+        <Link to="/admin/:courseId/addsublesson">
           <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition w-[171px] h-[60px]">
-            <Link to="/admin/:courseId/addsublesson">+Add lesson</Link>
-          </button>
+            +Add lesson
+          </button></Link>
         </div>
       </div>
       <div className="mt-10 w-[1120px] h-[41px]">
