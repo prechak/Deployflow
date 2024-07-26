@@ -14,6 +14,7 @@ function AddCourseFrom() {
   const navigate = useNavigate();
   const [file, setFile] = useState("");
   const [pdfFile, setPdfFileUpload] = useState(" ");
+  const [pdfFileName, setPdfFileName] = useState(""); // New state for PDF file name
   const [previewUrl, setPreviewUrl] = useState("");
   const [pdfUrl, setPdfUrl] = useState("");
   const [courses, setCourses] = useState(" ");
@@ -206,6 +207,9 @@ function AddCourseFrom() {
     if (!selectedFile) {
       return;
     }
+
+    setPdfFileUpload(selectedFile);
+    setPdfFileName(selectedFile.name); // Set the PDF file name
 
     // Upload PDF file and set URL
     try {
@@ -477,7 +481,7 @@ function AddCourseFrom() {
                 ) : (
                   <div className="bg-slate-200 p-4 flex flex-col items-center">
                     <DocumentIcon className="text-blue-400 w-10" />
-                    <span className="text-black">test</span>
+                    <span className="text-black">{pdfFileName}</span>
                   </div>
                 )}
                 <input
