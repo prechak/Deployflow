@@ -20,6 +20,7 @@ function AssignmentListTable() {
         "http://localhost:4000/admin/assignments/list"
       );
       setAssignments(res.data);
+      console.log(res);
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
@@ -39,7 +40,7 @@ function AssignmentListTable() {
 
   return (
     <div>
-      <NavbarAssignmentList search={search} onSearchChange={setSearch}/>
+      <NavbarAssignmentList search={search} onSearchChange={setSearch} />
       <table className="text-black text-sm m-20">
         <thead className="w-[1120px] h-[41px] bg-slate-200 rounded-lg">
           <tr>
@@ -52,31 +53,41 @@ function AssignmentListTable() {
           </tr>
         </thead>
         <tbody>
-        {assignments
+          {assignments
             .filter((item) => {
-              return search.trim() === ""
-                ? true
-                : (item.detail,item.title,item.modulename,item.sublessonname).toLowerCase().includes(search.toLowerCase());
+              if (search.trim() === "") {
+                return true;
+              }
+              const searchText = search.toLowerCase();
+              return (
+                (item.detail &&
+                  item.detail.toLowerCase().includes(searchText)) ||
+                (item.title && item.title.toLowerCase().includes(searchText)) ||
+                (item.modulename &&
+                  item.modulename.toLowerCase().includes(searchText)) ||
+                (item.sublessonname &&
+                  item.sublessonname.toLowerCase().includes(searchText))
+              );
             })
             .map((item) => (
-            <tr key={item.assignmentid} className="w-[1120px] h-[88px]">
-              <td className="w-[200px] text-left">{item.detail}</td>
-              <td className="w-[200px] text-left">{item.title}</td>
-              <td className="w-[200px] text-left">{item.modulename}</td>
-              <td className="w-[200px] text-left">{item.sublessonname}</td>
-              <td className="w-[200px] text-left">{item.createddate}</td>
-              <td className="w-[120px] text-left">
-                <button onClick={() => deleteAssignment(item.assignmentid)}>
-                  <img src={bin} alt="delete" />
-                </button>
-                <button>
-                  <Link to={`/admin/assignment/${item.assignmentid}`}>
-                    <img src={edit} alt="edit" />
-                  </Link>
-                </button>
-              </td>
-            </tr>
-          ))}
+              <tr key={item.assignmentid} className="w-[1120px] h-[88px]">
+                <td className="w-[200px] text-left">{item.detail}</td>
+                <td className="w-[200px] text-left">{item.title}</td>
+                <td className="w-[200px] text-left">{item.modulename}</td>
+                <td className="w-[200px] text-left">{item.sublessonname}</td>
+                <td className="w-[200px] text-left">{item.createddate}</td>
+                <td className="w-[120px] text-left">
+                  <button onClick={() => deleteAssignment(item.assignmentid)}>
+                    <img src={bin} alt="delete" />
+                  </button>
+                  <button>
+                    <Link to={`/admin/assignment/${item.assignmentid}`}>
+                      <img src={edit} alt="edit" />
+                    </Link>
+                  </button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>

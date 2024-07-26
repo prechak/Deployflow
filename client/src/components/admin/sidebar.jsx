@@ -53,18 +53,6 @@ function Sidebar() {
             </div>
           </div>
         </div>
-        <div className="mt-20">
-          <button
-            onClick={handleLogout}
-            className="w-full h-[56px] pl-8 flex items-center font-small text-base md:text-sm lg:text-sm xl:text-sm text-left text-slate-500 hover:bg-gray-200"
-          >
-            <img src={logout} alt="Logout Icon" className="w-6 h-6 mr-4" />
-            Log out
-          </button>
-        </div>
-      </div>
-      <div className="flex-1">
-        <div className="bg-white"></div>
       </div>
     </div>
   );

@@ -9,8 +9,8 @@ function AssignmentListAdmin() {
       <Sidebar />
       <div className="flex-1">
         <div></div>
-        <div className="p-4">{<Outlet />}</div>
-        <main className="p-4">
+        <div>{<Outlet />}</div>
+        <main>
           <AssignmentListTable />
         </main>
       </div>
