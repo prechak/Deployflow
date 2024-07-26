@@ -6,7 +6,7 @@ import axios from "axios";
 import NavbarAddCourse from "../navbar/navbar-addcourse"; // Adjust the import path as needed
 import supabase from "../../../utils/supabaseClient";
 import { v4 as uuidv4 } from "uuid";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { DocumentIcon } from "@heroicons/react/24/outline";
 
@@ -147,7 +147,7 @@ function AddCourseFrom() {
     }
   }
 
-  const setImgFile = (e) => {
+  const handleImageChange = (e) => {
     const selectedFile = e.target.files[0];
     if (!selectedFile) {
       return;
@@ -213,7 +213,6 @@ function AddCourseFrom() {
 
     // Upload PDF file and set URL
     try {
-      const pdfUrl = await UploadPDF(selectedFile);
       console.log("Uploaded PDF URL:", pdfUrl);
     } catch (error) {
       console.error("PDF Upload Error:", error);
@@ -385,86 +384,77 @@ function AddCourseFrom() {
               <label className="w-full h-[24px] text-black">
                 Cover image *
               </label>
-              <label
-                className="w-[240px] h-[240px] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
-                id="drop"
-              >
-                <span>
+              {previewUrl ? (
+                <label className="w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center">
+                  <img
+                    src={previewUrl}
+                    alt="cover image"
+                    className="max-w-[240px] max-h-[240px] object-cover"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={deletePreviewImage}
+                    className="absolute"
+                  >
+                    <XMarkIcon className="size-5 text-white bg-purple-700 rounded-full absolute bottom-[5.8rem] left-[6rem]" />
+                  </button>
+                </label>
+              ) : (
+                <label
+                  className="w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
+                  id="drop"
+                >
                   <img src={upload} alt="upload" />
-                </span>
-                <input
-                  type="file"
-                  name="imagefile"
-                  className="hidden"
-                  accept="image/png,image/jpeg"
-                  id="input"
-                  onChange={setImgFile}
-                />
-                {previewUrl && (
-                  <>
-                    <img
-                      src={previewUrl}
-                      alt="Preview"
-                      className="absolute m-auto rounded-md"
-                      style={{
-                        maxWidth: "240px",
-                        maxHeight: "240px",
-                        objectFit: "cover",
-                      }}
-                    />
-                    <button
-                      type="button"
-                      onClick={deletePreviewImage}
-                      className=""
-                    >
-                      <XMarkIcon className="size-5 text-white bg-purple-700 rounded-full absolute top-7 left-[13.5rem]" />
-                    </button>
-                  </>
-                )}
-              </label>
+                  <input
+                    type="file"
+                    name="imagefile"
+                    className="hidden"
+                    accept="image/png,image/jpeg"
+                    id="input"
+                    onChange={handleImageChange}
+                  />
+                </label>
+              )}
             </div>
+
             <div className="my-10 gap-8 relative">
               <label className="w-full h-[24px] text-black">
                 Video Trailer *
               </label>
-              <label
-                className="r w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
-                id="drop"
-              >
-                <span>
+              {videoPreviewUrl ? (
+                <label className="w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center">
+                  <video
+                    src={videoPreviewUrl}
+                    alt="upload"
+                    className="max-w-[240px] max-h-[240px] object-cover"
+                    controls
+                  />
+
+                  <button
+                    type="button"
+                    onClick={deleteVideoFile}
+                    className="absolute"
+                  >
+                    <XMarkIcon className="size-5 text-white bg-purple-700 rounded-full absolute bottom-[5.8rem] left-[6rem]" />
+                  </button>
+                </label>
+              ) : (
+                <label
+                  className="w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
+                  id="drop"
+                >
                   <img src={upload} alt="upload" />
-                </span>
-                <input
-                  type="file"
-                  name="videofile"
-                  className="hidden"
-                  accept="video/*"
-                  id="input"
-                  onChange={handleVideoFileChange}
-                />
-                {videoPreviewUrl && (
-                  <>
-                    <video
-                      src={videoPreviewUrl}
-                      alt="Preview"
-                      className="absolute m-auto rounded-md"
-                      style={{
-                        maxWidth: "240px",
-                        maxHeight: "240px",
-                        objectFit: "cover",
-                      }}
-                      controls
-                    />
-                    <button
-                      type="button"
-                      onClick={deleteVideoFile}
-                      className=""
-                    >
-                      <XMarkIcon className="size-5 text-white bg-purple-700 rounded-full absolute top-7 left-[13.5rem]" />
-                    </button>
-                  </>
-                )}
-              </label>
+                  <input
+                    type="file"
+                    name="videofile"
+                    className="hidden"
+                    accept="video/mp4"
+                    id="input"
+                    onChange={handleVideoFileChange}
+                  />
+                </label>
+              )}
             </div>
             <div className="my-10 gap-8 relative">
               <label className="w-full h-[24px] text-black">
@@ -474,15 +464,14 @@ function AddCourseFrom() {
                 className="w-[190px] h-[192px] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
                 id="drop"
               >
-                {!pdfUrl ? (
+                {pdfUrl ? (
+                  <Link to={pdfUrl} target="_blank">
+                    <img src={pdf} alt="pdf" />
+                  </Link>
+                ) : (
                   <span>
                     <img src={upload} alt="upload" />
                   </span>
-                ) : (
-                  <div className="bg-slate-200 p-4 flex flex-col items-center">
-                    <DocumentIcon className="text-blue-400 w-10" />
-                    <span className="text-black">{pdfFileName}</span>
-                  </div>
                 )}
                 <input
                   type="file"
