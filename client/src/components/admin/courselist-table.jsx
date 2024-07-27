@@ -75,64 +75,74 @@ function CourseListTable() {
   return (
     <div>
       <NavbarCourseList search={search} onSearchChange={setSearch} />
-      <table className="m-10 text-black text-sm rounded-xl">
-        <thead className="w-[1120px] h-[41px] bg-Gray-400 rounded-xl">
-          <tr className="font-thin">
-            <th className="w-[48px] text-left"></th>
-            <th className="w-[96px] text-left">Image</th>
-            <th className="w-[268px] text-left">Course name</th>
-            <th className="w-[105px] text-left">Lesson</th>
-            <th className="w-[105px] text-left">Price</th>
-            <th className="w-[188px] text-left">Created date</th>
-            <th className="w-[188px] text-left">Updated Date</th>
-            <th className="w-[120px] text-left">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {courses
-            .filter((item) => {
-              return search.trim() === ""
-                ? true
-                : item.coursename.toLowerCase().includes(search.toLowerCase());
-            })
-            .map((item) => (
-              <tr
-                key={item.courseid}
-                className="w-[1120px] h-[88px] bg-white border border-b-Gray-400"
-              >
-                <td className="w-[48px] text-center">{item.courseid}</td>
-                <td className="w-[96px]">
-                  <img
-                    src={item.imagefile}
-                    alt="image"
-                    style={{ width: "64px", height: "47px" }}
-                  />
-                </td>
-                <td className="w-[268px] text-left">{item.coursename}</td>
-                <td className="w-[105px] text-left">
-                  {item.coursesummary} Lessons
-                </td>
-                <td className="w-[105px] text-left">{item.price.toFixed(2)}</td>
-                <td className="w-[188px] text-left">
-                  {formatToBangkokTime(item.createddate)}
-                </td>
-                <td className="w-[188px] text-left">
-                  {formatToBangkokTime(item.updateddate)}
-                </td>
-                <td className="w-[100px] flex items-center justify-center mt-8 gap-5 -ml-6">
-                  <button onClick={() => handleOpenModal(item.courseid)}>
-                    <TrashIcon className="w-6 text-Blue-300 hover:text-Blue-700" />
-                  </button>
-                  <button>
-                    <Link to={`/admin/editcourse/${item.courseid}`}>
-                      <PencilSquareIcon className="w-6 text-Blue-300 hover:text-Blue-700" />
-                    </Link>
-                  </button>
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+      <div className="m-10">
+        <table className="text-black text-sm rounded-xl w-full">
+          <thead className="w-[100px] h-[41px] bg-Gray-400 rounded-xl ">
+            <tr className="font-thin ">
+              <th className="text-left w-[48px]"></th>
+              <th className="text-left w-[6rem]">Image</th>
+              <th className="text-left w-[17rem]">Course name</th>
+              <th className="text-left w-[6.4rem]">Lesson</th>
+              <th className="text-left w-[6.4rem]">Price</th>
+              <th className="text-left w-[11.5rem]">Created date</th>
+              <th className="text-left">Updated Date</th>
+              <th className="text-left">Actions</th>
+            </tr>
+          </thead>
+        </table>
+        <div className="overflow-y-scroll max-h-[550px]">
+          <table className="text-black text-sm rounded-xl w-full">
+            <tbody>
+              {courses
+                .filter((item) => {
+                  return search.trim() === ""
+                    ? true
+                    : item.coursename
+                        .toLowerCase()
+                        .includes(search.toLowerCase());
+                })
+                .map((item) => (
+                  <tr
+                    key={item.courseid}
+                    className="bg-white border-b border-Gray-400 w-[1120px] h-[88px]"
+                  >
+                    <td className="w-[48px] text-center">{item.courseid}</td>
+                    <td className="w-[96px]">
+                      <img
+                        src={item.imagefile}
+                        alt="image"
+                        style={{ width: "64px", height: "47px" }}
+                      />
+                    </td>
+                    <td className="w-[268px] text-left">{item.coursename}</td>
+                    <td className="w-[105px] text-left">
+                      {item.coursesummary} Lessons
+                    </td>
+                    <td className="w-[105px] text-left">
+                      {item.price.toFixed(2)}
+                    </td>
+                    <td className="w-[188px] text-left">
+                      {formatToBangkokTime(item.createddate)}
+                    </td>
+                    <td className="w-[188px] text-left">
+                      {formatToBangkokTime(item.updateddate)}
+                    </td>
+                    <td className="w-[120px] flex items-center justify-center gap-5 ml-[1.5rem] mt-8">
+                      <button onClick={() => handleOpenModal(item.courseid)}>
+                        <TrashIcon className="w-6 text-Blue-300 hover:text-Blue-700  " />
+                      </button>
+                      <button>
+                        <Link to={`/admin/editcourse/${item.courseid}`}>
+                          <PencilSquareIcon className="w-6 text-Blue-300 hover:text-Blue-700  " />
+                        </Link>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
       <ConfirmationModal
         open={openModal}
         onClose={handleCloseModal}
