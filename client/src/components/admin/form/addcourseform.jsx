@@ -8,6 +8,7 @@ import supabase from "../../../utils/supabaseClient";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate, Link } from "react-router-dom";
 import { XMarkIcon } from "@heroicons/react/24/solid";
+import PendingSvg from "../../shared/pending-svg";
 import {
   validateFile,
   MAX_IMAGE_SIZE_MB,
@@ -321,54 +322,7 @@ function AddCourseFrom() {
   return (
     <div>
       {/* Loading Section */}
-      {loading && (
-        <div className="spinner-container">
-          <style>
-            {`
-            @keyframes spin {
-              to {
-                transform: rotate(360deg);
-              }
-            }
-            .spin {
-              transform-origin: center;
-              animation: spin 2s linear infinite;
-            }
-            .spinner-container {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              position: fixed;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-              background: rgba(255, 255, 255, 0.8);
-              z-index: 1000;
-            }
-          `}
-          </style>
-          <svg
-            viewBox="0 0 800 800"
-            xmlns="http://www.w3.org/2000/svg"
-            width="100"
-            height="100"
-          >
-            <circle
-              className="spin"
-              cx="400"
-              cy="400"
-              fill="none"
-              r="220"
-              strokeWidth="50"
-              stroke="#595959"
-              strokeDasharray="683 1400"
-              strokeLinecap="round"
-            />
-          </svg>
-          <p className="text-black">Creating Course...</p>
-        </div>
-      )}
+      {loading && <PendingSvg text="Creating Course..." />}
       <NavbarAddCourse onCreateCourseClick={handleCreateCourseClick} />
       <div className="mt-8 mx-8 w-[1120px] bg-white rounded-md border-2">
         <div className="mx-8 p-8">
