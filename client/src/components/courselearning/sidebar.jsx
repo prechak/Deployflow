@@ -89,7 +89,7 @@ const FinishedIcon = () => (
 // Sidebar Component
 const Sidebar = () => {
   // State and Hooks
-  const { courseid } = useParams();
+  // const { courseid } = useParams();
   const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
     height: 10,
     borderRadius: 5,
@@ -103,23 +103,25 @@ const Sidebar = () => {
     },
   }));
 
-  const [openSections, setOpenSections] = useState({
-    introduction: true,
-    theories: false,
-    scope: false,
-  });
+  // const [openSections, setOpenSections] = useState({
+  //   introduction: true,
+  //   theories: false,
+  //   scope: false,
+  // });
+  const { courseid } = useParams();
+  const [openSections, setOpenSections] = useState({});
   const [videoStates, setVideoStates] = useState({});
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isVideoEnded, setIsVideoEnded] = useState(false);
-  const [progress, setProgress] = useState(0); // Initial progress value
-  const [sidebarData, setSidebarData] = useState([]);
-  const [selectedSubmodule, setSelectedSubmodule] = useState(null);
+  const [progress, setProgress] = useState(0);
+  const [sidebarData, setSidebarData] = useState({});
+  const [selectedSublesson, setSelectedSublesson] = useState(null);
   const [selectedVideoUrl, setSelectedVideoUrl] = useState("");
-  const [currentModuleName, setCurrentModuleName] = useState("");
-  const [currentSubmoduleName, setCurrentSubmoduleName] = useState("");
   const [watchedVideos, setWatchedVideos] = useState(new Set());
   const [totalVideos, setTotalVideos] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
+  const [currentModuleName, setCurrentModuleName] = useState("");
+  const [currentSubmoduleName, setCurrentSubmoduleName] = useState("");
 
   const videoRef = useRef(null);
 
@@ -135,7 +137,7 @@ const Sidebar = () => {
     setIsVideoPlaying(true);
     setVideoStates((prevState) => ({
       ...prevState,
-      [selectedSubmodule]: { isPlaying: true, isEnded: false },
+      [selectedSublesson]: { isPlaying: true, isEnded: false },
     }));
   };
 
@@ -146,7 +148,7 @@ const Sidebar = () => {
 
     setVideoStates((prevState) => ({
       ...prevState,
-      [selectedSubmodule]: { isPlaying: false, isEnded: true },
+      [selectedSublesson]: { isPlaying: false, isEnded: true },
     }));
 
     setWatchedVideos((prevWatchedVideos) => {
@@ -155,28 +157,32 @@ const Sidebar = () => {
       return newWatchedVideos;
     });
 
-    const { nextSubmoduleId, nextVideoUrl } = getNextVideoDetails();
+    const { nextSublessonId, nextVideoUrl } = getNextVideoDetails();
     if (nextVideoUrl) {
-      setSelectedSubmodule(nextSubmoduleId);
+      setSelectedSublesson(nextSublessonId);
       setSelectedVideoUrl(nextVideoUrl);
+
+      // Optionally, reset progress to 0 and start playing the next video
+      setProgress(0);
+      setIsVideoPlaying(true);
     }
   };
 
   const handlePreviousLesson = () => {
-    const { previousSubmoduleId, previousVideoUrl } = getPreviousVideoDetails();
-    if (previousSubmoduleId && previousVideoUrl) {
-      setSelectedSubmodule(previousSubmoduleId);
-      // Assuming playVideo is a function to play the video
-      // playVideo(previousVideoUrl);
+    const { previousSublessonId, previousVideoUrl } = getPreviousVideoDetails();
+    if (previousSublessonId && previousVideoUrl) {
+      setSelectedSublesson(previousSublessonId);
+      setSelectedVideoUrl(previousVideoUrl);
+      setIsVideoPlaying(true);
     }
   };
 
   const handleNextLesson = () => {
-    const { nextSubmoduleId, nextVideoUrl } = getNextVideoDetails();
-    if (nextSubmoduleId && nextVideoUrl) {
-      setSelectedSubmodule(nextSubmoduleId);
-      // Assuming playVideo is a function to play the video
-      // playVideo(nextVideoUrl);
+    const { nextSublessonId, nextVideoUrl } = getNextVideoDetails();
+    if (nextSublessonId && nextVideoUrl) {
+      setSelectedSublesson(nextSublessonId);
+      setSelectedVideoUrl(nextVideoUrl);
+      setIsVideoPlaying(true);
     }
   };
 
@@ -208,8 +214,8 @@ const Sidebar = () => {
   useEffect(() => {
     if (sidebarData.modules) {
       const allVideos = sidebarData.modules.flatMap((module) =>
-        module.submodules.flatMap((submodule) =>
-          submodule.videos.map((video) => video.videourl)
+        module.sublessons.flatMap((sublesson) =>
+          sublesson.videofile ? [sublesson.videofile] : []
         )
       );
       setTotalVideos(allVideos.length);
@@ -222,6 +228,7 @@ const Sidebar = () => {
     }
   }, [watchedVideos, totalVideos]);
 
+  // Fetch data on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -230,15 +237,21 @@ const Sidebar = () => {
         );
         const data = response.data;
         setSidebarData(data);
+        console.log(data);
 
-        // Set the first submodule as selected by default
-        const firstSubmodule = data.modules.flatMap(
-          (module) => module.submodules
-        )[0];
-        if (firstSubmodule) {
-          setSelectedSubmodule(firstSubmodule.submoduleid);
+        // Set the first sublesson as selected by default
+        const firstSublesson = data.modules?.[0]?.sublessons?.[0];
+        if (firstSublesson) {
+          setSelectedSublesson(firstSublesson.sublessonid);
+          setSelectedVideoUrl(firstSublesson.videofile);
         }
-        console.log(response);
+
+        // Initialize open sections state
+        const initialOpenSections = {};
+        data.modules.forEach((module) => {
+          initialOpenSections[module.moduleid] = false;
+        });
+        setOpenSections(initialOpenSections);
       } catch (error) {
         console.error("Error fetching course data:", error);
       }
@@ -248,116 +261,124 @@ const Sidebar = () => {
   }, [courseid]);
 
   useEffect(() => {
-    if (selectedSubmodule) {
+    if (selectedSublesson) {
       const module = sidebarData.modules.find((mod) =>
-        mod.submodules.find((sub) => sub.submoduleid === selectedSubmodule)
+        mod.sublessons.find((sub) => sub.sublessonid === selectedSublesson)
       );
-      const submodule = module.submodules.find(
-        (sub) => sub.submoduleid === selectedSubmodule
-      );
-      if (module) {
-        setCurrentModuleName(module.modulename);
-      }
-      if (submodule && submodule.videos.length > 0) {
-        setCurrentSubmoduleName(submodule.title);
-        setSelectedVideoUrl(submodule.videos[0].videourl);
-      } else {
-        setSelectedVideoUrl("");
-      }
 
-      // Update the openSections to expand the current module
-      setOpenSections((prevOpenSections) => ({
-        ...prevOpenSections,
-        [module.moduleid]: true,
-      }));
+      if (module) {
+        const sublesson = module.sublessons.find(
+          (sub) => sub.sublessonid === selectedSublesson
+        );
+
+        if (sublesson) {
+          setCurrentModuleName(module.modulename);
+          setCurrentSubmoduleName(sublesson.sublessonname);
+
+          // Assume each sublesson has only one video file
+          if (sublesson.videofile) {
+            setSelectedVideoUrl(sublesson.videofile);
+          } else {
+            setSelectedVideoUrl("");
+          }
+
+          // Update the openSections to expand the current module
+          setOpenSections((prevOpenSections) => ({
+            ...prevOpenSections,
+            [module.moduleid]: true,
+          }));
+        }
+      }
     }
-  }, [selectedSubmodule, sidebarData]);
+  }, [selectedSublesson, sidebarData]);
 
   // Helper Functions
   const getNextVideoDetails = () => {
-    let nextSubmoduleId = null;
+    let nextSublessonId = null;
     let nextVideoUrl = null;
 
-    if (selectedSubmodule && sidebarData.modules) {
+    if (selectedSublesson && sidebarData.modules) {
+      let foundCurrentSublesson = false;
+
       for (let i = 0; i < sidebarData.modules.length; i++) {
         const module = sidebarData.modules[i];
-        for (let j = 0; j < module.submodules.length; j++) {
-          const submodule = module.submodules[j];
-          if (submodule.submoduleid === selectedSubmodule) {
-            if (j < module.submodules.length - 1) {
-              // Next submodule in the current module
-              const nextSubmodule = module.submodules[j + 1];
-              if (nextSubmodule.videos.length > 0) {
-                nextSubmoduleId = nextSubmodule.submoduleid;
-                nextVideoUrl = nextSubmodule.videos[0].videourl;
-              }
-            } else if (i < sidebarData.modules.length - 1) {
-              // First submodule of the next module
-              const nextModule = sidebarData.modules[i + 1];
-              if (nextModule.submodules.length > 0) {
-                nextSubmoduleId = nextModule.submodules[0].submoduleid;
-                if (nextModule.submodules[0].videos.length > 0) {
-                  nextVideoUrl = nextModule.submodules[0].videos[0].videourl;
-                }
-              }
+        for (let j = 0; j < module.sublessons.length; j++) {
+          const sublesson = module.sublessons[j];
+          if (foundCurrentSublesson) {
+            // Found current sublesson, now set the next video
+            if (sublesson.videofile) {
+              nextSublessonId = sublesson.sublessonid;
+              nextVideoUrl = sublesson.videofile;
+              return { nextSublessonId, nextVideoUrl };
             }
-            break;
+          } else if (sublesson.sublessonid === selectedSublesson) {
+            // Found current sublesson
+            foundCurrentSublesson = true;
           }
         }
-        if (nextSubmoduleId) break;
+
+        // If we are at the end of the module and there are more modules
+        if (foundCurrentSublesson && i < sidebarData.modules.length - 1) {
+          const nextModule = sidebarData.modules[i + 1];
+          if (nextModule.sublessons.length > 0) {
+            const firstSublesson = nextModule.sublessons[0];
+            if (firstSublesson.videofile) {
+              nextSublessonId = firstSublesson.sublessonid;
+              nextVideoUrl = firstSublesson.videofile;
+              return { nextSublessonId, nextVideoUrl };
+            }
+          }
+          break; // Stop if we found the next video in the next module
+        }
       }
     }
 
-    return { nextSubmoduleId, nextVideoUrl };
+    return { nextSublessonId, nextVideoUrl };
   };
 
   const getPreviousVideoDetails = () => {
-    let previousSubmoduleId = null;
+    let previousSublessonId = null;
     let previousVideoUrl = null;
 
-    if (selectedSubmodule && sidebarData.modules) {
+    if (selectedSublesson && sidebarData.modules) {
       for (let i = 0; i < sidebarData.modules.length; i++) {
         const module = sidebarData.modules[i];
-        for (let j = 0; j < module.submodules.length; j++) {
-          const submodule = module.submodules[j];
-          if (submodule.submoduleid === selectedSubmodule) {
+        for (let j = 0; j < module.sublessons.length; j++) {
+          const sublesson = module.sublessons[j];
+          if (sublesson.sublessonid === selectedSublesson) {
             if (j > 0) {
-              // Previous submodule in the current module
-              const previousSubmodule = module.submodules[j - 1];
-              if (previousSubmodule.videos.length > 0) {
-                previousSubmoduleId = previousSubmodule.submoduleid;
-                previousVideoUrl =
-                  previousSubmodule.videos[previousSubmodule.videos.length - 1]
-                    .videourl;
+              // Previous sublesson in the current module
+              const previousSublesson = module.sublessons[j - 1];
+              if (previousSublesson.videofile) {
+                previousSublessonId = previousSublesson.sublessonid;
+                previousVideoUrl = previousSublesson.videofile;
               }
             } else if (i > 0) {
-              // Last submodule of the previous module
+              // Last sublesson of the previous module
               const previousModule = sidebarData.modules[i - 1];
-              if (previousModule.submodules.length > 0) {
-                const lastSubmodule =
-                  previousModule.submodules[
-                    previousModule.submodules.length - 1
+              if (previousModule.sublessons.length > 0) {
+                const lastSublesson =
+                  previousModule.sublessons[
+                    previousModule.sublessons.length - 1
                   ];
-                previousSubmoduleId = lastSubmodule.submoduleid;
-                if (lastSubmodule.videos.length > 0) {
-                  previousVideoUrl =
-                    lastSubmodule.videos[lastSubmodule.videos.length - 1]
-                      .videourl;
+                previousSublessonId = lastSublesson.sublessonid;
+                if (lastSublesson.videofile) {
+                  previousVideoUrl = lastSublesson.videofile;
                 }
               }
             }
             break;
           }
         }
-        if (previousSubmoduleId) break;
+        if (previousSublessonId) break;
       }
     }
 
-    return { previousSubmoduleId, previousVideoUrl };
+    return { previousSublessonId, previousVideoUrl };
   };
 
   const handleSubmoduleClick = (submoduleid, moduleid) => {
-    setSelectedSubmodule(submoduleid);
+    setSelectedSublesson(submoduleid);
     // Ensure the module containing the submodule is expanded
     setOpenSections((prevOpenSections) => ({
       ...prevOpenSections,
@@ -375,26 +396,34 @@ const Sidebar = () => {
     return <NotPlayingIcon />;
   };
 
+  const getPaddedModuleId = (module, modules) => {
+    const courseModules = modules.filter((m) => m.courseId === module.courseId);
+    const index = courseModules.findIndex(
+      (m) => m.moduleid === module.moduleid
+    );
+    return (index + 1).toString().padStart(2, "0");
+  };
+
   // Render Methods
   const { coursename, coursedescription, modules } = sidebarData;
 
   const selectedSubmoduleData = sidebarData.modules
-    ?.flatMap((module) => module.submodules)
-    .find((submodule) => submodule.submoduleid === selectedSubmodule);
+    ?.flatMap((module) => module.sublessons)
+    .find((sublesson) => sublesson.sublessonid === selectedSublesson);
 
   return (
     <>
       <Navbarnonuser />
       <div className="flex flex-col md:flex-row mx-4 lg:mx-20 xl:mx-40 mt-[128px] md:mt-[188px] min-h-screen">
         {/* Sidebar */}
-        <div className="md:w-1/4 bg-white text-black shadow-md h-auto  p-4 font-sans">
+        <div className="md:w-1/4 bg-white text-black shadow-md p-4 font-sans h-[100vh] sm:h-[calc(50vh)] md:h-[calc(123vh-211px)] lg:h-[calc(134vh-168px)] overflow-y-auto scrollbar-hide">
           <div className="mb-6">
             <h2 className="text-sm font-bold text-orange-500">Course</h2>
             <h3 className="text-2xl font-bold mt-4">{coursename}</h3>
             <p className="text-gray-600 text-base mt-2">{coursedescription}</p>
             <div className="mt-4">
               <span className="text-sm text-gray-600">
-                {progress}% Complete
+                {progress.toFixed(0)}% Complete
               </span>
               <div className="flex items-center">
                 <BorderLinearProgress
@@ -413,11 +442,27 @@ const Sidebar = () => {
                   <ListItem
                     button
                     onClick={() => handleToggle(module.moduleid)}
+                    style={{
+                      borderBottom: "1px solid #D6D9E4",
+                    }}
                   >
                     <ListItemText
                       disableTypography
-                      primary={`${module.modulename}`}
-                      className="text-base font-sans"
+                      primary={
+                        <span>
+                          <span
+                            style={{
+                              color: "#646D89",
+                              position: "absolute",
+                              left: "0",
+                            }}
+                          >
+                            {getPaddedModuleId(module, modules)}
+                          </span>{" "}
+                          {module.modulename}
+                        </span>
+                      }
+                      className="text-base font-sans px-6 py-6"
                     />
                     {openSections[module.moduleid] ? (
                       <ExpandLess />
@@ -431,38 +476,41 @@ const Sidebar = () => {
                     unmountOnExit
                   >
                     <List component="div" disablePadding>
-                      {module.submodules.map((submodule) => {
-                        const isCurrentSubmodule =
-                          selectedSubmodule === submodule.submoduleid;
+                      {module.sublessons.map((sublesson, index) => {
+                        const isCurrentSublesson =
+                          selectedSublesson === sublesson.sublessonid;
+                        const isFirstSublesson = index === 0;
+                        const isLastSublesson = module.sublessons.length - 1;
+
                         return (
                           <ListItem
                             button
-                            key={submodule.submoduleid}
+                            key={sublesson.sublessonid}
                             onClick={() =>
                               handleSubmoduleClick(
-                                submodule.submoduleid,
+                                sublesson.sublessonid,
                                 module.moduleid
                               )
                             }
                             style={{
-                              backgroundColor: isCurrentSubmodule
+                              backgroundColor: isCurrentSublesson
                                 ? "#F6F7FC"
                                 : "transparent",
-                              borderRadius: "8px", // Adjust the radius as needed
+                              borderRadius: "8px",
+                              marginTop: isFirstSublesson ? "24px" : "0",
+                              // marginBottom: isFirstSublesson ? "0" : "24px",
                             }}
                           >
                             <ListItemIcon>
-                              {getVideoIcon(submodule.submoduleid)}
+                              {getVideoIcon(sublesson.sublessonid)}
                             </ListItemIcon>
                             <ListItemText
                               disableTypography
-                              primary={submodule.title}
+                              primary={sublesson.sublessonname}
                               style={{
-                                color: isCurrentSubmodule
-                                  ? "#646D89"
-                                  : "#646D89",
+                                color: "#646D89",
                                 fontFamily: "Inter",
-                              }} // Optional: Change text color for better contrast
+                              }}
                             />
                           </ListItem>
                         );
@@ -477,7 +525,9 @@ const Sidebar = () => {
         {/* Video content */}
         <div className="flex-1 p-4 lg:p-6 text-black">
           <h1 className="text-2xl font-bold mb-4">
-            {selectedSubmoduleData ? selectedSubmoduleData.title : coursename}
+            {selectedSubmoduleData
+              ? selectedSubmoduleData.sublessonname
+              : coursename}
           </h1>
           <div className="mb-4 flex justify-center">
             {selectedVideoUrl && (
@@ -526,18 +576,16 @@ const Sidebar = () => {
       {/* Footer */}
       <footer className="bg-white py-4 flex justify-between items-center border-t border-gray-300 mt-6 md:mt-0">
         <button
-          className="text-blue-600 ml-4 md:ml-16 my-2 md:my-9"
+          className="text-blue-600 font-bold ml-4 md:ml-16 my-2 md:my-9"
           onClick={handlePreviousLesson}
         >
           Previous Lesson
         </button>
         <button
-          className={`bg-[#2F5FAC] mr-4 md:mr-14 my-2 md:my-5 text-white py-2 px-4 rounded-lg ${
-            isComplete ? "bg-green-500" : ""
-          }`}
-          onClick={handleNextLesson}
+          className="bg-[#2F5FAC] mr-4 md:mr-14 my-2 md:my-5 text-white font-bold py-2 px-4 rounded-lg"
+          onClick={progress === 100 ? "" : handleNextLesson}
         >
-          {isComplete ? "Complete Lesson" : "Next Lesson"}
+          {progress === 100 ? "Complete Lesson" : "Next Lesson"}
         </button>
       </footer>
       {/* General Footer */}

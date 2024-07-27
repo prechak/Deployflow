@@ -168,19 +168,15 @@ app.get("/courseinfo/:courseid", async (req, res) => {
     const modulesResult = await connectionPool.query(modulesQuery, [courseid]);
     const modules = modulesResult.rows;
 
-    // Fetch submodules
-    const submodulesQuery =
-      "select * from submodules where moduleid in (select moduleid from modules where courseid = $1)";
-    const submodulesResult = await connectionPool.query(submodulesQuery, [
+    // Fetch sublessons
+    const sublessonsQuery = `
+  SELECT * FROM sublesson 
+  WHERE moduleid IN (SELECT moduleid FROM modules WHERE courseid = $1)
+`;
+    const sublessonsResult = await connectionPool.query(sublessonsQuery, [
       courseid,
     ]);
-    const submodules = submodulesResult.rows;
-
-    // Fetch videos
-    const videosQuery =
-      "select * from videos where submoduleid in (select submoduleid from submodules where moduleid in (select moduleid from modules where courseid = $1))";
-    const videosResult = await connectionPool.query(videosQuery, [courseid]);
-    const videos = videosResult.rows;
+    const sublessons = sublessonsResult.rows;
 
     // Structure the data
     const sidebarData = {
@@ -191,15 +187,15 @@ app.get("/courseinfo/:courseid", async (req, res) => {
         return {
           moduleid: module.moduleid,
           modulename: module.modulename,
-          submodules: submodules
-            .filter((submodule) => submodule.moduleid === module.moduleid)
-            .map((submodule) => {
+          sublessons: sublessons
+            .filter((sublesson) => sublesson.moduleid === module.moduleid)
+            .map((sublesson) => {
               return {
-                submoduleid: submodule.submoduleid,
-                title: submodule.title,
-                videos: videos.filter(
-                  (video) => video.submoduleid === submodule.submoduleid
-                ),
+                sublessonid: sublesson.sublessonid,
+                sublessonname: sublesson.sublessonname,
+                assignmentid: sublesson.assignmentid,
+                videofile: sublesson.videofile,
+                sublessondate: sublesson.sublessondate,
               };
             }),
         };
