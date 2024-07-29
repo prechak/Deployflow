@@ -7,6 +7,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import adminRouter from "./routes/admin.mjs";
 import profileRouter from "./routes/profiles.mjs";
+import submissionRouter from "./routes/submission.mjs";
 
 const app = express();
 app.use(express.json());
@@ -29,6 +30,7 @@ app.use("/courses", courseRouter);
 app.use("/users", userRouter);
 app.use("/admin", adminRouter);
 app.use("/profiles", profileRouter);
+app.use("/submissions", submissionRouter);
 
 //Server connection test
 app.get("/test", (req, res) => {

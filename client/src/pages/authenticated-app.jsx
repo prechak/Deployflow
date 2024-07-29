@@ -14,6 +14,7 @@ import Course from "../components/course/courselist";
 import CourselistUser from "../components/course/courselist-user";
 import UserMycourseCompleted from "./authorized/user-mycourse-completed";
 import UserMycourseInprogress from "./authorized/user-mycourse-inprogress";
+import UserMyHomework from "./authorized/user-myhomework";
 
 function AuthenticatedApp() {
   return (
@@ -49,6 +50,7 @@ function AuthenticatedApp() {
           path="/user/my_course/completed"
           element={<UserMycourseCompleted />}
         />
+        <Route path="/user/my_homework" element={<UserMyHomework />} />
         <Route path="*" element={<Userhomepage />} />
       </Routes>
     </div>
