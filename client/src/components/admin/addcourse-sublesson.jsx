@@ -28,6 +28,9 @@ function AddCourseSubLessonTable() {
   //   // navigate("/admin/courselist");
   // };
 
+  
+
+
   return (
     <div className="m-10 w-[1120px] text-black">
       <div className="flex justify-between">
@@ -54,7 +57,7 @@ function AddCourseSubLessonTable() {
             {subLesson.slice(0, 5).map((item, index) => (
               <tr key={index} className="bg-white border-2">
                 <td className="w-[56px] h-[88px] "></td>
-                <td className="w-[56px]"></td>
+                <td className="w-[56px]">{item.rownum}</td>
                 <td>{item.lessonname}</td>
                 <td className="expand">{item.sublessonname}</td>
 

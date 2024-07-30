@@ -50,7 +50,12 @@ adminRouter.post("/login", [adminLoginValidation], async (req, res) => {
 adminRouter.get("/assignments/list", async (req, res) => {
   try {
     const result = await connectionPool.query(
-      "select assignmentid,submodules.title, assignments.title as detail,sublessonname,modulename,assignments.createddate from assignments inner join submodules on submodules.submoduleid = assignments.submoduleid inner join sublesson on sublesson.sublessonid = assignments.sublessonid inner join modules on modules.moduleid = assignments.lessonid;"
+      `select coursename, assignments.title, assignments.description,modulename,sublessonname,assignments.createddate, assignments.assignmentid
+        from assignments
+        inner join courses on courses.courseid = assignments.courseid
+        inner join modules on modules.moduleid = assignments.moduleid
+        inner join sublesson on sublesson.sublessonid = assignments.sublessonid
+        `
     );
 
     res.status(200).json(result.rows);
@@ -203,6 +208,7 @@ adminRouter.put("/sublesson/:lessonid", async (req, res) => {
       [lessonId, editLesson.modulename]
     );
     editSublesson.forEach(async (value, i) => {
+      console.log(value);
       try {
         await connectionPool.query(
           `insert into sublesson (sublessonid, moduleid, sublessonname, videofile, sublessondate)
@@ -550,6 +556,62 @@ adminRouter.put("/assignment/:id", async (req, res) => {
   }
 });
 
+
+//addLesson and sublesson
+adminRouter.post("/:courseid/lesson", async (req, res) => {
+  const sublessondate = new Date();
+
+  let newModule;
+  const courseId = req.params.courseid;
+  try {
+    newModule = await connectionPool.query(
+      `insert into modules (courseid, modulename) values ($1,$2) 
+      returning *`,
+      [courseId, req.body.modulename]
+    );
+    console.log(req.body);
+    req.body.sublessonname.forEach(async (value, i) => {
+      try {
+        await connectionPool.query(
+          `
+          insert into sublesson (moduleid, sublessonname, videofile, sublessondate)
+          values ($1,$2, $3, $4)
+          `,
+          [newModule.rows[0].moduleid, value, req.body.videos[i], sublessondate]
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    });
+
+    // await connectionPool.query(
+    //   `
+    //   with lesson as (
+    //   insert into modules (courseid, modulename) values ($1,$2)
+    //   returning *)
+    //   insert into sublesson (moduleid, sublessonname, videofile, sublessondate)
+    //   select lesson.moduleid, $3, $4, $5 from lesson
+    //   `,
+    //   [
+    //     courseId,
+    //     lesson.modulename,
+    //     lesson.sublessonname,
+    //     lesson.videofile,
+    //     lesson.sublessondate,
+    //   ]
+    // );
+    return res.status(201).json({
+      message: "Lesson created successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      message:
+        "Server could not created lesson because there are missing data from client",
+    });
+  }
+});
+
 //Delete assignments
 adminRouter.delete("/assignments/:id", async (req, res) => {
   const assignmentId = req.params.id;
@@ -579,9 +641,19 @@ adminRouter.delete("/assignments/:id", async (req, res) => {
 //Get Sub lesson list
 adminRouter.get("/sublessonlist", async (req, res) => {
   try {
-    const result =
-      await connectionPool.query(`select modulename as lessonname,modules.moduleid,sublessonname,sublessonid from modules 
-inner join sublesson on modules.moduleid = sublesson.moduleid; `);
+    const result = await connectionPool.query(`SELECT 
+    ROW_NUMBER() OVER (ORDER BY modules.moduleid, sublesson.sublessonid) AS rownum,
+    modulename AS lessonname,
+    modules.moduleid,
+    sublessonname,
+    sublesson.sublessonid
+FROM 
+    modules
+INNER JOIN 
+    sublesson 
+ON 
+    modules.moduleid = sublesson.moduleid
+`);
 
     res.status(200).json(result.rows);
   } catch (error) {

@@ -84,7 +84,11 @@ function EditCourseForm() {
         imagefile: imageUrl,
         videofile: videoUrl,
         pdffile: pdfUrl,
+        updateddate: new Date().toISOString(),
       };
+
+      console.log("Updated data being sent to backend:", updatedData);
+
       console.log("Update data", updatedData);
       await axios.put(`http://localhost:4000/courses/${id}`, updatedData);
       setLoading(false);

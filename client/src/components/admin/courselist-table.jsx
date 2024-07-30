@@ -35,12 +35,19 @@ function CourseListTable() {
 
   useEffect(() => {
     fetchCourses();
-  }, []);
+  }, [currentPage, search]);
 
   const fetchCourses = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/courses");
-      setCourses(res.data);
+      const res = await axios.get("http://localhost:4000/courses", {
+        params: {
+          page: currentPage,
+          limit: pageSize,
+          search: search.trim() // Assuming you add search support in the backend
+        }
+      });
+      setCourses(res.data.courses);
+      setTotalPages(res.data.totalPages);
     } catch (error) {
       console.error("Error fetching courses:", error);
     }

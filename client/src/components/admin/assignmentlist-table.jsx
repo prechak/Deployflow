@@ -38,18 +38,27 @@ function AssignmentListTable() {
     }
   };
 
+  const truncateText = (text, maxLength) => {
+    if (!text) return "";
+    return text.length > maxLength
+      ? text.substring(0, maxLength) + "..."
+      : text;
+  };
+
   return (
     <div>
       <NavbarAssignmentList search={search} onSearchChange={setSearch} />
       <table className="text-black text-sm m-20">
         <thead className="w-[1120px] h-[41px] bg-slate-200 rounded-lg">
           <tr>
-            <th className="w-[200px] text-left">Assignment detail</th>
+            <th className="w-[200px] text-left rounded-tl-lg pl-6">
+              Assignment detail
+            </th>
             <th className="w-[200px] text-left">Course</th>
             <th className="w-[200px] text-left">Lesson</th>
             <th className="w-[200px] text-left">Sub-lesson</th>
             <th className="w-[200px] text-left">Created date</th>
-            <th className="w-[120px] text-left">Actions</th>
+            <th className="w-[120px] text-left rounded-tr-lg">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -60,9 +69,10 @@ function AssignmentListTable() {
               }
               const searchText = search.toLowerCase();
               return (
-                (item.detail &&
-                  item.detail.toLowerCase().includes(searchText)) ||
-                (item.title && item.title.toLowerCase().includes(searchText)) ||
+                (item.description &&
+                  item.description.toLowerCase().includes(searchText)) ||
+                (item.coursename &&
+                  item.coursename.toLowerCase().includes(searchText)) ||
                 (item.modulename &&
                   item.modulename.toLowerCase().includes(searchText)) ||
                 (item.sublessonname &&
@@ -71,10 +81,18 @@ function AssignmentListTable() {
             })
             .map((item) => (
               <tr key={item.assignmentid} className="w-[1120px] h-[88px]">
-                <td className="w-[200px] text-left">{item.title}</td>
-                <td className="w-[200px] text-left">{item.coursename}</td>
-                <td className="w-[200px] text-left">{item.modulename}</td>
-                <td className="w-[200px] text-left">{item.sublessonname}</td>
+                <td className="w-[200px] text-left pl-6">
+                  {truncateText(item.description, 25)}
+                </td>
+                <td className="w-[200px] text-left ">
+                  {truncateText(item.coursename, 25)}
+                </td>
+                <td className="w-[200px] text-left">
+                  {truncateText(item.modulename, 25)}
+                </td>
+                <td className="w-[200px] text-left">
+                  {truncateText(item.sublessonname, 25)}
+                </td>
                 <td className="w-[200px] text-left">{item.createddate}</td>
                 <td className="w-[120px] text-left">
                   <button onClick={() => deleteAssignment(item.assignmentid)}>
