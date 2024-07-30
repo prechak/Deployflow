@@ -98,7 +98,7 @@ function CourselistUser() {
                 {course.description}
               </p>
             </div>
-            <div className="sm:w-[343px] sm:h-[53px] border-t-[1px] border-Gray-700 text-Gray-700 flex flex-row items-center p-4 gap-5">
+            <div className="w-full sm:h-[53px] border-t-[1px] border-t-Gray-500 text-Gray-700 text-Body3 font-Body3  flex flex-row  p-4 gap-5">
               <p className="flex flex-row gap-4">
                 <img src={book} alt="" className="w-[20px]" />
                 {course.coursesummary} Lessons
