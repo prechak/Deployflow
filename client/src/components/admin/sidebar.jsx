@@ -30,22 +30,26 @@ function Sidebar() {
             </h2>
           </div>
           <div className="mt-20 h-[540px] flex flex-col items-start justify-start">
-            <button className="w-full h-[56px] pl-8 flex items-center font-small text-base md:text-sm lg:text-sm xl:text-sm text-left text-slate-500 hover:bg-gray-200">
-              <img src={course} alt="Course Icon" className="w-6 h-6 mr-4" />
-              <Link to="/admin/courselist">Course</Link>
-            </button>
-            <button className="w-full h-[56px] pl-8 flex items-center font-small text-base md:text-sm lg:text-sm xl:text-sm text-left text-slate-500 hover:bg-gray-200">
-              <img
-                src={assingment}
-                alt="Assignment Icon"
-                className="w-6 h-6 mr-4"
-              />
-              <Link to="/admin/assignmentlist">Assignment</Link>
-            </button>
+            <Link to="/admin/courselist">
+              <button className="w-[240px]  h-[56px] pl-8 flex items-center font-small text-base md:text-sm lg:text-sm xl:text-sm text-left text-slate-500 hover:bg-gray-200">
+                <img src={course} alt="Course Icon" className="w-6 h-6 mr-4" />
+                Course
+              </button>
+            </Link>
+            <Link to="/admin/assignmentlist">
+              <button className="w-[240px] h-[56px] pl-8 flex items-center font-small text-base md:text-sm lg:text-sm xl:text-sm text-left text-slate-500 hover:bg-gray-200">
+                <img
+                  src={assingment}
+                  alt="Assignment Icon"
+                  className="w-6 h-6 mr-4"
+                />
+                Assignment
+              </button>
+            </Link>
             <div className="mt-[300px]">
               <button
                 onClick={handleLogout}
-                className="w-full h-[56px] pl-8 flex items-center font-small text-base md:text-sm lg:text-sm xl:text-sm text-left text-slate-500 hover:bg-gray-200"
+                className="w-[240px] h-[56px] pl-8 flex items-center font-small text-base md:text-sm lg:text-sm xl:text-sm text-left text-slate-500 hover:bg-gray-200"
               >
                 <img src={logout} alt="Logout Icon" className="w-6 h-6 mr-4" />
                 Log out
