@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SubButton from "../button/sub-button";
 import CancelButton from "../button/cancel-button";
 
 function AddAssignmentForm() {
+  const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
   const [lessons, setLessons] = useState([]);
   const [subLessons, setSubLessons] = useState([]);
@@ -79,6 +80,7 @@ function AddAssignmentForm() {
 
       if (response.status === 201) {
         alert("Assignment created successfully");
+        navigate("/admin/assignmentlist");
         setSelectedCourse("");
         setSelectedLesson("");
         setSelectedSubLesson("");

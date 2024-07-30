@@ -226,10 +226,32 @@ adminRouter.get("/sublesson/:lessonid", async (req, res) => {
     data: result.rows,
   });
 });
+
 //*get assignment all//
 adminRouter.get("/assignments", async (req, res) => {
   try {
-    const result = await connectionPool.query(`SELECT * FROM assignments`);
+    const result = await connectionPool.query(`
+      SELECT 
+        a.assignmentid,
+        a.title,
+        a.description,
+        a.duedate,
+        a.courseid,
+        c.coursename,
+        a.moduleid,
+        m.modulename,
+        a.sublessonid,
+        s.sublessonname,
+        a.createddate
+      FROM 
+        assignments a
+      LEFT JOIN 
+        courses c ON a.courseid = c.courseid
+      LEFT JOIN 
+        modules m ON a.moduleid = m.moduleid
+      LEFT JOIN 
+        sublesson s ON a.sublessonid = s.sublessonid
+    `);
 
     res.status(200).json(result.rows);
   } catch (error) {
@@ -237,6 +259,7 @@ adminRouter.get("/assignments", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 //*post assignments(add)*//
 adminRouter.post("/assignments", async (req, res) => {
@@ -276,7 +299,7 @@ adminRouter.post("/assignments", async (req, res) => {
 
   try {
     const result = await connectionPool.query(
-      `INSERT INTO assignments (submoduleid, lessonid, sublessonid, title, duedate)
+      `INSERT INTO assignments (courseid, moduleid, sublessonid, title, duedate)
        VALUES ($1, $2, $3, $4, $5)`,
       [course, lesson, sub_lesson, title, finalDueDate]
     );
@@ -291,45 +314,44 @@ adminRouter.post("/assignments", async (req, res) => {
 
 //*get assignments by id//
 adminRouter.get("/assignment/:id", async (req, res) => {
-  const assignmentid = req.params.id;
-  let result;
+  const assignmentid = parseInt(req.params.id, 10);
+
+  if (isNaN(assignmentid)) {
+    return res.status(400).json({
+      message: "Invalid assignment ID",
+    });
+  }
 
   try {
-    result = await connectionPool.query(
+    const result = await connectionPool.query(
       `SELECT * FROM assignments WHERE assignmentid = $1`,
       [assignmentid]
     );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        message: "Assignment not found",
+      });
+    }
+
+    return res.status(200).json({
+      data: result.rows[0],
+    });
   } catch (error) {
     console.error("Error occurred while fetching the assignment:", error);
     return res.status(500).json({
-      message:
-        "Server could not read assignments due to database connection error",
+      message: "Server could not read assignments due to database connection error",
     });
   }
-
-  if (result.rows.length === 0) {
-    return res.status(404).json({
-      message: "Assignment not found",
-    });
-  }
-
-  return res.status(200).json({
-    data: result.rows[0],
-  });
 });
 
 
-//*edit assignments 
-adminRouter.put("/assignment/:id", async (req, res) => {
-  const assignmentid = req.params.id;
-  const {
-    course,
-    lesson,
-    sub_lesson,
-    title,
-    duedate
-  } = req.body;
 
+
+//*edit assignments 
+adminRouter.put("/assignments/:id", async (req, res) => {
+  const { id } = req.params;
+  const { course, lesson, sub_lesson, title, duedate } = req.body;
   if (!course || !lesson || !sub_lesson || !title) {
     return res
       .status(400)
@@ -340,13 +362,11 @@ adminRouter.put("/assignment/:id", async (req, res) => {
   if (!duedate) {
     const today = new Date();
     const defaultDurationDays = 7;
-    finalDueDate = new Date(
-      today.setDate(today.getDate() + defaultDurationDays)
-    )
+    finalDueDate = new Date(today.setDate(today.getDate() + defaultDurationDays))
       .toISOString()
       .split("T")[0];
   } else {
-    const durationDays = parseInt(duedate.split(" ")[0]);
+    const durationDays = parseInt(duedate.split(" ")[0], 10);
     if (isNaN(durationDays)) {
       return res.status(400).json({ error: "Invalid duration value" });
     }
@@ -359,20 +379,17 @@ adminRouter.put("/assignment/:id", async (req, res) => {
   try {
     const result = await connectionPool.query(
       `UPDATE assignments
-       SET submoduleid = $1, lessonid = $2, sublessonid = $3, title = $4, duedate = $5
+       SET courseid = $1, 
+           moduleid = $2, 
+           sublessonid = $3, 
+           title = $4, 
+           duedate = $5
        WHERE assignmentid = $6`,
-      [
-        course,
-        lesson,
-        sub_lesson,
-        title,
-        finalDueDate,
-        assignmentid
-      ]
+      [course, lesson, sub_lesson, title, finalDueDate, id]
     );
 
     if (result.rowCount === 0) {
-      return res.status(404).json({ message: "Assignment not found" });
+      return res.status(404).json({ error: "Assignment not found" });
     }
 
     res.status(200).json({ message: "Assignment updated successfully" });
@@ -381,6 +398,7 @@ adminRouter.put("/assignment/:id", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 
 //*get addsignments by id//

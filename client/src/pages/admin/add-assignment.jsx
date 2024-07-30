@@ -1,6 +1,5 @@
 import React from "react";
 import Sidebar from "../../components/admin/sidebar";
-import NavbarAddassignment from "../../components/admin/navbar/navbar-addassignment";
 import AddAssignmentForm from "../../components/admin/form/add-assignmentform";
 
 function Addassignment() {
@@ -10,7 +9,6 @@ function Addassignment() {
       <Sidebar />
       <div className="flex-1">
         <div>
-            {/* <NavbarAddassignment /> */}
         </div>
           <div>
             <AddAssignmentForm/>
