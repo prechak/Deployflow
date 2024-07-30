@@ -43,7 +43,6 @@ function Course() {
 
   return (
     <>
-    {/* <Navbarnonuser/> */}
       <section
         id="search"
         className="sm:w-full sm:h-[198px] xl:flex xl:flex-col"
@@ -74,13 +73,13 @@ function Course() {
 
       <section
         id="course"
-        className="mt-10 sm:w-full sm:h-auto sm:rounded-lg flex flex-wrap justify-center xl:w-[1119px] xl:flex xl:flex-wrap xl:justify-center xl:pb-[187px] xl:mx-auto "
+        className="border-2 border-red-500 mt-10 sm:w-full sm:h-auto sm:rounded-lg flex flex-wrap justify-center xl:w-[1119px] xl:flex xl:flex-wrap xl:justify-center xl:pb-[187px] xl:mx-auto "
       >
         {filteredCourses.map((course) => (
           <Link
             key={course.courseid}
             to={`/coursedetail/${course.courseid}`}
-            className="sm:w-[343px] sm:h-[431px] sm:flex sm:flex-col items-center mb-8 mx-4 xl:w-[30%]  xl:mt-[60px] xl:rounded-xl xl:mb-5 transition-transform transform hover:scale-105 hover:shadow-2xl"
+            className="sm:w-[343px] sm:h-[431px] sm:flex sm:flex-col items-center mb-8 mx-4 xl:w-[30%]  xl:mt-[60px] xl:rounded-xl xl:mb-5 transition-transform transform hover:scale-105 hover:shadow-2xl "
           >
             <img
               src={course.imagefile}
@@ -98,7 +97,7 @@ function Course() {
                 {course.description}
               </p>
             </div>
-            <div className="sm:w-[343px] sm:h-[53px] border-t-[1px] border-Gray-700 text-Gray-700 flex flex-row items-center p-4 gap-5">
+            <div className="w-full sm:h-[53px] border-t-[1px] border-t-Gray-500 text-Gray-700 text-Body3 font-Body3  flex flex-row  p-4 gap-5">
               <p className="flex flex-row gap-4">
                 <img src={book} alt="" className="w-[20px]" />
                 {course.coursesummary} Lessons

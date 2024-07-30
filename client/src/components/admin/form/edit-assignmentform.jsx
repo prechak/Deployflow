@@ -55,9 +55,11 @@ function EditAssignmentForm() {
     }
   };
 
-  const fetchSubLessons = async () => {
+  const fetchSubLessons = async (moduleid) => {
     try {
-      const result = await axios.get(`http://localhost:4000/admin/sublesson`);
+      const result = await axios.get(`http://localhost:4000/admin/sublesson`, {
+        params: { moduleid },
+      });
       setSubLessons(result.data);
     } catch (error) {
       console.error("Error fetching sublessons:", error);
@@ -65,7 +67,11 @@ function EditAssignmentForm() {
   };
 
   useEffect(() => {
-    fetchSubLessons(selectedLesson);
+    if (selectedLesson) {
+      fetchSubLessons(selectedLesson);
+    } else {
+      setSubLessons([]);
+    }
   }, [selectedLesson]);
 
   useEffect(() => {
@@ -103,12 +109,14 @@ function EditAssignmentForm() {
       setErrorMessage("Failed to update assignment.");
     }
   };
+  const filteredLessons = lessons.filter((lesson) => lesson.courseid === parseInt(selectedCourse));
+  const filterSubLessons = subLessons.filter((subLesson) => subLesson.moduleid === parseInt(selectedLesson));
 
   return (
     <>
       <div className="bg-gray-100 w-full h-full flex flex-col items-center justify-center">
         <nav className="w-full h-[92px] bg-white border-gray-400 border-l-0 border-[1px] flex justify-between items-center">
-          <span className="text-black font-medium text-2xl pl-10">Edit Assignment</span>
+          <span className="text-black font-medium text-2xl pl-10">Edit Assignment: {assignmentDetail}</span>
           <div className="flex gap-4 pr-10">
             <Link to="/admin/assignmentlist">
               <CancelButton text="Cancel" />
@@ -161,7 +169,7 @@ function EditAssignmentForm() {
                   value={selectedLesson}
                 >
                   <option value="">Select Lesson</option>
-                  {lessons.map((lesson) => (
+                  {filteredLessons.map((lesson) => (
                     <option key={lesson.moduleid} value={lesson.moduleid}>
                       {lesson.modulename}
                     </option>
@@ -187,7 +195,7 @@ function EditAssignmentForm() {
                   value={selectedSubLesson}
                 >
                   <option value="">Select Sub-Lesson</option>
-                  {subLessons.map((subLesson) => (
+                  {filterSubLessons.map((subLesson) => (
                     <option key={subLesson.sublessonid} value={subLesson.sublessonid}>
                       {subLesson.sublessonname}
                     </option>
