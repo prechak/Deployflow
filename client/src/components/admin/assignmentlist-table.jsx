@@ -17,7 +17,7 @@ function AssignmentListTable() {
   const fetchAssignments = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:4000/admin/assignments/list"
+        "http://localhost:4000/admin/assignments"
       );
       setAssignments(res.data);
       console.log(res);
@@ -71,8 +71,8 @@ function AssignmentListTable() {
             })
             .map((item) => (
               <tr key={item.assignmentid} className="w-[1120px] h-[88px]">
-                <td className="w-[200px] text-left">{item.detail}</td>
                 <td className="w-[200px] text-left">{item.title}</td>
+                <td className="w-[200px] text-left">{item.coursename}</td>
                 <td className="w-[200px] text-left">{item.modulename}</td>
                 <td className="w-[200px] text-left">{item.sublessonname}</td>
                 <td className="w-[200px] text-left">{item.createddate}</td>
@@ -81,7 +81,7 @@ function AssignmentListTable() {
                     <img src={bin} alt="delete" />
                   </button>
                   <button>
-                    <Link to={`/admin/assignment/${item.assignmentid}`}>
+                    <Link to={`/admin/editaddassignment/${item.assignmentid}`}>
                       <img src={edit} alt="edit" />
                     </Link>
                   </button>
