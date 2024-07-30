@@ -76,9 +76,9 @@ function UserMyHomework() {
 
       {/* Answer Box */}
       <div>
-        {assignment.map((items, index) => (
+        {assignment.map((items) => (
           <AssignmentCard
-            key={index}
+            key={items.assignmentid}
             coursename={items.coursename}
             module={items.modulename}
             sublesson={items.sublessonname}

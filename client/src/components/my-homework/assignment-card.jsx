@@ -5,23 +5,28 @@ import {
   PendingStatus,
   SubmittedStatus,
 } from "../../components/my-homework/status";
+
 function AssignmentCard(props) {
-  const [status, setStatus] = useState("pending");
-  const [answer, setAnswer] = useState("");
+  const [status, setStatus] = useState(props.status);
+  const [answer, setAnswer] = useState(props.answer || "");
 
   useEffect(() => {
-    if (props.answer !== "") {
-      setStatus("Submitted");
+    if (props.answer && props.answer.trim() !== "") {
+      setStatus("submitted");
+    } else {
+      setStatus("pending");
     }
   }, [props.answer]);
 
   const handleInputChange = (event) => {
-    setAnswer(event.target.value);
-    if (event.target.value.trim() !== "") {
+    const newAnswer = event.target.value;
+    setAnswer(newAnswer);
+
+    if (newAnswer.length > 0) {
       setStatus("inprogress");
     } else if (props.answer.trim() !== "") {
       setStatus("submitted");
-    } else {
+    } else if ((newAnswer.length = 0)) {
       setStatus("pending");
     }
   };
@@ -39,7 +44,7 @@ function AssignmentCard(props) {
             </p>
           </div>
           <div className="flex justify-center items-center md:flex-col md:justify-end md:items-end md:mb-[2rem]">
-            {status === "Submitted" ? (
+            {status === "submitted" ? (
               <SubmittedStatus />
             ) : status === "inprogress" ? (
               <InprogressStatus />
@@ -59,20 +64,29 @@ function AssignmentCard(props) {
           <div className="md:flex md:flex-row gap-6">
             <textarea
               className={`bg-white resize-none w-full px-3 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 ${
-                status === "Submitted" && "bg-gray-100 cursor-not-allowed"
+                status === "submitted" &&
+                "text-gray-600 text-opacity-70 border-none cursor-not-allowed"
               }`}
               type="text"
               rows="4"
               placeholder="Answer..."
-              value={props.answer}
+              value={answer}
               onChange={handleInputChange}
-              disabled={props.status === "Submitted"}
+              disabled={status === "submitted"}
             ></textarea>
             <div className="flex flex-col justify-between items-center">
-              <button className="bg-Blue-500 text-white py-4 my-4 w-full rounded-lg hover:bg-Blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 md:w-[137px]">
-                Submit
-              </button>
-              <p className="text-Blue-500 font-semibold">Open in course</p>
+              {status !== "submitted" && (
+                <button className="bg-Blue-500 text-white py-4 my-4 w-full rounded-lg hover:bg-Blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 md:w-[137px]">
+                  Submit
+                </button>
+              )}
+              {status === "submitted" ? (
+                <p className="text-Blue-500 font-semibold flex justify-center w-[120px] mt-8">
+                  Open in course
+                </p>
+              ) : (
+                <p className="text-Blue-500 font-semibold ">Open in course</p>
+              )}
             </div>
           </div>
         </div>
