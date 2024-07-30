@@ -2,19 +2,29 @@ import { useState, useEffect } from "react";
 import upload from "../../../assets/image/upload.png";
 import pdf from "../../../assets/image/pdf.png";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import AddCourseSubLessonTable from "../addcourse-sublesson";
 import NavbarEditCourse from "../navbar/navbar-editcourse";
 import supabase from "../../../utils/supabaseClient";
 import { v4 as uuidv4 } from "uuid";
-import { DocumentIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@heroicons/react/24/solid";
+import PendingSvg from "../../shared/pending-svg";
+import {
+  validateFile,
+  MAX_IMAGE_SIZE_MB,
+  MAX_VIDEO_SIZE_MB,
+  IMAGE_FORMATS,
+  VIDEO_FORMATS,
+} from "../../../utils/fileValidations";
 
 function EditCourseForm() {
   const [file, setFile] = useState("");
-  const [pdfFile, setPdfFileUpload] = useState(" ");
+  const [pdfFile, setPdfFileUpload] = useState("");
+  const [pdfFileName, setPdfFileName] = useState(""); // New state for PDF file name
   const [previewUrl, setPreviewUrl] = useState("");
   const [pdfUrl, setPdfUrl] = useState("");
   const [videoFile, setVideoFileState] = useState("");
+  const [loading, setLoading] = useState(false);
   const [videoPreviewUrl, setVideoPreviewUrl] = useState("");
   const { id } = useParams();
   const [inputData, setInputData] = useState({
@@ -33,8 +43,8 @@ function EditCourseForm() {
     axios
       .get(`http://localhost:4000/courses/${id}`)
       .then((res) => {
-        console.log("Response received:", res.data.data[0]);
-        console.log(id);
+        // console.log("Response received:", res.data.data[0]);
+        // console.log(id);
         setInputData(res.data.data[0]);
       })
       .catch((err) => {
@@ -44,8 +54,15 @@ function EditCourseForm() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    setLoading(true); // Start the spinner
     try {
+      // Check if required files are present
+      // if (!videoUrl || !imageUrl) {
+      //   alert("Please upload require file.");
+      //   setLoading(false);
+      //   return; // Stop execution if any file is missing
+      // }
+
       let imageUrl = inputData.imagefile;
       let videoUrl = inputData.videofile;
       let pdfUrl = inputData.pdffile;
@@ -70,11 +87,12 @@ function EditCourseForm() {
       };
       console.log("Update data", updatedData);
       await axios.put(`http://localhost:4000/courses/${id}`, updatedData);
-
+      setLoading(false);
       alert("Data Updated Successfully!");
-      // navigate("/admin/courselist");
+      navigate("/admin/courselist");
     } catch (error) {
       console.error("Error updating data:", error);
+      setLoading(false);
     }
   };
 
@@ -88,9 +106,7 @@ function EditCourseForm() {
 
   async function UploadPreviewImage(file) {
     try {
-      if (!file) {
-        throw new Error("You must select an image to upload.");
-      }
+      validateFile(file, IMAGE_FORMATS, MAX_IMAGE_SIZE_MB);
       const fileExt = file.name.split(".").pop();
       const sanitizedCourseName = sanitizeFileName(inputData.coursename.trim());
       const fileName = `${uuidv4()}.${fileExt}`;
@@ -120,7 +136,7 @@ function EditCourseForm() {
     }
   }
 
-  const setImgFile = (e) => {
+  const handleImageChange = (e) => {
     const selectedFile = e.target.files[0];
     if (!selectedFile) {
       return;
@@ -139,25 +155,14 @@ function EditCourseForm() {
     console.log("File Size:", selectedFile.size);
   };
 
-  const handlePdfFileChange = async (e) => {
+  const handlePdfFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (!selectedFile) {
       return;
     }
 
-    try {
-      // Upload PDF and get URL
-      const pdfUrl = await UploadPDF(selectedFile);
-      setPdfFileUpload(selectedFile);
-      setPdfUrl(pdfUrl);
-
-      // Logging file details
-      console.log("Selected PDF File:", selectedFile);
-      console.log("File Type:", selectedFile.type);
-      console.log("File Size:", selectedFile.size);
-    } catch (error) {
-      console.error("Error uploading PDF:", error);
-    }
+    setPdfFileUpload(selectedFile);
+    setPdfFileName(selectedFile.name); // Set the PDF file name
   };
 
   //uplaod pdf file
@@ -167,9 +172,9 @@ function EditCourseForm() {
         throw new Error("You must select a PDF file to upload.");
       }
 
+      const originalFileName = pdfFile.name; // Use the original file name
       const sanitizedFileName = sanitizeFileName(inputData.coursename.trim());
-      const fileName = `${uuidv4()}.pdf`; // Use .pdf extension for PDF files
-      const filePath = `course/${sanitizedFileName}/pdf_files/${fileName}`;
+      const filePath = `course/${sanitizedFileName}/pdf_files/${originalFileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from("course")
@@ -179,7 +184,7 @@ function EditCourseForm() {
         throw uploadError;
       }
 
-      const { data, error: urlError } = supabase.storage
+      const { data, error: urlError } = await supabase.storage
         .from("course")
         .getPublicUrl(filePath);
 
@@ -195,45 +200,9 @@ function EditCourseForm() {
     }
   }
 
-  const setPdfFile = (e) => {
-    const selectedFile = e.target.files[0];
-    if (!selectedFile) {
-      return;
-    }
-
-    /*UploadPDF(selectedFile)
-      .then((pdfUrl) => {
-
-        console.log("Uploaded PDF URL:", pdfUrl);
-      })
-      .catch((error) => {
-        console.error("PDF Upload Error:", error);
-      });
-
-    console.log("Selected PDF File:", selectedFile);
-    console.log("File Type:", selectedFile.type);
-    console.log("File Size:", selectedFile.size);
-  };*/
-
-    setPdfFileUpload(selectedFile);
-
-    const fileReader = new FileReader();
-    fileReader.onload = () => {
-      setPdfUrl(fileReader.result);
-    };
-    fileReader.readAsDataURL(selectedFile);
-
-    // Logging file details
-    console.log("Selected File:", selectedFile);
-    console.log("File Type:", selectedFile.type);
-    console.log("File Size:", selectedFile.size);
-  };
-
   async function uploadVideoFile(file) {
     try {
-      if (!file) {
-        throw new Error("You must select a video to upload.");
-      }
+      validateFile(file, VIDEO_FORMATS, MAX_VIDEO_SIZE_MB);
       const fileExt = file.name.split(".").pop();
       const sanitizedCourseName = sanitizeFileName(inputData.coursename.trim());
       const fileName = `${uuidv4()}.${fileExt}`;
@@ -295,7 +264,7 @@ function EditCourseForm() {
     const filePath = inputData.pdffile.replace(CDNURL, "");
     await deleteFileFromSupabase(filePath);
     setInputData({ ...inputData, pdffile: "" });
-    setPdfUrl("");
+    setPdfUrl(null);
   };
 
   // Delete video file
@@ -315,6 +284,15 @@ function EditCourseForm() {
         .from("course")
         .remove([filePath]);
 
+      const updatedData = {
+        ...inputData,
+        imagefile: "",
+        videoFile: "",
+        pdffile: "",
+      };
+
+      await axios.put(`http://localhost:4000/courses/${id}`, updatedData);
+
       if (error) {
         throw error;
       }
@@ -328,16 +306,18 @@ function EditCourseForm() {
 
   return (
     <div>
+      {/* Loading Section */}
+      {loading && <PendingSvg text="Editing Course..." />}
       <NavbarEditCourse handleSubmit={handleSubmit} text={"Edit"} />
-      <div className="mt-8 mx-8 w-[1120px] bg-white rounded-md border-2">
+      <div className="mt-8 mx-8 w-[1120px] bg-white rounded-md border-2 ">
         <div className="mx-8 p-8">
           <form>
             <div className="w-[920px] h-[76px]">
-              <label className="w-full h-[24px] text-black">
+              <label className="w-full h-[24px] text-black ">
                 Course name *
               </label>
               <input
-                className="w-full h-[48px] bg-white text-black border-2 rounded-md"
+                className="w-full h-[48px] bg-white text-black border-2 rounded-md pl-2"
                 placeholder="Course Name"
                 name="coursename"
                 type="text"
@@ -351,7 +331,7 @@ function EditCourseForm() {
               <div className="w-[420px] h-[76px]">
                 <label className="w-full h-[24px] text-black">Price *</label>
                 <input
-                  className="w-full h-[48px] bg-white text-black border-2 rounded-md"
+                  className="w-full h-[48px] bg-white text-black border-2 rounded-md pl-2"
                   placeholder="Price"
                   name="price"
                   type="text"
@@ -366,7 +346,7 @@ function EditCourseForm() {
                   Total learning time *
                 </label>
                 <input
-                  className="w-full h-[48px] bg-white text-black border-2 rounded-md"
+                  className="w-full h-[48px] bg-white text-black border-2 rounded-md pl-2"
                   placeholder="Learning Time"
                   name="courselearningtime"
                   type="text"
@@ -385,7 +365,7 @@ function EditCourseForm() {
                 Course summary *
               </label>
               <input
-                className="w-full h-[72px] bg-white text-black border-2 rounded-md"
+                className="w-full h-[72px] bg-white text-black border-2 rounded-md pl-2"
                 placeholder="Course Summary"
                 name="coursesummary"
                 type="text"
@@ -400,7 +380,7 @@ function EditCourseForm() {
                 Course detail *
               </label>
               <textarea
-                className="w-full h-[192px] bg-white text-black border-2 rounded-md"
+                className="w-full h-[192px] bg-white text-black border-2 rounded-md pl-2"
                 placeholder="Course Detail"
                 name="description"
                 value={inputData.description}
@@ -413,137 +393,172 @@ function EditCourseForm() {
               <label className="w-full h-[24px] text-black">
                 Cover image *
               </label>
-              <label
-                className="w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
-                id="drop"
-              >
-                <span>
-                  <img src={inputData.imagefile} alt="upload" />
-                </span>
-                <input
-                  type="file"
-                  name="imagefile"
-                  className="hidden"
-                  accept="image/png,image/jpeg"
-                  id="input"
-                  onChange={setImgFile}
-                />
-                {previewUrl && (
-                  <img
-                    src={previewUrl}
-                    alt="Preview"
-                    className="absolute m-auto rounded-md "
-                    style={{
-                      maxWidth: "240px",
-                      maxHeight: "240px",
-                      objectFit: "cover",
-                    }}
-                  />
-                )}
-              </label>
-              <button
-                type="button"
-                onClick={deletePreviewImage}
-                className="mt-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-              >
-                Delete Preview Image
-              </button>
+              {inputData.imagefile ? (
+                <label
+                  className="w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
+                  id="drop"
+                >
+                  <span>
+                    <img
+                      src={inputData.imagefile}
+                      alt="cover image"
+                      className="max-w-[240px] max-h-[240px] object-cover"
+                    />
+                  </span>
+                  <button
+                    type="button"
+                    onClick={deletePreviewImage}
+                    className="absolute"
+                  >
+                    <XMarkIcon className="size-5 text-white bg-purple-700 rounded-full absolute bottom-[5.8rem] left-[6rem]" />
+                  </button>
+                </label>
+              ) : (
+                <label
+                  className="w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
+                  id="drop"
+                >
+                  {previewUrl ? (
+                    <label className="w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center">
+                      <img
+                        src={previewUrl}
+                        alt="cover image"
+                        className="max-w-[240px] max-h-[240px] object-cover"
+                      />
+
+                      <button
+                        type="button"
+                        onClick={deletePreviewImage}
+                        className="absolute"
+                      >
+                        <XMarkIcon className="size-5 text-white bg-purple-700 rounded-full absolute bottom-[5.8rem] left-[6rem]" />
+                      </button>
+                    </label>
+                  ) : (
+                    <label
+                      className="w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
+                      id="drop"
+                    >
+                      <img src={upload} alt="upload" />
+                      <input
+                        type="file"
+                        name="imagefile"
+                        className="hidden"
+                        accept="image/png,image/jpeg"
+                        id="input"
+                        onChange={handleImageChange}
+                      />
+                    </label>
+                  )}
+                </label>
+              )}
             </div>
             <div className="my-10 gap-8 ">
               <label className="w-full h-[24px] text-black">
                 Video Trailer *
               </label>
-              <label
-                className="r w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
-                id="drop"
-              >
-                <span>
-                  <video src={inputData.videofile} alt="upload" controls />
-                </span>
-                <input
-                  type="file"
-                  name="videofile"
-                  className="hidden"
-                  accept="video/mp4"
-                  id="input"
-                  onChange={handleVideoFileChange}
-                />
-                {videoPreviewUrl && (
-                  <video
-                    src={videoPreviewUrl}
-                    alt="Preview"
-                    className="absolute m-auto rounded-md"
-                    style={{
-                      maxWidth: "240px",
-                      maxHeight: "240px",
-                      objectFit: "cover",
-                    }}
-                    controls
-                  />
-                )}
-              </label>
-              <button
-                type="button"
-                onClick={deleteVideoFile}
-                className="mt-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-              >
-                Delete Video
-              </button>
+              {inputData.videofile ? (
+                <label
+                  className="w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
+                  id="drop"
+                >
+                  <span>
+                    <video
+                      src={inputData.videofile}
+                      alt="upload"
+                      className="max-w-[240px] max-h-[240px] object-cover"
+                      controls
+                    />
+                  </span>
+                  <button
+                    type="button"
+                    onClick={deleteVideoFile}
+                    className="absolute"
+                  >
+                    <XMarkIcon className="size-5 text-white bg-purple-700 rounded-full absolute bottom-[5.8rem] left-[6rem]" />
+                  </button>
+                </label>
+              ) : (
+                <label
+                  className="w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
+                  id="drop"
+                >
+                  {videoPreviewUrl ? (
+                    <label className="w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center">
+                      <video
+                        src={videoPreviewUrl}
+                        alt="upload"
+                        className="max-w-[240px] max-h-[240px] object-cover"
+                        controls
+                      />
+
+                      <button
+                        type="button"
+                        onClick={deleteVideoFile}
+                        className="absolute"
+                      >
+                        <XMarkIcon className="size-5 text-white bg-purple-700 rounded-full absolute bottom-[5.8rem] left-[6rem]" />
+                      </button>
+                    </label>
+                  ) : (
+                    <label
+                      className="w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
+                      id="drop"
+                    >
+                      <img src={upload} alt="upload" />
+                      <input
+                        type="file"
+                        name="videofile"
+                        className="hidden"
+                        accept="video/mp4"
+                        id="input"
+                        onChange={handleVideoFileChange}
+                      />
+                    </label>
+                  )}
+                </label>
+              )}
             </div>
 
-            <div className="my-10 gap-8 ">
-              <label className=" w-full h-[24px] text-black">
-                Attach File (Optional) *
+            <div className="my-10 gap-8 relative">
+              <label className="w-full h-[24px] text-black">
+                Attach File (Optional)
               </label>
+              {inputData.pdffile || pdfFile ? (
+                <label
+                  className="w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
+                  id="drop"
+                >
+                  <Link to={inputData.pdffile} target="_blank">
+                    <img src={pdf} alt="pdf" />
+                  </Link>
 
-              <div
-                className=" w-[200px] h-[192px] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
-                id="drop"
-              >
-                {!pdfUrl ? (
-                  <div className="max-w-[200px] h-[100px] flex flex-col items-center justify-center">
-                    <DocumentIcon className="text-Blue-500 w-[70px] h-[70px]" />
-                    <p className="text-Blue-700 pt-2">
-                      {inputData.pdffile
-                        ? inputData.pdffile.substring(
-                            inputData.pdffile.lastIndexOf("/") + 1
-                          )
-                        : "No File Uploaded"}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="mt-4 text-red-400">
-                    <a href={pdfUrl} target="_blank" rel="noopener noreferrer">
-                      <img src={pdf} className="w-full h-full rounded-md" />
-                    </a>
-                  </div>
-                )}
-
-                <input
-                  type="file"
-                  name="pdffile"
-                  className="absolute left-[25rem] h-44"
-                  accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                  id="input"
-                  onChange={handlePdfFileChange}
-                />
-                {pdfUrl && (
-                  <div className="mt-4 text-blue-400">
-                    <a
-                      href={pdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    ></a>
-                  </div>
-                )}
-              </div>
-              <button
-                type="button"
-                onClick={() => deletePdfFile()}
-                className="mt-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-              >
-                Delete PDF File
-              </button>
+                  <button
+                    type="button"
+                    onClick={deletePdfFile}
+                    className="absolute"
+                  >
+                    <XMarkIcon className="size-5 text-white bg-purple-700 rounded-full absolute bottom-[5.8rem] left-[6rem]" />
+                  </button>
+                </label>
+              ) : (
+                <label
+                  className="w-[240PX] h-[240PX] px-4 bg-slate-200 rounded-md appearance-none cursor-pointer hover:border-slate-20 focus:outline-none flex items-center justify-center"
+                  id="drop"
+                >
+                  <span>
+                    <img src={upload} alt="upload" />
+                    <input
+                      type="file"
+                      name="pdffile"
+                      className="hidden"
+                      accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      id="pdfInput"
+                      onChange={handlePdfFileChange}
+                    />
+                  </span>
+                </label>
+              )}
             </div>
           </form>
         </div>
