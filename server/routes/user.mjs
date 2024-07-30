@@ -121,4 +121,70 @@ userRouter.post("/login", [userLoginValidation], async (req, res) => {
   }
 });
 
+//===========Get Course Data
+userRouter.get("/courseinfo/:courseid", async (req, res) => {
+  const { courseid } = req.params;
+
+  if (!courseid) {
+    return res.status(400).send("courseid is required");
+  }
+
+  try {
+    // Fetch course
+    const coursesQuery = "select * from courses where courseid = $1";
+    const coursesResult = await connectionPool.query(coursesQuery, [courseid]);
+    const courses = coursesResult.rows;
+
+    if (courses.length === 0) {
+      return res.status(404).send("Course not found");
+    }
+
+    const course = courses[0];
+
+    // Fetch modules
+    const modulesQuery = "select * from modules where courseid = $1";
+    const modulesResult = await connectionPool.query(modulesQuery, [courseid]);
+    const modules = modulesResult.rows;
+
+    // Fetch sublessons
+    const sublessonsQuery = `
+  SELECT * FROM sublesson 
+  WHERE moduleid IN (SELECT moduleid FROM modules WHERE courseid = $1)
+`;
+    const sublessonsResult = await connectionPool.query(sublessonsQuery, [
+      courseid,
+    ]);
+    const sublessons = sublessonsResult.rows;
+
+    // Structure the data
+    const sidebarData = {
+      courseid: course.courseid,
+      coursename: course.coursename,
+      coursedescription: course.description,
+      modules: modules.map((module) => {
+        return {
+          moduleid: module.moduleid,
+          modulename: module.modulename,
+          sublessons: sublessons
+            .filter((sublesson) => sublesson.moduleid === module.moduleid)
+            .map((sublesson) => {
+              return {
+                sublessonid: sublesson.sublessonid,
+                sublessonname: sublesson.sublessonname,
+                assignmentid: sublesson.assignmentid,
+                videofile: sublesson.videofile,
+                sublessondate: sublesson.sublessondate,
+              };
+            }),
+        };
+      }),
+    };
+
+    res.json(sidebarData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
+  }
+});
+
 export default userRouter;

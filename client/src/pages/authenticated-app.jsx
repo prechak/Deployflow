@@ -33,7 +33,7 @@ function AuthenticatedApp() {
         />
         <Route path="/user/desire" element={<UserDesireCourses />} />
         <Route
-          path="/user/startlearning/:courseid"
+          path="/users/startlearning/:courseid"
           element={<StartLearning />}
         />
         <Route path="/modal/:Id" element={<Modal />} />
