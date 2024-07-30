@@ -110,7 +110,8 @@ adminRouter.delete("/lesson/:id", async (req, res) => {
       where moduleid=$1`,
       [lessonId]
     );
-  } catch {
+  } catch (error) {
+    console.log(error)
     return res.status(500).json({
       message: "Server could not delete lesson because database connection",
     });

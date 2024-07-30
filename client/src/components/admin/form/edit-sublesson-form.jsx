@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import drag1 from "../../../assets/icons/admin/drag1.png";
 import NavbarEditSubLesson from "../../admin/navbar/navbar-editsublesson";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import modal_vector from "../../../assets/icons/coursedetail/modal_vector.png";
 
 function EditSubLessonFrom() {
@@ -12,7 +12,6 @@ function EditSubLessonFrom() {
   const [modal, setModal] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
-  console.log(subLessons);
   const getLesson = async () => {
     try {
       const result = await axios.get(
@@ -23,7 +22,6 @@ function EditSubLessonFrom() {
       console.error("Error getLesson", error);
     }
   };
-
   const getSublesson = async () => {
     try {
       const result = await axios.get(
@@ -42,9 +40,7 @@ function EditSubLessonFrom() {
     event.preventDefault();
     deleteLesson();
   };
-
   const deleteSublesson = async (sublessonid) => {
-    console.log(sublessonid);
     try {
       await axios.delete(
         `http://localhost:4000/admin/sublesson/${sublessonid}`
@@ -52,13 +48,11 @@ function EditSubLessonFrom() {
     } catch (error) {
       console.log("Error deleteSublesson", error);
     }
+    console.log(deleteSublesson);
   };
-
   const putLesson = async () => {
     const editLesson = lessons;
     const editSublesson = subLessons;
-    console.log(editLesson);
-    console.log(editSublesson);
     try {
       await axios.put(
         `http://localhost:4000/admin/sublesson/${params.lessonId}`,
@@ -77,6 +71,19 @@ function EditSubLessonFrom() {
   const toggleModal = () => {
     setModal(!modal);
   };
+
+  const dragItem = useRef(null);
+  const draggedOverItem = useRef(null);
+
+  const handleSort = () => {
+    const subLessonsCopy = [...subLessons];
+    const draggedItemContent = subLessonsCopy.splice(dragItem.current, 1)[0];
+    subLessonsCopy.splice(draggedOverItem.current, 0, draggedItemContent);
+    dragItem.current = null;
+    draggedOverItem.current = null;
+    setSubLessons(subLessonsCopy);
+  };
+
   return (
     <div className="flex flex-col justify-between w-full h-full">
       <button
@@ -100,7 +107,7 @@ function EditSubLessonFrom() {
                 <input
                   className="w-full h-[48px] bg-white text-black border-[1px] rounded-[8px] pl-[20px]"
                   placeholder="Place Holder"
-                  Value={lessons.modulename}
+                  value={lessons.modulename}
                   onChange={(event) => {
                     setLessons({ ...lessons, modulename: event.target.value });
                   }}
@@ -120,15 +127,15 @@ function EditSubLessonFrom() {
                   <article
                     key={index}
                     className="relative mt-[30px] mx-[40px] w-[920px] h-[340px] bg-Gray-100 flex justify-center items-center rounded-[16px] border-[1px]"
-                    // draggable
-                    // onDragStart={() => (dragItem.current = index)}
-                    // onDragEnter={() => (draggedOverItem.current = index)}
-                    // onDragEnd={handleSort}
-                    // onDragOver={(e) => e.preventDefault()}
+                    draggable
+                    onDragStart={() => (dragItem.current = index)}
+                    onDragEnter={() => (draggedOverItem.current = index)}
+                    onDragEnd={handleSort}
+                    onDragOver={(e) => e.preventDefault()}
                   >
                     <div className="w-[888px] h-[292px] flex gap-[24px]">
                       <div className="w-[26px] h-[76px] text-[#C8CCDB]">
-                        <img src={drag1}></img>
+                        <img src={drag1} alt="drag icon" />
                       </div>
                       <div className="w-[747px] flex flex-col justify-center gap-[23px]">
                         <div className="flex flex-col gap-[4px]">
@@ -155,17 +162,16 @@ function EditSubLessonFrom() {
                           <h1 className="font-[400] text-[16px] text-[#07090D]">
                             Video *
                           </h1>
-                          <div className="w-[160px] h-[160px] rounded-[8px] bg-Gray-200 flex items-center justify-center">
-                            <img src={Uploadvideo} />
-                          </div>
+                          <label className="w-[160px] h-[160px] rounded-[8px] bg-Gray-200 flex items-center justify-center">
+                            <img src={Uploadvideo} alt="upload video" />
+                          </label>
                         </div>
                       </div>
                       <button
-                        onClick={(e) => {
-                          e.preventDefault();
+                        onClick={() => {
                           deleteSublesson(item.sublessonid);
                         }}
-                        className=" w-[67px] h-[32px] text-center text-[16px] font-[700] text-Blue-500 cursor-pointer"
+                        className="w-[67px] h-[32px] text-center text-[16px] font-[700] text-Blue-500 cursor-pointer"
                       >
                         Delete
                       </button>
@@ -197,18 +203,18 @@ function EditSubLessonFrom() {
           </form>
         </div>
       </div>
-      <button onClick={toggleModal} className="mb-[80px] mr-[450px]">
-        <h1 className="text-Blue-500 text-[16px] font-[700] cursor-pointer">
+      <button onClick={toggleModal} className="mb-[80px] w-[1120px] mx-8">
+        <h1 className="text-Blue-500 text-[16px] font-[700] text-end cursor-pointer">
           Delete lesson
         </h1>
       </button>
       <aside className={`${modal ? "block" : "hidden"} mt-[16px]`}>
-        <div className="flex items-center justify-center relative right-[600px] bottom-[300px]">
+        <div className="flex items-center justify-center relative right-[10px] bottom-[400px]">
           <div className="border-solid border-2 bg-white rounded-[24px] w-[528px] h-[212px]">
             <div className="flex items-center justify-between pl-[16px] pr-[16px] h-[56px] border-solid border-b-[1px] border-[#E4E6ED] ">
               <h1 className="text-Body1 font-Body1 text-black">Confirmation</h1>
               <button onClick={toggleModal}>
-                <img className="w-[9.94px] h-[9.7px]" src={modal_vector}></img>
+                <img className="w-[9.94px] h-[9.7px]" src={modal_vector} alt="close icon" />
               </button>
             </div>
             <div className="w-[528px] pl-[24px] pr-[24px]">
@@ -218,7 +224,7 @@ function EditSubLessonFrom() {
               <div className="border-solid border-1 flex gap-[16px] w-[528px] flex-row">
                 <button
                   onClick={handleDeleteLesson}
-                  className=" rounded-[12px] border-solid border-[1px] border-Orange-500 text-Orange-500 shadow-md text-[16px] font-[700] w-[310px] h-[60px]"
+                  className="rounded-[12px] border-solid border-[1px] border-Orange-500 text-Orange-500 shadow-md text-[16px] font-[700] w-[310px] h-[60px]"
                 >
                   Yes, I want to delete this lesson
                 </button>

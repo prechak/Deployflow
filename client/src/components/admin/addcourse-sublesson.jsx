@@ -6,7 +6,8 @@ import { Link } from "react-router-dom";
 
 function AddCourseSubLessonTable() {
   const [users, setUsers] = useState([]);
-  const [subLesson, setSublesson] = useState([])
+  const [subLesson, setSublesson] = useState([]);
+  console.log(subLesson);
 
   useEffect(() => {
     fetchSubLesson();
@@ -14,15 +15,18 @@ function AddCourseSubLessonTable() {
 
   const fetchSubLesson = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:4000/admin/sublessonlist"
-      );
+      const res = await axios.get("http://localhost:4000/admin/sublessonlist");
       setSublesson(res.data);
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
   };
 
+  // const deleteLesson = async (moduleid) => {
+  //   console.log(moduleid);
+  //   // await axios.delete(`http://localhost:4000/admin/lesson/${moduleid}`);
+  //   // navigate("/admin/courselist");
+  // };
 
   return (
     <div className="m-10 w-[1120px] text-black">
