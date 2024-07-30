@@ -50,7 +50,7 @@ function AuthenticatedApp() {
           path="/user/my_course/completed"
           element={<UserMycourseCompleted />}
         />
-        <Route path="/user/my_homework" element={<UserMyHomework />} />
+        <Route path="/user/homework" element={<UserMyHomework />} />
         <Route path="*" element={<Userhomepage />} />
       </Routes>
     </div>

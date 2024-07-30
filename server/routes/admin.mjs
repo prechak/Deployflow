@@ -198,7 +198,7 @@ adminRouter.put("/sublesson/:lessonid", async (req, res) => {
   const editLesson = req.body[0];
   const editSublesson = req.body[1];
   const video = req.body[2];
-  console.log(video)
+  console.log(video);
   try {
     await connectionPool.query(
       `update modules
@@ -251,7 +251,7 @@ adminRouter.post("/sublesson/:lessonid", async (req, res) => {
       [lessonId, "", "", new Date()]
     );
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(500).json({
       message:
         "Server could not reserved sublesson because database connection",
@@ -274,10 +274,7 @@ adminRouter.put("/sublessondrag/:lessonid", async (req, res) => {
       await connectionPool.query(
         `update sublesson 
          set sublessonorder=$1 where sublessonid=$2 `,
-        [
-          i,
-          value.sublessonid
-        ]
+        [i, value.sublessonid]
       );
     } catch (error) {
       console.log(error);
@@ -328,7 +325,9 @@ adminRouter.get("/assignments", async (req, res) => {
         m.modulename,
         a.sublessonid,
         s.sublessonname,
-        a.createddate
+        a.createddate,
+        b.status,
+        b.answer
       FROM 
         assignments a
       LEFT JOIN 
@@ -337,6 +336,8 @@ adminRouter.get("/assignments", async (req, res) => {
         modules m ON a.moduleid = m.moduleid
       LEFT JOIN 
         sublesson s ON a.sublessonid = s.sublessonid
+      LEFT JOIN 
+        submissions b ON a.assignmentid = b.assignmentid
     `);
 
     res.status(200).json(result.rows);
