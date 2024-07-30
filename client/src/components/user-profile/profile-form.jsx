@@ -284,7 +284,7 @@ function ProfileForm() {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="border border-gray-300 text-gray-900 text-sm rounded-lg outline-Blue-400 outline-2 block w-full p-3"
+                  className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg outline-Blue-400 outline-2 block w-full p-3"
                   placeholder={"Name"}
                   required
                 />
@@ -305,7 +305,7 @@ function ProfileForm() {
                   type="date"
                   value={formData.age}
                   onChange={handleChange}
-                  className="border border-gray-300 text-gray-900 text-sm rounded-lg outline-Blue-400 outline-2 block w-full p-3"
+                  className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg outline-Blue-400 outline-2 block w-full p-3"
                   placeholder="Date of Birth"
                   format="true"
                   max={maxDate} // Add this line
@@ -327,7 +327,7 @@ function ProfileForm() {
                   name="educationalBackground"
                   value={formData.educationalBackground}
                   onChange={handleChange}
-                  className="border border-gray-300 text-gray-900 text-sm rounded-lg outline-Blue-400 outline-2 block w-full p-3"
+                  className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg outline-Blue-400 outline-2 block w-full p-3"
                   placeholder="School"
                   required
                 />
@@ -349,7 +349,7 @@ function ProfileForm() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="border border-gray-300 text-gray-900 text-sm rounded-lg outline-Blue-400 outline-2 block w-full p-3"
+                  className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg outline-Blue-400 outline-2 block w-full p-3"
                   placeholder="Enter Email"
                   required
                 />

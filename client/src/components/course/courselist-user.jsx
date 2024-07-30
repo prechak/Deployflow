@@ -7,42 +7,41 @@ import bgSm from "/src/assets/icons/bgcourse/assetsSM.png";
 import bgXl from "/src/assets/icons/bgcourse/assetsXl.png";
 import NavbarUser from "../homepage/navbar-user";
 
-
 function CourselistUser() {
-    const [searchCourse, setSearchCourse] = useState("");
-    const [course, setCourse] = useState([]);
-  
-    const getCourseData = async () => {
-      try {
-        const result = await axios.get(`http://localhost:4000/courses`);
-        console.log(result);
-        setCourse(result.data);
-      } catch (error) {
-        console.error("Error fetching courses:", error);
-      }
-    };
-  
-    useEffect(() => {
-      getCourseData();
-    }, []);
-  
-    const handleChange = (event) => {
-      setSearchCourse(event.target.value);
-    };
-  
-    const filteredCourses = useMemo(
-      () =>
-        course.filter(
-          (course) =>
-            course.coursename
-              .toLowerCase()
-              .includes(searchCourse.toLowerCase()) ||
-            course.description.toLowerCase().includes(searchCourse.toLowerCase())
-        ),
-      [searchCourse, course]
-    );
-  
-    return (
+  const [searchCourse, setSearchCourse] = useState("");
+  const [course, setCourse] = useState([]);
+
+  const getCourseData = async () => {
+    try {
+      const result = await axios.get(`http://localhost:4000/courses`);
+      console.log(result);
+      setCourse(result.data);
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+    }
+  };
+
+  useEffect(() => {
+    getCourseData();
+  }, []);
+
+  const handleChange = (event) => {
+    setSearchCourse(event.target.value);
+  };
+
+  const filteredCourses = useMemo(
+    () =>
+      course.filter(
+        (course) =>
+          course.coursename
+            .toLowerCase()
+            .includes(searchCourse.toLowerCase()) ||
+          course.description.toLowerCase().includes(searchCourse.toLowerCase())
+      ),
+    [searchCourse, course]
+  );
+
+  return (
     <>
       <NavbarUser />
       <section
@@ -65,7 +64,7 @@ function CourselistUser() {
         <div className="sm:mt-8 sm:flex sm:justify-center z-20">
           <input
             type="text"
-            className="sm:border sm:rounded-lg sm:px-4 sm:w-[343px] sm:h-12 text-black xl:w-[357px]"
+            className="bg-white sm:border sm:rounded-lg sm:px-4 sm:w-[343px] sm:h-12 text-black xl:w-[357px]"
             value={searchCourse}
             onChange={handleChange}
             placeholder="Search courses..."
@@ -116,4 +115,4 @@ function CourselistUser() {
   );
 }
 
-export default CourselistUser
+export default CourselistUser;

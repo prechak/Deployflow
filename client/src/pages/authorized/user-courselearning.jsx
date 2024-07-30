@@ -1,7 +1,7 @@
-import Sidebar from "../../components/courselearning/sidebar";
+import UserLearningPage from "../../components/courselearning/userlearningpage";
 
 function StartLearning() {
-  return <Sidebar />;
+  return <UserLearningPage />;
 }
 
 export default StartLearning;

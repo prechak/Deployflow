@@ -144,7 +144,7 @@ function Login() {
                 <input
                   type="email"
                   id="email"
-                  className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-3 "
+                  className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full p-3 "
                   required
                   placeholder="Enter Email"
                   onChange={(e) => {
@@ -162,7 +162,7 @@ function Login() {
                 <input
                   type="password"
                   id="password"
-                  className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500  block w-full p-3"
+                  className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500  block w-full p-3"
                   placeholder="Enter Password"
                   onChange={(e) => {
                     setPassword(e.target.value);
