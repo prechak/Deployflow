@@ -2,63 +2,54 @@ import React, { useState, useEffect } from "react";
 import NavbarUser from "../../components/homepage/navbar-user";
 import GeneralFooter from "../../components/homepage/footer";
 import Buttons from "../../components/my-homework/buttons";
-import Slider from "react-slick";
 import AssignmentCard from "../../components/my-homework/assignment-card";
 import axios from "axios";
 import { useAuth } from "../../contexts/authentication";
 import { useParams } from "react-router-dom";
-import {
-  InprogressStatus,
-  OverdueStatus,
-  PendingStatus,
-  SubmittedStatus,
-} from "../../components/my-homework/status";
 
 function UserMyHomework() {
-  const [assignment, setAssignment] = useState([]);
-  const [courses, setCourses] = useState([]);
+  const [assignments, setAssignments] = useState([]);
+  const [filteredAssignments, setFilteredAssignments] = useState([]);
+  const [filter, setFilter] = useState("all");
 
   const userId = useAuth();
   const { id } = useParams();
 
-  const getAssignment = async () => {
+  const getAssignments = async () => {
     try {
-      const result = await axios.get(`http://localhost:4000/admin/assignments`);
-      console.log("Assignment data", result.data);
-      setAssignment(result.data);
+      const result = await axios.get(
+        `http://localhost:4000/subscriptions/user/${userId.UserIdFromLocalStorage}`
+      );
+      console.log("Data", result.data);
+      setAssignments(result.data);
+      setFilteredAssignments(result.data); // Initialize with all assignments
     } catch (error) {
       console.error("Error Fetching", error);
     }
   };
 
   useEffect(() => {
-    getAssignment();
+    getAssignments();
   }, []);
 
-  const settings = {
-    swipeToSlide: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    adaptiveHeight: true,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {},
-      },
-      {
-        breakpoint: 600,
-        settings: {},
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
-      },
-    ],
-  };
+  useEffect(() => {
+    let filtered;
+    switch (filter) {
+      case "Pending":
+        filtered = assignments.filter(
+          (assignment) => assignment.status === "pending"
+        );
+        break;
+      case "submitted":
+        filtered = assignments.filter(
+          (assignment) => assignment.status === "submitted"
+        );
+        break;
+      default:
+        filtered = assignments;
+    }
+    setFilteredAssignments(filtered);
+  }, [filter, assignments]);
 
   return (
     <>
@@ -70,21 +61,22 @@ function UserMyHomework() {
           My Assignment
         </p>
         <div className="flex justify-center items-center w-[50rem]">
-          <Buttons />
+          <Buttons onFilterChange={setFilter} />
         </div>
       </div>
 
       {/* Answer Box */}
       <div>
-        {assignment.map((items) => (
+        {filteredAssignments.map((item) => (
           <AssignmentCard
-            key={items.assignmentid}
-            coursename={items.coursename}
-            module={items.modulename}
-            sublesson={items.sublessonname}
-            title={items.title}
-            duedate={items.duedate}
-            answer={items.answer}
+            key={item.assignmentid}
+            coursename={item.coursename}
+            module={item.modulename}
+            sublesson={item.sublessonname}
+            title={item.title}
+            answer={item.answer}
+            link={item.courseid}
+            status={item.status} // Ensure status is passed correctly
           />
         ))}
       </div>

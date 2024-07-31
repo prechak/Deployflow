@@ -368,6 +368,7 @@ adminRouter.post("/assignments", async (req, res) => {
        VALUES ($1, $2, $3, $4)`,
       [course, lesson, sub_lesson, title]
     );
+
     res.status(201).json({ message: "Assignment created successfully" });
   } catch (error) {
     console.log(error);

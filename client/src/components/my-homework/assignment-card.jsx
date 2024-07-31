@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  InprogressStatus,
-  OverdueStatus,
   PendingStatus,
   SubmittedStatus,
 } from "../../components/my-homework/status";
@@ -9,6 +7,10 @@ import {
 function AssignmentCard(props) {
   const [status, setStatus] = useState(props.status);
   const [answer, setAnswer] = useState(props.answer || "");
+
+  const handleLinkClick = () => {
+    window.open(`/user/subscribe/coursedetail/${props.link}`, "_blank");
+  };
 
   useEffect(() => {
     if (props.answer && props.answer.trim() !== "") {
@@ -22,11 +24,9 @@ function AssignmentCard(props) {
     const newAnswer = event.target.value;
     setAnswer(newAnswer);
 
-    if (newAnswer.length > 0) {
-      setStatus("inprogress");
-    } else if (props.answer.trim() !== "") {
+    if (props.answer.trim() !== "") {
       setStatus("submitted");
-    } else if ((newAnswer.length = 0)) {
+    } else if (newAnswer.length === 0) {
       setStatus("pending");
     }
   };
@@ -44,19 +44,9 @@ function AssignmentCard(props) {
             </p>
           </div>
           <div className="flex justify-center items-center md:flex-col md:justify-end md:items-end md:mb-[2rem]">
-            {status === "submitted" ? (
-              <SubmittedStatus />
-            ) : status === "inprogress" ? (
-              <InprogressStatus />
-            ) : (
-              <PendingStatus />
-            )}
-            <span className="text-gray-500 text-sm ml-[6.5rem] md:ml-2">
-              Assign within {props.duedate} days
-            </span>
+            {status === "submitted" ? <SubmittedStatus /> : <PendingStatus />}
           </div>
         </div>
-
         <div className="bg-white p-4 border border-Gray-400 rounded-lg">
           <label className="block text-gray-700 text-sm font-semibold mb-2">
             {props.title}
@@ -80,13 +70,12 @@ function AssignmentCard(props) {
                   Submit
                 </button>
               )}
-              {status === "submitted" ? (
-                <p className="text-Blue-500 font-semibold flex justify-center w-[120px] mt-8">
-                  Open in course
-                </p>
-              ) : (
-                <p className="text-Blue-500 font-semibold ">Open in course</p>
-              )}
+              <button
+                className="text-Blue-500 font-semibold flex justify-center w-[130px] mt-8 hover:underline p-1 rounded-xl"
+                onClick={handleLinkClick}
+              >
+                Open in course
+              </button>
             </div>
           </div>
         </div>

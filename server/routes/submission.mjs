@@ -3,7 +3,7 @@ import connectionPool from "../utils/db.mjs";
 
 const submissionRouter = Router();
 
-//=========Get submission and assignment data
+//=========Get submission and assignment dat
 
 //=========Get all submission
 submissionRouter.get("/", async (req, res) => {
@@ -46,26 +46,29 @@ submissionRouter.get("/:userid/", async (req, res) => {
 });
 
 //==========Add new submission
-submissionRouter.post("/:userid/:id/submit", async (req, res) => {
-  const newSubmit = {
-    ...req.body,
-    submissiondate: new Date(),
-  };
-  const assignmentId = req.params.id;
-  const userId = req.params.userid;
-  try {
-    await connectionPool.query(
-      `insert into submissions (userid, assignmentId, submissiondate, status, answer)
-      values ($1, $2, $3, 'Submitted', $4)`,
-      [userId, assignmentId, newSubmit.submissiondate, newSubmit.answer]
-    );
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Error submitting answer" });
+submissionRouter.post(
+  "/user/:userid/assignment/:assignmentId/submit",
+  async (req, res) => {
+    const newSubmit = {
+      ...req.body,
+      submissiondate: new Date(),
+    };
+    const assignmentId = req.params.assignmentId; // Fixed this line
+    const userId = req.params.userid;
+    try {
+      await connectionPool.query(
+        `INSERT INTO submissions (userid, assignmentId, submissiondate, status, answer)
+      VALUES ($1, $2, $3, 'Submitted', $4)`,
+        [userId, assignmentId, newSubmit.submissiondate, newSubmit.answer]
+      );
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "Error submitting answer" });
+    }
+    return res.status(201).json({
+      message: "Submit answer successfully",
+    });
   }
-  return res.status(201).json({
-    message: "Submit answer successfully",
-  });
-});
+);
 
 export default submissionRouter;
