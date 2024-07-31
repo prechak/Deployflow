@@ -5,13 +5,20 @@ import drag1 from "../../../assets/icons/admin/drag1.png";
 import NavbarEditSubLesson from "../../admin/navbar/navbar-editsublesson";
 import { useState, useEffect, useRef } from "react";
 import modal_vector from "../../../assets/icons/coursedetail/modal_vector.png";
+import { v4 as uuidv4 } from "uuid";
+import { XMarkIcon } from "@heroicons/react/24/solid";
+import supabase from "../../../utils/supabaseClient";
 
 function EditSubLessonFrom() {
   const [lessons, setLessons] = useState([]);
   const [subLessons, setSubLessons] = useState([]);
   const [modal, setModal] = useState(false);
+  const [videoFiles, setVideoFiles] = useState([]);
+  const [videoPreviewUrls, setVideoPreviewUrls] = useState([]);
   const params = useParams();
   const navigate = useNavigate();
+  // console.log(subLessons);
+  console.log(videoPreviewUrls);
   const getLesson = async () => {
     try {
       const result = await axios.get(
@@ -22,12 +29,20 @@ function EditSubLessonFrom() {
       console.error("Error getLesson", error);
     }
   };
+  const getVideoSublesson = (result) => {
+    const resultVideo = result.map((v) => v.videofile);
+    setVideoFiles(resultVideo);
+    setVideoPreviewUrls(resultVideo);
+  };
   const getSublesson = async () => {
     try {
       const result = await axios.get(
         `http://localhost:4000/admin/sublesson/${params.lessonId}`
       );
+      getVideoSublesson(result.data.data);
+      // console.log(result.data.data);
       setSubLessons(result.data.data);
+      // console.log(videoPreviewUrls);
     } catch (error) {
       console.error("Error getSublesson", error);
     }
@@ -41,28 +56,42 @@ function EditSubLessonFrom() {
     deleteLesson();
   };
   const deleteSublesson = async (sublessonid) => {
+    console.log(sublessonid);
     try {
       await axios.delete(
         `http://localhost:4000/admin/sublesson/${sublessonid}`
       );
+      getSublesson();
     } catch (error) {
       console.log("Error deleteSublesson", error);
     }
-    console.log(deleteSublesson);
   };
-  const putLesson = async () => {
-    const editLesson = lessons;
-    const editSublesson = subLessons;
+
+  const postSublesson = async () => {
+    try {
+      const sublesson = await axios.post(
+        `http://localhost:4000/admin/sublesson/${params.lessonId}`
+      );
+      setSubLessons([...subLessons, sublesson.data.data]);
+      setVideoFiles([...videoFiles, ""]);
+      setVideoPreviewUrls([...videoPreviewUrls, ""]);
+    } catch (error) {
+      console.log("Error reservedSublesson", error);
+    }
+  };
+
+  const putsublessonDrag = async (newSublesson) => {
+    const editSublesson = newSublesson;
     try {
       await axios.put(
-        `http://localhost:4000/admin/sublesson/${params.lessonId}`,
-        [editLesson, editSublesson]
+        `http://localhost:4000/admin/sublessondrag/${params.lessonId}`,
+        [editSublesson]
       );
     } catch (error) {
-      console.log("Error putLessonAndSublesson", error);
+      console.log("Error putSublessonDrag", error);
     }
-    navigate("/admin/addcourse");
   };
+
   useEffect(() => {
     getLesson();
     getSublesson();
@@ -72,22 +101,144 @@ function EditSubLessonFrom() {
     setModal(!modal);
   };
 
-  const dragItem = useRef(null);
-  const draggedOverItem = useRef(null);
-
+  const dragItem = useRef(0);
+  const draggedOverItem = useRef(0);
   const handleSort = () => {
-    const subLessonsCopy = [...subLessons];
-    const draggedItemContent = subLessonsCopy.splice(dragItem.current, 1)[0];
-    subLessonsCopy.splice(draggedOverItem.current, 0, draggedItemContent);
-    dragItem.current = null;
-    draggedOverItem.current = null;
-    setSubLessons(subLessonsCopy);
+    const itemClone = [...subLessons];
+    const temp = itemClone[dragItem.current];
+    const { sublessonid: idtempdrag, ...tempdrag } = temp;
+    const temp2 = itemClone[draggedOverItem.current];
+    const { sublessonid: idtempdrop, ...tempdrop } = temp2;
+    itemClone[dragItem.current] = { sublessonid: idtempdrag, ...tempdrop };
+    itemClone[draggedOverItem.current] = {
+      sublessonid: idtempdrop,
+      ...tempdrag,
+    };
+
+    const videoClone = [...videoFiles];
+    const tempvideoClone = videoClone[dragItem.current];
+    videoClone[dragItem.current] = videoClone[draggedOverItem.current];
+    videoClone[draggedOverItem.current] = tempvideoClone;
+
+    const videoPreviewClone = [...videoPreviewUrls];
+    const tempVideoPreviewClone = videoPreviewClone[dragItem.current];
+    videoPreviewClone[dragItem.current] =
+      videoPreviewClone[draggedOverItem.current];
+    videoPreviewClone[draggedOverItem.current] = tempVideoPreviewClone;
+
+    // console.log(videoClone);
+    // console.log(dragItem.current);
+    // console.log(videoPreviewClone);
+
+    setSubLessons(itemClone);
+    putsublessonDrag(itemClone);
+    setVideoFiles(videoClone);
+    setVideoPreviewUrls(videoPreviewClone);
+  };
+
+  // console.log(videoFiles);
+  ///////////////VDO
+  const onSubmit = async (data) => {
+    try {
+      // Upload videos and get URLs
+      const videoUrls = await Promise.all(
+        videoFiles.map((file, index) => uploadVideoFile(file, index))
+      );
+
+      console.log(videoUrls);
+
+      // Send data to backend
+      const editLesson = lessons;
+      const editSublesson = subLessons;
+      // console.log(editLesson);
+      console.log(editSublesson);
+      try {
+        await axios.put(
+          `http://localhost:4000/admin/sublesson/${params.lessonId}`,
+          [editLesson, editSublesson, videoUrls]
+        );
+      } catch (error) {
+        console.log("Error putLessonAndSublesson", error);
+      }
+      alert("Add Lesson and SubLesson Successfully");
+      navigate("/admin/courselist");
+    } catch (error) {
+      console.error(
+        "There was an error adding the lesson and sublesson:",
+        error
+      );
+    }
+  };
+  async function uploadVideoFile(file) {
+    try {
+      if (!file) {
+        throw new Error("You must select a video to upload.");
+      }
+      if (typeof file === "string") {
+        return file;
+      }
+      console.log(typeof file);
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${uuidv4()}.${fileExt}`;
+      const filePath = `course/lesson/${fileName}`;
+      const { error: uploadError } = await supabase.storage
+        .from("course")
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+      const {
+        data: { publicUrl },
+        error: urlError,
+      } = supabase.storage.from("course").getPublicUrl(filePath);
+
+      if (urlError) {
+        throw urlError;
+      }
+
+      return publicUrl;
+    } catch (error) {
+      console.log(error);
+      alert(error.message);
+      throw error;
+    }
+  }
+  const handleVideoFileChange = (e, index) => {
+    const selectedFile = e.target.files[0];
+    if (!selectedFile) {
+      return;
+    }
+    // Validate file size (max 20 MB)
+    const maxSizeInBytes = 20 * 1024 * 1024; // 20 MB in bytes
+    if (selectedFile.size > maxSizeInBytes) {
+      alert("File size should not exceed 20 MB");
+      return;
+    }
+    const newVideoFiles = [...videoFiles];
+    const newVideoPreviewUrls = [...videoPreviewUrls];
+    newVideoFiles[index] = selectedFile;
+    setVideoFiles(newVideoFiles);
+
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      newVideoPreviewUrls[index] = fileReader.result;
+      setVideoPreviewUrls(newVideoPreviewUrls);
+    };
+    fileReader.readAsDataURL(selectedFile);
+  };
+
+  const deleteVideoFile = (index) => {
+    // Remove the file and preview URL
+
+    setVideoFiles(videoFiles.toSpliced(index, 1, ""));
+    setVideoPreviewUrls(videoPreviewUrls.toSpliced(index, 1, ""));
   };
 
   return (
     <div className="flex flex-col justify-between w-full h-full">
       <button
-        onClick={putLesson}
+        onClick={onSubmit}
         className={`${modal ? "opacity-30" : "opacity-100"}`}
       >
         <NavbarEditSubLesson text="Edit" />
@@ -98,7 +249,7 @@ function EditSubLessonFrom() {
         } mt-[50px] mx-8 w-[1120px] h-fit bg-white rounded-[16px] border-[1px] mb-[80px]`}
       >
         <div className=" mx-8 p-8">
-          <form>
+          <form onSubmit={onSubmit}>
             <div>
               <div className="mx-[40px] w-[920px] h-[76px]">
                 <label className="w-full h-[24px] text-black text-[16px]">
@@ -162,19 +313,73 @@ function EditSubLessonFrom() {
                           <h1 className="font-[400] text-[16px] text-[#07090D]">
                             Video *
                           </h1>
-                          <label className="w-[160px] h-[160px] rounded-[8px] bg-Gray-200 flex items-center justify-center">
-                            <img src={Uploadvideo} alt="upload video" />
-                          </label>
+                          {item.videofile || videoPreviewUrls[index] ? (
+                            <label className="cursor-pointer w-[160px] h-[160px] rounded-[8px] bg-Gray-200 flex items-center justify-center">
+                              <video
+                                src={item.videofile || videoPreviewUrls[index]}
+                                alt="upload"
+                                className="absolute m-auto rounded-md"
+                                style={{
+                                  maxWidth: "240px",
+                                  maxHeight: "240px",
+                                  objectFit: "cover",
+                                }}
+                                controls
+                              />
+
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  deleteVideoFile(index);
+                                  // Also remove the sub-lesson
+                                }}
+                                className="absolute"
+                              >
+                                <XMarkIcon className="size-5 text-white bg-purple-700 rounded-full absolute bottom-[3.5rem] left-[6.5rem]" />
+                              </button>
+                            </label>
+                          ) : (
+                            <label
+                              className="cursor-pointer w-[160px] h-[160px] rounded-[8px] bg-Gray-200 flex items-center justify-center"
+                              id="drop"
+                            >
+                              <img src={Uploadvideo} alt="upload" />
+                              <input
+                                type="file"
+                                name="videofile"
+                                className="hidden"
+                                accept="video/mp4"
+                                id="input"
+                                onChange={(e) =>
+                                  handleVideoFileChange(e, index)
+                                }
+                              />
+                            </label>
+                          )}
                         </div>
                       </div>
-                      <button
-                        onClick={() => {
-                          deleteSublesson(item.sublessonid);
-                        }}
-                        className="w-[67px] h-[32px] text-center text-[16px] font-[700] text-Blue-500 cursor-pointer"
-                      >
-                        Delete
-                      </button>
+                      <div className="w-[67px] h-[32px] text-center text-[16px] font-[700] text-Blue-500 cursor-pointer">
+                        {subLessons.length > 1 ? (
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              deleteVideoFile(index);
+                              deleteSublesson(item.sublessonid);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        ) : (
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              alert("Cannot delete sub-lesson");
+                            }}
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </article>
                 );
@@ -184,18 +389,7 @@ function EditSubLessonFrom() {
               className="mx-[40px] mt-[32px] border-[1px] border-Orange-500 shadow-md bg-white text-Orange-500 rounded-[12px] w-[208px] h-[60px] text-[16px] font-[700]"
               type="button"
               onClick={() => {
-                const newId =
-                  subLessons[subLessons.length - 1]?.sublessonid + 1 || 1;
-                setSubLessons([
-                  ...subLessons,
-                  {
-                    sublessonid: newId,
-                    moduleid: lessons.moduleid,
-                    sublessonname: "",
-                    videofile: null,
-                    sublessondate: new Date(),
-                  },
-                ]);
+                postSublesson();
               }}
             >
               + Add Sub-Lesson
@@ -214,7 +408,11 @@ function EditSubLessonFrom() {
             <div className="flex items-center justify-between pl-[16px] pr-[16px] h-[56px] border-solid border-b-[1px] border-[#E4E6ED] ">
               <h1 className="text-Body1 font-Body1 text-black">Confirmation</h1>
               <button onClick={toggleModal}>
-                <img className="w-[9.94px] h-[9.7px]" src={modal_vector} alt="close icon" />
+                <img
+                  className="w-[9.94px] h-[9.7px]"
+                  src={modal_vector}
+                  alt="close icon"
+                />
               </button>
             </div>
             <div className="w-[528px] pl-[24px] pr-[24px]">
