@@ -30,10 +30,10 @@ function UserMyHomework() {
     getSubmissions();
   }, []);
 
-  // const filteredSubmissions = submissions.filter((item) => {
-  //   if (filter === "all") return true;
-  //   return item.status === filter;
-  // });
+  const filteredSubmissions = submissions.filter((item) => {
+    if (filter === "all") return true;
+    return item.status === filter;
+  });
 
   return (
     <>
@@ -81,7 +81,7 @@ function UserMyHomework() {
 
       {/* Answer Box */}
       <div>
-        {submissions.map((item) => (
+        {filteredSubmissions.map((item) => (
           <AssignmentCard
             key={item.assignmentid}
             coursename={item.coursename}
