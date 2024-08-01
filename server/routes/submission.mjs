@@ -26,6 +26,7 @@ submissionRouter.get("/user/:userId", async (req, res) => {
     const result = await connectionPool.query(
       `select 
 courses.coursename ,
+courses.courseid,
 modules.modulename ,
 sublesson.sublessonname ,
 assignments.title ,
@@ -40,9 +41,12 @@ inner join sublesson using (moduleid)
 inner join assignments using (sublessonid)
 inner join submissions on (assignments.assignmentid = submissions.assignmentid)
 where submissions.userid = $1 
-group by  courses.coursename , 
+group by 
+courses.coursename ,
+courses.courseid, 
 modules.modulename , 
 sublesson.sublessonname , 
+courses.courseid,
 assignments.title , 
 submissions.status ,
 submissions.answer,
