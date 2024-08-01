@@ -18,7 +18,7 @@ submissionRouter.get("/", async (req, res) => {
   }
 });
 
-//===========Get user submission by user id
+//===========Get all user submission by user id
 submissionRouter.get("/user/:userId", async (req, res) => {
   const { userId } = req.params;
 
@@ -40,6 +40,52 @@ inner join sublesson using (moduleid)
 inner join assignments using (sublessonid)
 inner join submissions on (assignments.assignmentid = submissions.assignmentid)
 where submissions.userid = $1 
+group by  courses.coursename , 
+modules.modulename , 
+sublesson.sublessonname , 
+assignments.title , 
+submissions.status ,
+submissions.answer,
+assignments.assignmentid;
+      `,
+      [userId]
+    );
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "User is not subscribed to any course yet." });
+    }
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "An error occurred while fetching data" });
+  }
+});
+
+//===========Get user pending submission by user id
+submissionRouter.get("/pending/user/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const result = await connectionPool.query(
+      `select 
+courses.coursename ,
+modules.modulename ,
+sublesson.sublessonname ,
+assignments.title ,
+assignments.assignmentid,
+submissions.status ,
+submissions.answer
+from users
+inner join subscriptions using (userid)
+inner join courses using (courseid)
+inner join modules using (courseid)
+inner join sublesson using (moduleid)
+inner join assignments using (sublessonid)
+inner join submissions on (assignments.assignmentid = submissions.assignmentid)
+where submissions.userid = $1 and  submissions.status = 'Pending'
 group by  courses.coursename , 
 modules.modulename , 
 sublesson.sublessonname , 

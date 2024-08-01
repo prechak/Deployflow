@@ -6,6 +6,8 @@ import AssignmentCard from "../../components/my-homework/assignment-card";
 import axios from "axios";
 import { useAuth } from "../../contexts/authentication";
 import { useParams } from "react-router-dom";
+import emptyFolder from "../../assets/image/empty-folder.png";
+import Background from "../../components/user-profile/background";
 
 function UserMyHomework() {
   const [submissions, setSubmissions] = useState([]);
@@ -14,7 +16,8 @@ function UserMyHomework() {
   const userId = useAuth();
   const assignmentId = useParams();
 
-  const getSubmissions = async () => {
+  //=========Get submissions all status
+  const getAllSubmissions = async () => {
     try {
       const result = await axios.get(
         `http://localhost:4000/submissions/user/${userId.UserIdFromLocalStorage}`
@@ -26,20 +29,21 @@ function UserMyHomework() {
     }
   };
 
+  //=========Put new submit
   const handleSubmit = async (assignmentId, newAnswer) => {
     try {
-      const result = await axios.put(
+      await axios.put(
         `http://localhost:4000/submissions/user/${userId.UserIdFromLocalStorage}/assignment/${assignmentId}/submit`,
         { answer: newAnswer }
       );
-      getSubmissions();
+      getAllSubmissions();
     } catch (error) {
       console.error("Error submitting answer", error);
     }
   };
 
   useEffect(() => {
-    getSubmissions();
+    getAllSubmissions();
   }, []);
 
   const filteredSubmissions = submissions.filter((item) => {
@@ -49,17 +53,19 @@ function UserMyHomework() {
 
   return (
     <>
-      <NavbarUser />
+      <div className="sticky top-0 bg-white">
+        <NavbarUser />
+      </div>
 
       {/* Header */}
-      <div className="mt-[5rem] mb-4 lg:mb-0 z-20 flex flex-col justify-center items-center">
-        <p className="text-black text-Headline3 mb-9 font-medium bg-white p-2">
+      <div className="mt-[5rem] mb-4 z-20 flex flex-col justify-center items-center">
+        <p className="text-black text-Headline3 mb-9 font-medium bg-white p-2 md:text-Headline2">
           My Assignment
         </p>
         <div className="flex justify-center items-center w-[50rem] mb-4">
           {/* FilterButtons */}
           <button
-            className={`w-14 transition-colors duration-300 ease-in-out ${
+            className={`w-12 transition-colors duration-300 ease-in-out ${
               filter === "all"
                 ? "text-gray-900 border-b-2 border-gray-800"
                 : "text-gray-400"
@@ -92,25 +98,37 @@ function UserMyHomework() {
       </div>
 
       {/* Answer Box */}
-      <div>
-        {filteredSubmissions.map((item, index) => (
-          <AssignmentCard
-            key={index}
-            coursename={item.coursename}
-            module={item.modulename}
-            sublesson={item.sublessonname}
-            title={item.title}
-            answer={item.answer}
-            link={item.courseid}
-            status={item.status}
-            onSubmit={(newAnswer) => handleSubmit(item.assignmentid, newAnswer)}
-          />
-        ))}
-      </div>
+      {filteredSubmissions.length > 0 ? (
+        <div className="mt-12">
+          {filteredSubmissions.map((item) => (
+            <AssignmentCard
+              key={item.assignmentid}
+              coursename={item.coursename}
+              module={item.modulename}
+              sublesson={item.sublessonname}
+              title={item.title}
+              answer={item.answer}
+              link={item.courseid}
+              status={item.status}
+              onSubmit={(newAnswer) =>
+                handleSubmit(item.assignmentid, newAnswer)
+              }
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="flex justify-center items-center">
+          <div className="flex flex-col justify-center items-center w-[343px] h-auto">
+            <img src={emptyFolder} alt="No courses available" />
+            <p className="text-black text-2xl">This page is empty.</p>
+          </div>
+        </div>
+      )}
 
       <div className="mt-20">
         <GeneralFooter />
       </div>
+      <Background />
     </>
   );
 }
