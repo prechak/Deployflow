@@ -61,7 +61,7 @@ function AddAssignmentForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!selectedCourse || !selectedLesson || !selectedSubLesson || !assignmentDetail || !assignmentDuration) {
+    if (!selectedCourse || !selectedLesson || !selectedSubLesson || !assignmentDetail) {
       setErrorMessage("All fields except duration are required");
       return;
     }
@@ -215,42 +215,11 @@ function AddAssignmentForm() {
             <p className="font-normal text-base">Assignment *</p>
             <input
               type="text"
-              className="w-[920px] h-12 border-[1px] rounded-lg pl-3"
+              className="w-[920px] h-12 border-[1px] rounded-lg pl-3 "
               onChange={(e) => setAssignmentDetail(e.target.value)}
               value={assignmentDetail}
               placeholder="Enter assignment detail"
             />
-          </div>
-          <div className="mt-10">
-            <label
-              htmlFor="durationSelect"
-              className="text-black text-base font-normal"
-              style={{ fontSize: "16px", fontWeight: 600, lineHeight: "24px" }}
-            >
-              Duration of Assignment (days)
-            </label>
-            <div className="relative mt-1">
-              <select
-                id="durationSelect"
-                className="block appearance-none w-[920px] border text-muted-foreground py-2 px-[20px] pr-8 rounded-lg cursor-pointer"
-                onChange={(e) => setAssignmentDuration(e.target.value)}
-                value={assignmentDuration}
-              >
-                <option value="">Select Day</option>
-                <option value="3 days">3 days</option>
-                <option value="5 days">5 days</option>
-                <option value="7 days">7 days</option>
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center px-2 text-muted-foreground">
-                <svg
-                  className="fill-current h-4 w-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                </svg>
-              </div>
-            </div>
           </div>
         </section>
 
