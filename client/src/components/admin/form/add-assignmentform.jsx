@@ -81,7 +81,6 @@ function AddAssignmentForm() {
           lesson: selectedLesson,
           sub_lesson: selectedSubLesson,
           title: assignmentDetail,
-          duedate: assignmentDuration || null,
         }
       );
 
@@ -93,10 +92,9 @@ function AddAssignmentForm() {
         setSelectedLesson("");
         setSelectedSubLesson("");
         setAssignmentDetail("");
-        setAssignmentDuration("");
         setErrorMessage("");
       } else {
-        setErrorMessage("Unexpected response status");
+        setErrorMessage("Unexpected resp onse status");
       }
     } catch (error) {
       setErrorMessage(

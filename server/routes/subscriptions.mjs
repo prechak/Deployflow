@@ -25,38 +25,29 @@ subscriptionRouter.get("/user/:userId", async (req, res) => {
 
   try {
     const result = await connectionPool.query(
-      `SELECT 
-        users.userid,
-        courses.courseid, 
-        courses.coursename, 
-        subscriptions.subscriptionid,
-        assignments.assignmentid, 
-        assignments.title,
-        assignments.duedate,
-        modules.moduleid,
-        modules.modulename,
-        sublesson.sublessonid,
-        sublesson.sublessonname,
-        submissions.status,
-        submissions.answer
-      FROM 
-        users
-      JOIN 
-        subscriptions ON subscriptions.userid = users.userid
-      JOIN 
-        courses ON subscriptions.courseid = courses.courseid
-      JOIN 
-        assignments ON courses.courseid = assignments.courseid
-      JOIN
-        modules ON courses.courseid = modules.courseid
-      LEFT JOIN 
-        sublesson ON assignments.sublessonid = sublesson.sublessonid
-      LEFT JOIN
-        submissions ON assignments.assignmentid = submissions.assignmentid
-      WHERE 
-        users.userid = $1
-      ORDER BY 
-        subscriptions.subscriptiondate ASC;
+      `select 
+courses.coursename ,
+modules.modulename ,
+sublesson.sublessonname ,
+assignments.title ,
+assignments.assignmentid,
+submissions.status ,
+submissions.answer
+from users
+inner join subscriptions using (userid)
+inner join courses using (courseid)
+inner join modules using (courseid)
+inner join sublesson using (moduleid)
+inner join assignments using (sublessonid)
+inner join submissions on (assignments.assignmentid = submissions.assignmentid)
+where users.userid = $1 
+group by  courses.coursename , 
+modules.modulename , 
+sublesson.sublessonname , 
+assignments.title , 
+submissions.status ,
+submissions.answer,
+assignments.assignmentid;
       `,
       [userId]
     );

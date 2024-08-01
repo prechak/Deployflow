@@ -6,7 +6,6 @@ import {
 
 function AssignmentCard(props) {
   const [status, setStatus] = useState(props.status);
-  const [answer, setAnswer] = useState(props.answer || "");
 
   const handleLinkClick = () => {
     window.open(`/user/subscribe/coursedetail/${props.link}`, "_blank");
@@ -19,17 +18,6 @@ function AssignmentCard(props) {
       setStatus("pending");
     }
   }, [props.answer]);
-
-  const handleInputChange = (event) => {
-    const newAnswer = event.target.value;
-    setAnswer(newAnswer);
-
-    if (props.answer.trim() !== "") {
-      setStatus("submitted");
-    } else if (newAnswer.length === 0) {
-      setStatus("pending");
-    }
-  };
 
   return (
     <div className="flex justify-center items-center mb-10">
@@ -60,8 +48,7 @@ function AssignmentCard(props) {
               type="text"
               rows="4"
               placeholder="Answer..."
-              value={answer}
-              onChange={handleInputChange}
+              value={props.answer}
               disabled={status === "submitted"}
             ></textarea>
             <div className="flex flex-col justify-between items-center">

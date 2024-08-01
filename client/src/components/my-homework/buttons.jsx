@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 
-const Buttons = ({ onFilterChange }) => {
+const Buttons = () => {
   const [active, setActive] = useState("b1");
 
-  const handleButtonClick = (buttonId, status) => {
+  const handleButtonClick = (buttonId) => {
     setActive(buttonId);
-    onFilterChange(status);
   };
 
   return (
@@ -16,7 +15,7 @@ const Buttons = ({ onFilterChange }) => {
             ? "text-gray-900 border-b-2 border-gray-800"
             : "text-gray-400"
         }`}
-        onClick={() => handleButtonClick("b1", "all")}
+        onClick={() => handleButtonClick("b1")}
       >
         All
       </button>
@@ -26,7 +25,7 @@ const Buttons = ({ onFilterChange }) => {
             ? "text-gray-900 border-b-2 border-gray-800"
             : "text-gray-400"
         }`}
-        onClick={() => handleButtonClick("b2", "Pending")}
+        onClick={() => handleButtonClick("b2")}
       >
         Pending
       </button>
@@ -36,7 +35,7 @@ const Buttons = ({ onFilterChange }) => {
             ? "text-gray-900 border-b-2 border-gray-800"
             : "text-gray-400"
         }`}
-        onClick={() => handleButtonClick("b3", "Submitted")}
+        onClick={() => handleButtonClick("b3")}
       >
         Submitted
       </button>

@@ -18,35 +18,54 @@ submissionRouter.get("/", async (req, res) => {
   }
 });
 
-//===========Get user submission by submission_id
-submissionRouter.get("/:userid/", async (req, res) => {
-  let result;
+//===========Get user submission by user id
+submissionRouter.get("/user/:userId", async (req, res) => {
+  const { userId } = req.params;
 
-  const userId = req.params.userid;
   try {
-    result = await connectionPool.query(
-      `SELECT * FROM submissions WHERE userid = $1`,
+    const result = await connectionPool.query(
+      `select 
+courses.coursename ,
+modules.modulename ,
+sublesson.sublessonname ,
+assignments.title ,
+assignments.assignmentid,
+submissions.status ,
+submissions.answer
+from users
+inner join subscriptions using (userid)
+inner join courses using (courseid)
+inner join modules using (courseid)
+inner join sublesson using (moduleid)
+inner join assignments using (sublessonid)
+inner join submissions on (assignments.assignmentid = submissions.assignmentid)
+where submissions.userid = $1 
+group by  courses.coursename , 
+modules.modulename , 
+sublesson.sublessonname , 
+assignments.title , 
+submissions.status ,
+submissions.answer,
+assignments.assignmentid;
+      `,
       [userId]
     );
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "User is not subscribed to any course yet." });
+    }
+
+    res.json(result.rows);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({
-      message:
-        "Server could not read user because of a database connection error",
-    });
+    res.status(500).json({ message: "An error occurred while fetching data" });
   }
-  if (!result.rows[0]) {
-    return res.status(404).json({
-      message: "Server could not find submission",
-    });
-  }
-  return res.status(200).json({
-    data: result.rows[0],
-  });
 });
 
-//==========Add new submission
-submissionRouter.post(
+//==========user submit handle
+submissionRouter.put(
   "/user/:userid/assignment/:assignmentId/submit",
   async (req, res) => {
     const newSubmit = {
@@ -57,9 +76,10 @@ submissionRouter.post(
     const userId = req.params.userid;
     try {
       await connectionPool.query(
-        `INSERT INTO submissions (userid, assignmentId, submissiondate, status, answer)
-      VALUES ($1, $2, $3, 'Submitted', $4)`,
-        [userId, assignmentId, newSubmit.submissiondate, newSubmit.answer]
+        `UPDATE submissions
+        SET submissiondate = $1, status = 'Submitted', answer = $2
+        WHERE userid = $3 AND assignmentid = $4`,
+        [newSubmit.submissiondate, newSubmit.answer, userId, assignmentId]
       );
     } catch (error) {
       console.log(error);

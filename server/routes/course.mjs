@@ -163,6 +163,7 @@ courseRouter.get("/user/:id/subscribed", async (req, res) => {
   }
 });
 
+//========Post user subscribe
 courseRouter.post("/:userid/:id/subscribe", async (req, res) => {
   const subscribe = {
     ...req.body,
@@ -171,9 +172,18 @@ courseRouter.post("/:userid/:id/subscribe", async (req, res) => {
   const courseId = req.params.id;
   const userId = req.params.userid;
   try {
+    // Insert subscription and corresponding submissions
     await connectionPool.query(
-      `insert into subscriptions (userid, courseid, subscriptiondate)
-      values ($1, $2, $3)`,
+      `WITH newUser AS (
+    INSERT INTO subscriptions (userid, courseid, subscriptiondate)
+    VALUES ($1, $2, $3)
+    RETURNING userid, courseid
+    )
+    INSERT INTO submissions (assignmentid, userid, submissiondate, status, grade, answer)
+    SELECT a.assignmentid, newUser.userid, NULL, 'Pending', NULL, NULL
+    FROM newUser
+    JOIN assignments a ON a.courseid = newUser.courseid
+    WHERE newUser.courseid = $2;`,
       [userId, courseId, subscribe.subscriptiondate]
     );
   } catch {
@@ -203,6 +213,7 @@ courseRouter.get("/desire", async (req, res) => {
   }
 });
 
+//===========Post
 courseRouter.post("/:userid/:id/desire", async (req, res) => {
   const desire = {
     ...req.body,

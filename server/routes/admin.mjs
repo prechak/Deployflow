@@ -349,18 +349,12 @@ adminRouter.get("/assignments", async (req, res) => {
 
 //*post assignments(add)*//
 adminRouter.post("/assignments", async (req, res) => {
-  const { 
-    course,
-    lesson,
-    sub_lesson,
-    title
-  } = req.body;
+  const { course, lesson, sub_lesson, title } = req.body;
   if (!course || !lesson || !sub_lesson || !title) {
     return res
       .status(400)
       .json({ error: "All fields except due date are required" });
   }
-
 
   try {
     const result = await connectionPool.query(
@@ -475,12 +469,7 @@ adminRouter.get("/assignments/:id", async (req, res) => {
 //*edit assignments
 adminRouter.put("/assignment/:id", async (req, res) => {
   const assignmentid = req.params.id;
-  const {
-    course,
-    lesson,
-    sub_lesson,
-    title
-  } = req.body;
+  const { course, lesson, sub_lesson, title } = req.body;
 
   if (!course || !lesson || !sub_lesson || !title) {
     return res
@@ -493,13 +482,7 @@ adminRouter.put("/assignment/:id", async (req, res) => {
       `UPDATE assignments
        SET submoduleid = $1, lessonid = $2, sublessonid = $3, title = $4, duedate = $5
        WHERE assignmentid = $6`,
-      [
-        course,
-        lesson,
-        sub_lesson,
-        title,
-        assignmentid
-      ]
+      [course, lesson, sub_lesson, title, assignmentid]
     );
 
     if (result.rowCount === 0) {
@@ -597,7 +580,7 @@ adminRouter.delete("/assignments/:id", async (req, res) => {
 //Get Sub lesson list with module id
 adminRouter.get("/sublessonlist/:id", async (req, res) => {
   const courseid = req.params.id;
-  console.log(courseid)
+  console.log(courseid);
   try {
     const result = await connectionPool.query(
       `SELECT 
@@ -612,7 +595,9 @@ adminRouter.get("/sublessonlist/:id", async (req, res) => {
 	    where courseid = $1
       GROUP BY modules.modulename, modules.moduleid
       order by modules.moduleorder asc
-      `,[courseid]);
+      `,
+      [courseid]
+    );
 
     res.status(200).json(result.rows);
   } catch (error) {
@@ -622,21 +607,23 @@ adminRouter.get("/sublessonlist/:id", async (req, res) => {
 });
 
 adminRouter.put("/moduleorderlist/:id", async (req, res) => {
-  const editmodule = [ ...req.body ];
+  const editmodule = [...req.body];
   const courseid = req.params.id;
-  console.log(editmodule)
-  console.log(courseid)
+  console.log(editmodule);
+  console.log(courseid);
   try {
-    editmodule.forEach((value,index) => {
-      console.log(value.moduleid)
-    connectionPool.query(`update modules set moduleorder = $1 where moduleid = $2`,[index,value.moduleid])
-  })
-
-  }catch (error){
+    editmodule.forEach((value, index) => {
+      console.log(value.moduleid);
+      connectionPool.query(
+        `update modules set moduleorder = $1 where moduleid = $2`,
+        [index, value.moduleid]
+      );
+    });
+  } catch (error) {
     console.error("Error occurred while fetching lesson and sublesson:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
-  return res.status(200).json({message: "edit complete"});
+  return res.status(200).json({ message: "edit complete" });
 });
 
 //get lesson by courseid
