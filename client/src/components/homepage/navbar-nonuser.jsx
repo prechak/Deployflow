@@ -5,7 +5,7 @@ import logo from "/src/assets/icons/logo.png";
 function Navbarnonuser() {
   return (
     <>
-      <div className="navbar">
+      <div className="navbar sticky top-0 z-50 bg-white">
         <section
           style={{ boxShadow: "2px 2px 12px 0px rgba(64, 50, 133, 0.12)" }}
           className="navbar items-center sm:w-auto sm:h-[56px] sm:flex sm:flex-row sm:justify-between md:w-full md:h-[88px] md:flex md:flex-row md:justify-between xl:w-full xl:h-[88px] xl:flex xl:flex-row xl:justify-between "
