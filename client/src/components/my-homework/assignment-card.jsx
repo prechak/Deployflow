@@ -33,10 +33,10 @@ function AssignmentCard({
   useEffect(() => {
     if (status === "Submitted") {
       setCurrentStatus("submitted");
-    } else {
+    } else if (status !== "Submitted") {
       setCurrentStatus("pending");
     }
-  }, [currentAnswer]);
+  }, [status]);
 
   return (
     <div className="flex justify-center items-center mb-10">
