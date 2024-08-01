@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import NavbarUser from "../../components/homepage/navbar-user";
 import GeneralFooter from "../../components/homepage/footer";
-import Buttons from "../../components/my-homework/buttons";
+// import Buttons from "../../components/my-homework/buttons";
 import AssignmentCard from "../../components/my-homework/assignment-card";
 import axios from "axios";
 import { useAuth } from "../../contexts/authentication";
@@ -12,17 +12,29 @@ function UserMyHomework() {
   const [filter, setFilter] = useState("all");
 
   const userId = useAuth();
-  const { id } = useParams();
+  const assignmentId = useParams();
 
   const getSubmissions = async () => {
     try {
       const result = await axios.get(
         `http://localhost:4000/submissions/user/${userId.UserIdFromLocalStorage}`
       );
-      console.log("Data", result.data.data);
+      console.log("Data", result.data);
       setSubmissions(result.data);
     } catch (error) {
       console.error("Error Fetching", error);
+    }
+  };
+
+  const handleSubmit = async (assignmentId, newAnswer) => {
+    try {
+      const result = await axios.put(
+        `http://localhost:4000/submissions/user/${userId.UserIdFromLocalStorage}/assignment/${assignmentId}/submit`,
+        { answer: newAnswer }
+      );
+      getSubmissions();
+    } catch (error) {
+      console.error("Error submitting answer", error);
     }
   };
 
@@ -81,9 +93,9 @@ function UserMyHomework() {
 
       {/* Answer Box */}
       <div>
-        {filteredSubmissions.map((item) => (
+        {filteredSubmissions.map((item, index) => (
           <AssignmentCard
-            key={item.assignmentid}
+            key={index}
             coursename={item.coursename}
             module={item.modulename}
             sublesson={item.sublessonname}
@@ -91,6 +103,7 @@ function UserMyHomework() {
             answer={item.answer}
             link={item.courseid}
             status={item.status}
+            onSubmit={(newAnswer) => handleSubmit(item.assignmentid, newAnswer)}
           />
         ))}
       </div>

@@ -4,20 +4,39 @@ import {
   SubmittedStatus,
 } from "../../components/my-homework/status";
 
-function AssignmentCard(props) {
-  const [status, setStatus] = useState(props.status);
+function AssignmentCard({
+  coursename,
+  module,
+  sublesson,
+  title,
+  answer,
+  link,
+  status,
+  onSubmit,
+}) {
+  const [currentStatus, setCurrentStatus] = useState(status);
+  const [currentAnswer, setCurrentAnswer] = useState(answer);
 
   const handleLinkClick = () => {
-    window.open(`/user/subscribe/coursedetail/${props.link}`, "_blank");
+    window.open(`/user/subscribe/coursedetail/${link}`, "_blank");
+  };
+
+  const handleSubmit = async () => {
+    try {
+      await onSubmit(currentAnswer); // Call the onSubmit prop function
+      setCurrentStatus("submitted");
+    } catch (error) {
+      console.error("Error submitting answer", error);
+    }
   };
 
   useEffect(() => {
-    if (props.answer && props.answer.trim() !== "") {
-      setStatus("submitted");
+    if (status === "Submitted") {
+      setCurrentStatus("submitted");
     } else {
-      setStatus("pending");
+      setCurrentStatus("pending");
     }
-  }, [props.answer]);
+  }, [currentAnswer]);
 
   return (
     <div className="flex justify-center items-center mb-10">
@@ -25,35 +44,43 @@ function AssignmentCard(props) {
         <div className="flex flex-col md:flex-row justify-start md:justify-between items-start md:items-center mb-4 w-full">
           <div className="flex flex-col mb-4 md:mb-0">
             <h2 className="text-Body1 font-medium text-black w-[240px] md:w-fit">
-              Course: {props.coursename}
+              Course: {coursename}
             </h2>
             <p className="text-Gray-700 text-sm my-2 w-full">
-              {props.module}: {props.sublesson}
+              {module}: {sublesson}
             </p>
           </div>
           <div className="flex justify-center items-center md:flex-col md:justify-end md:items-end md:mb-[2rem]">
-            {status === "submitted" ? <SubmittedStatus /> : <PendingStatus />}
+            {currentStatus === "submitted" ? (
+              <SubmittedStatus />
+            ) : (
+              <PendingStatus />
+            )}
           </div>
         </div>
         <div className="bg-white p-4 border border-Gray-400 rounded-lg">
           <label className="block text-gray-700 text-sm font-semibold mb-2">
-            {props.title}
+            {title}
           </label>
           <div className="md:flex md:flex-row gap-6">
             <textarea
               className={`bg-white resize-none w-full px-3 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 ${
-                status === "submitted" &&
+                currentStatus === "submitted" &&
                 "text-gray-600 text-opacity-70 border-none cursor-not-allowed"
               }`}
               type="text"
               rows="4"
               placeholder="Answer..."
-              value={props.answer}
-              disabled={status === "submitted"}
+              value={currentAnswer}
+              onChange={(e) => setCurrentAnswer(e.target.value)}
+              disabled={currentStatus === "submitted"}
             ></textarea>
             <div className="flex flex-col justify-between items-center">
-              {status !== "submitted" && (
-                <button className="bg-Blue-500 text-white py-4 my-4 w-full rounded-lg hover:bg-Blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 md:w-[137px]">
+              {currentStatus !== "submitted" && (
+                <button
+                  className="bg-Blue-500 text-white py-4 my-4 w-full rounded-lg hover:bg-Blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 md:w-[137px]"
+                  onClick={handleSubmit}
+                >
                   Submit
                 </button>
               )}
