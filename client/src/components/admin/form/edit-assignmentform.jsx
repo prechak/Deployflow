@@ -1,8 +1,8 @@
-import axios from 'axios';
-import React, { useState, useEffect } from 'react';
-import { Link, useParams , useNavigate  } from 'react-router-dom';
-import CancelButton from '../button/cancel-button';
-import SubButton from '../button/sub-button';
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import CancelButton from "../button/cancel-button";
+import SubButton from "../button/sub-button";
 
 function EditAssignmentForm() {
   const navigate = useNavigate();
@@ -21,7 +21,9 @@ function EditAssignmentForm() {
 
   const fetchAssignment = async () => {
     try {
-      const result = await axios.get(`http://localhost:4000/admin/assignments/${id}`);
+      const result = await axios.get(
+        `http://localhost:4000/admin/assignments/${id}`
+      );
       console.log(result);
       const assignmentData = result.data.data;
       console.log(assignmentData);
@@ -107,14 +109,20 @@ function EditAssignmentForm() {
       setErrorMessage("Failed to update assignment.");
     }
   };
-  const filteredLessons = lessons.filter((lesson) => lesson.courseid === parseInt(selectedCourse));
-  const filterSubLessons = subLessons.filter((subLesson) => subLesson.moduleid === parseInt(selectedLesson));
+  const filteredLessons = lessons.filter(
+    (lesson) => lesson.courseid === parseInt(selectedCourse)
+  );
+  const filterSubLessons = subLessons.filter(
+    (subLesson) => subLesson.moduleid === parseInt(selectedLesson)
+  );
 
   return (
     <>
       <div className="bg-gray-100 w-full h-full flex flex-col">
         <nav className="w-full h-[92px] bg-white border-gray-400 border-l-0 border-[1px] flex justify-between items-center">
-          <span className="text-black font-medium text-2xl pl-10">Edit Assignment: {assignmentDetail}</span>
+          <span className="text-black font-medium text-2xl pl-10">
+            Edit Assignment: {assignmentDetail}
+          </span>
           <div className="flex gap-4 pr-10">
             <Link to="/admin/assignmentlist">
               <CancelButton text="Cancel" />
@@ -123,9 +131,16 @@ function EditAssignmentForm() {
           </div>
         </nav>
 
-        <form className="w-[1120px] h-[634px] my-10 mx-10 rounded-2xl border-2 bg-white text-black" onSubmit={handleSubmit}>
+        <form
+          className="w-[1120px] h-[634px] my-10 mx-10 rounded-2xl border-2 bg-white text-black"
+          onSubmit={handleSubmit}
+        >
           <div className="w-[440px] h-[76px] mt-10 ml-[100px] flex flex-col">
-            <label htmlFor="courseSelect" className="text-black text-base font-normal" style={{ fontSize: "16px", fontWeight: 600, lineHeight: "24px" }}>
+            <label
+              htmlFor="courseSelect"
+              className="text-black text-base font-normal"
+              style={{ fontSize: "16px", fontWeight: 600, lineHeight: "24px" }}
+            >
               Course
             </label>
             <div className="relative mt-1">
@@ -147,7 +162,11 @@ function EditAssignmentForm() {
                 ))}
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center px-2 text-muted-foreground">
-                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <svg
+                  className="fill-current h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
                   <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                 </svg>
               </div>
@@ -156,7 +175,15 @@ function EditAssignmentForm() {
 
           <div className="w-[920px] flex flex-row gap-10 mt-10 ml-[100px]">
             <div className="w-[440px]">
-              <label htmlFor="lessonSelect" className="text-black text-base font-normal" style={{ fontSize: "16px", fontWeight: 600, lineHeight: "24px" }}>
+              <label
+                htmlFor="lessonSelect"
+                className="text-black text-base font-normal"
+                style={{
+                  fontSize: "16px",
+                  fontWeight: 600,
+                  lineHeight: "24px",
+                }}
+              >
                 Lesson
               </label>
               <div className="relative mt-1">
@@ -174,7 +201,11 @@ function EditAssignmentForm() {
                   ))}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center px-2 text-muted-foreground">
-                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <svg
+                    className="fill-current h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                  >
                     <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                   </svg>
                 </div>
@@ -182,7 +213,15 @@ function EditAssignmentForm() {
             </div>
 
             <div className="w-[440px]">
-              <label htmlFor="subLessonSelect" className="text-black text-base font-normal" style={{ fontSize: "16px", fontWeight: 600, lineHeight: "24px" }}>
+              <label
+                htmlFor="subLessonSelect"
+                className="text-black text-base font-normal"
+                style={{
+                  fontSize: "16px",
+                  fontWeight: 600,
+                  lineHeight: "24px",
+                }}
+              >
                 Sub-Lesson
               </label>
               <div className="relative mt-1">
@@ -194,14 +233,21 @@ function EditAssignmentForm() {
                 >
                   <option value="">Select Sub-Lesson</option>
                   {filterSubLessons.map((subLesson) => (
-                    <option key={subLesson.sublessonid} value={subLesson.sublessonid}>
+                    <option
+                      key={subLesson.sublessonid}
+                      value={subLesson.sublessonid}
+                    >
                       {subLesson.sublessonname}
                     </option>
                   ))}
                 </select>
 
                 <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center px-2 text-muted-foreground">
-                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <svg
+                    className="fill-current h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                  >
                     <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                   </svg>
                 </div>
