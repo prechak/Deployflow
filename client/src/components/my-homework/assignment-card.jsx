@@ -72,7 +72,7 @@ function AssignmentCard({
               <textarea
                 className={`bg-white resize-none w-full px-3 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 ${
                   currentStatus === "submitted" &&
-                  "text-gray-600 text-opacity-70 border-none cursor-not-allowed"
+                  "text-gray-600 text-opacity-70 border-none"
                 }`}
                 type="text"
                 rows="4"
