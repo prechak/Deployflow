@@ -30,7 +30,6 @@ function EditAssignmentForm() {
       setSelectedLesson(assignmentData.moduleid);
       setSelectedSubLesson(assignmentData.sublessonid);
       setAssignmentDetail(assignmentData.title);
-      setAssignmentDuration(assignmentData.duedate);
     } catch (error) {
       console.error("Error fetching assignment:", error);
       setErrorMessage("Failed to fetch assignment details.");
@@ -55,9 +54,11 @@ function EditAssignmentForm() {
     }
   };
 
-  const fetchSubLessons = async () => {
+  const fetchSubLessons = async (moduleid) => {
     try {
-      const result = await axios.get(`http://localhost:4000/admin/sublesson`);
+      const result = await axios.get(`http://localhost:4000/admin/sublesson`, {
+        params: { moduleid },
+      });
       setSubLessons(result.data);
     } catch (error) {
       console.error("Error fetching sublessons:", error);
@@ -65,7 +66,11 @@ function EditAssignmentForm() {
   };
 
   useEffect(() => {
-    fetchSubLessons(selectedLesson);
+    if (selectedLesson) {
+      fetchSubLessons(selectedLesson);
+    } else {
+      setSubLessons([]);
+    }
   }, [selectedLesson]);
 
   useEffect(() => {
@@ -82,7 +87,6 @@ function EditAssignmentForm() {
         lesson: selectedLesson,
         sub_lesson: selectedSubLesson,
         title: assignmentDetail,
-        duedate: assignmentDuration,
       };
 
       console.log("Payload:", updatedAssignment);
@@ -103,12 +107,14 @@ function EditAssignmentForm() {
       setErrorMessage("Failed to update assignment.");
     }
   };
+  const filteredLessons = lessons.filter((lesson) => lesson.courseid === parseInt(selectedCourse));
+  const filterSubLessons = subLessons.filter((subLesson) => subLesson.moduleid === parseInt(selectedLesson));
 
   return (
     <>
-      <div className="bg-gray-100 w-full h-full flex flex-col items-center justify-center">
+      <div className="bg-gray-100 w-full h-full flex flex-col">
         <nav className="w-full h-[92px] bg-white border-gray-400 border-l-0 border-[1px] flex justify-between items-center">
-          <span className="text-black font-medium text-2xl pl-10">Edit Assignment</span>
+          <span className="text-black font-medium text-2xl pl-10">Edit Assignment: {assignmentDetail}</span>
           <div className="flex gap-4 pr-10">
             <Link to="/admin/assignmentlist">
               <CancelButton text="Cancel" />
@@ -161,7 +167,7 @@ function EditAssignmentForm() {
                   value={selectedLesson}
                 >
                   <option value="">Select Lesson</option>
-                  {lessons.map((lesson) => (
+                  {filteredLessons.map((lesson) => (
                     <option key={lesson.moduleid} value={lesson.moduleid}>
                       {lesson.modulename}
                     </option>
@@ -187,7 +193,7 @@ function EditAssignmentForm() {
                   value={selectedSubLesson}
                 >
                   <option value="">Select Sub-Lesson</option>
-                  {subLessons.map((subLesson) => (
+                  {filterSubLessons.map((subLesson) => (
                     <option key={subLesson.sublessonid} value={subLesson.sublessonid}>
                       {subLesson.sublessonname}
                     </option>
@@ -216,30 +222,6 @@ function EditAssignmentForm() {
                 value={assignmentDetail}
                 placeholder="Enter assignment detail"
               />
-            </div>
-            <div className="mt-10">
-              <label htmlFor="durationSelect" className="text-black text-base font-normal" style={{ fontSize: "16px", fontWeight: 600, lineHeight: "24px" }}>
-                Duration
-              </label>
-              <div className="relative mt-1">
-                <select
-                  id="durationSelect"
-                  className="block appearance-none w-full border text-muted-foreground py-2 px-[20px] pr-8 rounded-lg cursor-pointer"
-                  onChange={(e) => setAssignmentDuration(e.target.value)}
-                  value={assignmentDuration}
-                >
-                  <option value="">Select Duration</option>
-                  <option value="30m">30 minutes</option>
-                  <option value="1h">1 hour</option>
-                  <option value="1h30m">1 hour 30 minutes</option>
-                  <option value="2h">2 hours</option>
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center px-2 text-muted-foreground">
-                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                    <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                  </svg>
-                </div>
-              </div>
             </div>
           </section>
         </form>

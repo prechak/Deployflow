@@ -348,39 +348,24 @@ adminRouter.get("/assignments", async (req, res) => {
 
 //*post assignments(add)*//
 adminRouter.post("/assignments", async (req, res) => {
-  const { course, lesson, sub_lesson, title, duedate } = req.body;
-
+  const { 
+    course,
+    lesson,
+    sub_lesson,
+    title
+  } = req.body;
   if (!course || !lesson || !sub_lesson || !title) {
     return res
       .status(400)
       .json({ error: "All fields except due date are required" });
   }
 
-  let finalDueDate;
-  if (!duedate) {
-    const today = new Date();
-    const defaultDurationDays = 7;
-    finalDueDate = new Date(
-      today.setDate(today.getDate() + defaultDurationDays)
-    )
-      .toISOString()
-      .split("T")[0];
-  } else {
-    const durationDays = parseInt(duedate.split(" ")[0]);
-    if (isNaN(durationDays)) {
-      return res.status(400).json({ error: "Invalid duration value" });
-    }
-    const today = new Date();
-    finalDueDate = new Date(today.setDate(today.getDate() + durationDays))
-      .toISOString()
-      .split("T")[0];
-  }
 
   try {
     const result = await connectionPool.query(
-      `INSERT INTO assignments (courseid, moduleid, sublessonid, title, duedate)
-       VALUES ($1, $2, $3, $4, $5)`,
-      [course, lesson, sub_lesson, title, finalDueDate]
+      `INSERT INTO assignments (courseid, moduleid, sublessonid, title)
+       VALUES ($1, $2, $3, $4)`,
+      [course, lesson, sub_lesson, title]
     );
     res.status(201).json({ message: "Assignment created successfully" });
   } catch (error) {
@@ -427,31 +412,11 @@ adminRouter.get("/assignment/:id", async (req, res) => {
 //*edit assignments
 adminRouter.put("/assignments/:id", async (req, res) => {
   const { id } = req.params;
-  const { course, lesson, sub_lesson, title, duedate } = req.body;
+  const { course, lesson, sub_lesson, title } = req.body;
   if (!course || !lesson || !sub_lesson || !title) {
     return res
       .status(400)
       .json({ error: "All fields except due date are required" });
-  }
-
-  let finalDueDate;
-  if (!duedate) {
-    const today = new Date();
-    const defaultDurationDays = 7;
-    finalDueDate = new Date(
-      today.setDate(today.getDate() + defaultDurationDays)
-    )
-      .toISOString()
-      .split("T")[0];
-  } else {
-    const durationDays = parseInt(duedate.split(" ")[0], 10);
-    if (isNaN(durationDays)) {
-      return res.status(400).json({ error: "Invalid duration value" });
-    }
-    const today = new Date();
-    finalDueDate = new Date(today.setDate(today.getDate() + durationDays))
-      .toISOString()
-      .split("T")[0];
   }
 
   try {
@@ -460,10 +425,9 @@ adminRouter.put("/assignments/:id", async (req, res) => {
        SET courseid = $1, 
            moduleid = $2, 
            sublessonid = $3, 
-           title = $4, 
-           duedate = $5
-       WHERE assignmentid = $6`,
-      [course, lesson, sub_lesson, title, finalDueDate, id]
+           title = $4
+       WHERE assignmentid = $5`,
+      [course, lesson, sub_lesson, title, id]
     );
 
     if (result.rowCount === 0) {
@@ -509,7 +473,12 @@ adminRouter.get("/assignments/:id", async (req, res) => {
 //*edit assignments
 adminRouter.put("/assignment/:id", async (req, res) => {
   const assignmentid = req.params.id;
-  const { course, lesson, sub_lesson, title, duedate } = req.body;
+  const {
+    course,
+    lesson,
+    sub_lesson,
+    title
+  } = req.body;
 
   if (!course || !lesson || !sub_lesson || !title) {
     return res
@@ -517,32 +486,18 @@ adminRouter.put("/assignment/:id", async (req, res) => {
       .json({ error: "All fields except due date are required" });
   }
 
-  let finalDueDate;
-  if (!duedate) {
-    const today = new Date();
-    const defaultDurationDays = 7;
-    finalDueDate = new Date(
-      today.setDate(today.getDate() + defaultDurationDays)
-    )
-      .toISOString()
-      .split("T")[0];
-  } else {
-    const durationDays = parseInt(duedate.split(" ")[0]);
-    if (isNaN(durationDays)) {
-      return res.status(400).json({ error: "Invalid duration value" });
-    }
-    const today = new Date();
-    finalDueDate = new Date(today.setDate(today.getDate() + durationDays))
-      .toISOString()
-      .split("T")[0];
-  }
-
   try {
     const result = await connectionPool.query(
       `UPDATE assignments
        SET submoduleid = $1, lessonid = $2, sublessonid = $3, title = $4, duedate = $5
        WHERE assignmentid = $6`,
-      [course, lesson, sub_lesson, title, finalDueDate, assignmentid]
+      [
+        course,
+        lesson,
+        sub_lesson,
+        title,
+        assignmentid
+      ]
     );
 
     if (result.rowCount === 0) {
