@@ -87,23 +87,6 @@ adminRouter.post("/:courseid/lesson", async (req, res) => {
         console.log(error);
       }
     });
-
-    // await connectionPool.query(
-    //   `
-    //   with lesson as (
-    //   insert into modules (courseid, modulename) values ($1,$2)
-    //   returning *)
-    //   insert into sublesson (moduleid, sublessonname, videofile, sublessondate)
-    //   select lesson.moduleid, $3, $4, $5 from lesson
-    //   `,
-    //   [
-    //     courseId,
-    //     lesson.modulename,
-    //     lesson.sublessonname,
-    //     lesson.videofile,
-    //     lesson.sublessondate,
-    //   ]
-    // );
     return res.status(201).json({
       message: "Lesson created successfully",
     });
@@ -283,20 +266,11 @@ adminRouter.put("/sublessondrag/:lessonid", async (req, res) => {
     console.log(value);
     try {
       await connectionPool.query(
-        `insert into sublesson (sublessonid, moduleid, sublessonname, videofile, sublessondate)
-         values ($1, $2, $3, $4, $5)
-         ON CONFLICT (sublessonid) DO UPDATE SET
-         moduleid=EXCLUDED.moduleid,
-         sublessonname=EXCLUDED.sublessonname,
-         videofile=EXCLUDED.videofile,
-         sublessondate=EXCLUDED.sublessondate `,
-
+        `update sublesson 
+         set sublessonorder=$1 where sublessonid=$2 `,
         [
-          value.sublessonid,
-          lessonId,
-          value.sublessonname,
-          value.videofile,
-          value.sublessondate,
+          i,
+          value.sublessonid
         ]
       );
     } catch (error) {
@@ -314,7 +288,8 @@ adminRouter.get("/sublesson/:lessonid", async (req, res) => {
   try {
     result = await connectionPool.query(
       `select * from sublesson
-      where moduleid=$1 `,
+      where moduleid=$1
+      order by sublessonorder asc `,
       [LessonId]
     );
   } catch {

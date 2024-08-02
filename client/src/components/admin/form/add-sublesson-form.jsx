@@ -4,7 +4,7 @@ import NavbarAddSubLesson from "../navbar/navbar-addsublesson";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import drag1 from "../../../assets/icons/admin/drag1.png";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import supabase from "../../../utils/supabaseClient";
 import { v4 as uuidv4 } from "uuid";
 import { XMarkIcon } from "@heroicons/react/24/solid";
@@ -12,6 +12,8 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 function AddSubLessonFrom() {
   const [videoFiles, setVideoFiles] = useState([]);
   const [videoPreviewUrls, setVideoPreviewUrls] = useState([]);
+console.log(videoFiles)
+console.log(videoPreviewUrls)
   const params = useParams();
   const navigate = useNavigate();
   const { control, handleSubmit, register, reset } = useForm({
@@ -20,12 +22,38 @@ function AddSubLessonFrom() {
       subLessons: [{ name: "" }],
     },
   });
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, move  } = useFieldArray({
     control,
     name: "subLessons",
   });
 
+  console.log(fields);
+
+  //////////Drag and Drop
+  const dragItem = useRef(null);
+  const draggedOverItem = useRef(null);
+  const handleSort = () => {
+    move(dragItem.current, draggedOverItem.current);
+
+    const videoFilesClone = [...videoFiles];
+    const videoPreviewUrlsClone = [...videoPreviewUrls];
+    const tempFile = videoFilesClone[dragItem.current];
+    const tempPreviewUrl = videoPreviewUrlsClone[dragItem.current];
+
+    videoFilesClone[dragItem.current] = videoFilesClone[draggedOverItem.current];
+    videoFilesClone[draggedOverItem.current] = tempFile;
+
+    videoPreviewUrlsClone[dragItem.current] = videoPreviewUrlsClone[draggedOverItem.current];
+    videoPreviewUrlsClone[draggedOverItem.current] = tempPreviewUrl;
+
+    setVideoFiles(videoFilesClone);
+    setVideoPreviewUrls(videoPreviewUrlsClone);
+  };
+
+
+  ///////VDO
   const onSubmit = async (data) => {
+    console.log(data);
     try {
       // Upload videos and get URLs
       const videoUrls = await Promise.all(
@@ -36,16 +64,16 @@ function AddSubLessonFrom() {
         ...subLesson,
         videoUrl: videoUrls[index] || "", // Ensure there's no undefined
       }));
-      console.log(data);
+
       // Send data to backend
-      await axios.post(
-        `http://localhost:4000/admin/${params.courseId}/lesson`,
-        {
-          modulename: data.lessonName,
-          sublessonname: data.subLessons.map((subLesson) => subLesson.name),
-          videos: data.subLessons.map((subLesson) => subLesson.videoUrl),
-        }
-      );
+      // await axios.post(
+      //   `http://localhost:4000/admin/${params.courseId}/lesson`,
+      //   {
+      //     modulename: data.lessonName,
+      //     sublessonname: data.subLessons.map((subLesson) => subLesson.name),
+      //     videos: data.subLessons.map((subLesson) => subLesson.videoUrl),
+      //   }
+      // );
 
       alert("Add Lesson and SubLesson Successfully");
       navigate("/admin/courselist");
@@ -160,6 +188,11 @@ function AddSubLessonFrom() {
               <aside
                 key={field.id}
                 className="mt-[30px] mx-[40px] w-[920px] h-[340px] bg-Gray-100 flex justify-center items-center rounded-[16px] border-[1px]"
+                draggable
+                onDragStart={() => (dragItem.current = index)}
+                onDragEnter={() => (draggedOverItem.current = index)}
+                onDragEnd={handleSort}
+                onDragOver={(e) => e.preventDefault()}
               >
                 <div className="w-[888px] h-[292px] flex gap-[24px]">
                   <div className="w-[26px] h-[76px] text-[#C8CCDB]">
@@ -232,7 +265,7 @@ function AddSubLessonFrom() {
                     </div>
                   </div>
                   <div className="w-[67px] h-[32px] text-center text-[16px] font-[700] text-Gray-500">
-                    {index > 0 ? (
+                    {fields.length > 1 ? (
                       <button
                         type="button"
                         onClick={() => {
@@ -246,7 +279,7 @@ function AddSubLessonFrom() {
                       <button
                         type="button"
                         onClick={() =>
-                          alert("Cannot delete the only sub-lesson")
+                          alert("Sublesson must have at least 0ne")
                         }
                       >
                         Delete

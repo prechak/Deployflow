@@ -2,7 +2,7 @@ import React from "react";
 import { Modal } from "@mui/material";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
-const ConfirmationModal = ({ open, onClose, onConfirm }) => {
+const ConfirmationModal = ({ open, onClose, onConfirm, text, textname }) => {
   return (
     <Modal open={open} onClose={onClose}>
       <div className="flex items-center justify-center h-screen bg-[rgba(0,0,0,0.5)]">
@@ -15,14 +15,14 @@ const ConfirmationModal = ({ open, onClose, onConfirm }) => {
           </div>
           <div className="sm:w-[343px] sm:h-[248px] pl-[16px] pr-[16px] xl:w-[528px] xl:pl-[24px] xl:pr-[24px]">
             <h1 className="text-Body2 font-Body2 text-[#646D89] pt-[24px] pb-[24px]">
-              Are you sure you want to delete this course?
+              {text}
             </h1>
             <div className="border-solid border-1 w-[311px] h-[128px] flex flex-col gap-[16px] xl:w-[528px] xl:flex-row">
               <button
                 onClick={onConfirm}
                 className="w-[312px] h-[56px] rounded-[12px] border-solid border-[1px] hover:bg-Orange-500 hover:text-white duration-75 border-Orange-500 text-Orange-500 text-[16px] font-[700]"
               >
-                Yes, I want to delete this course
+              {textname}
               </button>
               <button
                 onClick={onClose}

@@ -4,21 +4,22 @@ import { useNavigate, useParams } from "react-router-dom";
 import drag1 from "../../../assets/icons/admin/drag1.png";
 import NavbarEditSubLesson from "../../admin/navbar/navbar-editsublesson";
 import { useState, useEffect, useRef } from "react";
-import modal_vector from "../../../assets/icons/coursedetail/modal_vector.png";
 import { v4 as uuidv4 } from "uuid";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import supabase from "../../../utils/supabaseClient";
+import ConfirmationModal from "../../../components/admin/modal/delete-course-confirmation";
 
 function EditSubLessonFrom() {
   const [lessons, setLessons] = useState([]);
   const [subLessons, setSubLessons] = useState([]);
-  const [modal, setModal] = useState(false);
   const [videoFiles, setVideoFiles] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedCourseId, setSelectedCourseId] = useState(null);
   const [videoPreviewUrls, setVideoPreviewUrls] = useState([]);
   const params = useParams();
   const navigate = useNavigate();
   // console.log(subLessons);
-  console.log(videoPreviewUrls);
+  // console.log(videoPreviewUrls);
   const getLesson = async () => {
     try {
       const result = await axios.get(
@@ -40,20 +41,17 @@ function EditSubLessonFrom() {
         `http://localhost:4000/admin/sublesson/${params.lessonId}`
       );
       getVideoSublesson(result.data.data);
-      // console.log(result.data.data);
       setSubLessons(result.data.data);
-      // console.log(videoPreviewUrls);
     } catch (error) {
       console.error("Error getSublesson", error);
     }
   };
+
+  ///modal
   const deleteLesson = async () => {
     await axios.delete(`http://localhost:4000/admin/lesson/${params.lessonId}`);
     navigate("/admin/courselist");
-  };
-  const handleDeleteLesson = (event) => {
-    event.preventDefault();
-    deleteLesson();
+    handleCloseModal();
   };
   const deleteSublesson = async (sublessonid) => {
     console.log(sublessonid);
@@ -64,6 +62,19 @@ function EditSubLessonFrom() {
       getSublesson();
     } catch (error) {
       console.log("Error deleteSublesson", error);
+    }
+  };
+  const handleOpenModal = (sublessonid) => {
+    setSelectedCourseId(sublessonid);
+    setOpenModal(true);
+  };
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedCourseId(null);
+  };
+  const handleConfirmDelete = () => {
+    if (selectedCourseId) {
+      deleteLesson(selectedCourseId);
     }
   };
 
@@ -97,23 +108,19 @@ function EditSubLessonFrom() {
     getSublesson();
   }, []);
 
-  const toggleModal = () => {
-    setModal(!modal);
-  };
-
+  ///Drag and Drop
   const dragItem = useRef(0);
   const draggedOverItem = useRef(0);
   const handleSort = () => {
     const itemClone = [...subLessons];
     const temp = itemClone[dragItem.current];
-    const { sublessonid: idtempdrag, ...tempdrag } = temp;
     const temp2 = itemClone[draggedOverItem.current];
-    const { sublessonid: idtempdrop, ...tempdrop } = temp2;
-    itemClone[dragItem.current] = { sublessonid: idtempdrag, ...tempdrop };
-    itemClone[draggedOverItem.current] = {
-      sublessonid: idtempdrop,
-      ...tempdrag,
-    };
+    itemClone[dragItem.current] = itemClone[draggedOverItem.current];
+    itemClone[draggedOverItem.current] = temp;
+
+    console.log(itemClone);
+    console.log(temp);
+    console.log(temp2);
 
     const videoClone = [...videoFiles];
     const tempvideoClone = videoClone[dragItem.current];
@@ -125,28 +132,19 @@ function EditSubLessonFrom() {
     videoPreviewClone[dragItem.current] =
       videoPreviewClone[draggedOverItem.current];
     videoPreviewClone[draggedOverItem.current] = tempVideoPreviewClone;
-
-    // console.log(videoClone);
-    // console.log(dragItem.current);
-    // console.log(videoPreviewClone);
-
     setSubLessons(itemClone);
     putsublessonDrag(itemClone);
     setVideoFiles(videoClone);
     setVideoPreviewUrls(videoPreviewClone);
   };
 
-  // console.log(videoFiles);
-  ///////////////VDO
+  ///VDO
   const onSubmit = async (data) => {
     try {
       // Upload videos and get URLs
       const videoUrls = await Promise.all(
         videoFiles.map((file, index) => uploadVideoFile(file, index))
       );
-
-      console.log(videoUrls);
-
       // Send data to backend
       const editLesson = lessons;
       const editSublesson = subLessons;
@@ -204,6 +202,7 @@ function EditSubLessonFrom() {
       throw error;
     }
   }
+
   const handleVideoFileChange = (e, index) => {
     const selectedFile = e.target.files[0];
     if (!selectedFile) {
@@ -230,23 +229,17 @@ function EditSubLessonFrom() {
 
   const deleteVideoFile = (index) => {
     // Remove the file and preview URL
-
     setVideoFiles(videoFiles.toSpliced(index, 1, ""));
     setVideoPreviewUrls(videoPreviewUrls.toSpliced(index, 1, ""));
   };
 
   return (
     <div className="flex flex-col justify-between w-full h-full">
-      <button
-        onClick={onSubmit}
-        className={`${modal ? "opacity-30" : "opacity-100"}`}
-      >
+      <button onClick={onSubmit}>
         <NavbarEditSubLesson text="Edit" />
       </button>
       <div
-        className={`${
-          modal ? "opacity-30" : "opacity-100"
-        } mt-[50px] mx-8 w-[1120px] h-fit bg-white rounded-[16px] border-[1px] mb-[80px]`}
+        className={`mt-[50px] mx-8 w-[1120px] h-fit bg-white rounded-[16px] border-[1px] mb-[80px]`}
       >
         <div className=" mx-8 p-8">
           <form onSubmit={onSubmit}>
@@ -272,7 +265,6 @@ function EditSubLessonFrom() {
               </div>
             </div>
             {subLessons
-              .sort((a, b) => a.sublessonid - b.sublessonid)
               .map((item, index) => {
                 return (
                   <article
@@ -299,12 +291,12 @@ function EditSubLessonFrom() {
                             className="w-[530px] h-[48px] bg-white text-black border-[1px] border-[#D6D9E4] rounded-[8px] pl-[20px] placeholder:text-black"
                             value={item.sublessonname}
                             onChange={(e) => {
+                              // const newSublesson = [...subLessons]
                               setSubLessons([
-                                ...subLessons.toSpliced(index, 1),
-                                {
+                                ...subLessons.toSpliced(index, 1, {
                                   ...subLessons[index],
                                   sublessonname: e.target.value,
-                                },
+                                }),
                               ]);
                             }}
                           />
@@ -397,46 +389,18 @@ function EditSubLessonFrom() {
           </form>
         </div>
       </div>
-      <button onClick={toggleModal} className="mb-[80px] w-[1120px] mx-8">
+      <button onClick={handleOpenModal} className="mb-[80px] w-[1120px] mx-8">
         <h1 className="text-Blue-500 text-[16px] font-[700] text-end cursor-pointer">
           Delete lesson
         </h1>
       </button>
-      <aside className={`${modal ? "block" : "hidden"} mt-[16px]`}>
-        <div className="flex items-center justify-center relative right-[10px] bottom-[400px]">
-          <div className="border-solid border-2 bg-white rounded-[24px] w-[528px] h-[212px]">
-            <div className="flex items-center justify-between pl-[16px] pr-[16px] h-[56px] border-solid border-b-[1px] border-[#E4E6ED] ">
-              <h1 className="text-Body1 font-Body1 text-black">Confirmation</h1>
-              <button onClick={toggleModal}>
-                <img
-                  className="w-[9.94px] h-[9.7px]"
-                  src={modal_vector}
-                  alt="close icon"
-                />
-              </button>
-            </div>
-            <div className="w-[528px] pl-[24px] pr-[24px]">
-              <h1 className="text-Body2 font-Body2 text-[#646D89] pt-[24px] pb-[24px]">
-                Are you sure you want to delete this lesson?
-              </h1>
-              <div className="border-solid border-1 flex gap-[16px] w-[528px] flex-row">
-                <button
-                  onClick={handleDeleteLesson}
-                  className="rounded-[12px] border-solid border-[1px] border-Orange-500 text-Orange-500 shadow-md text-[16px] font-[700] w-[310px] h-[60px]"
-                >
-                  Yes, I want to delete this lesson
-                </button>
-                <button
-                  onClick={toggleModal}
-                  className="rounded-[12px] border-solid border-[1px] bg-Blue-500 shadow-md text-white text-[16px] font-[700] w-[147px] h-[60px]"
-                >
-                  No, keep it
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </aside>
+      <ConfirmationModal
+        text="Are you sure you want to delete this lesson?"
+        textname="Yes, I want to delete this lesson"
+        open={openModal}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }
