@@ -6,7 +6,7 @@ import { useState } from "react";
 
 function CourseListAdmin() {
   return (
-    <div className="h-full flex flex-row bg-gray-100 sticky top-0">
+    <div className="h-screen flex flex-row bg-gray-100 sticky top-0">
       <Sidebar />
       <div className="flex-1">
         <div>{<Outlet />}</div>

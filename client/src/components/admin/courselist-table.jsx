@@ -35,19 +35,15 @@ function CourseListTable() {
 
   useEffect(() => {
     fetchCourses();
-  }, [currentPage, search]);
+    console.log(courses)
+  }, []);
 
   const fetchCourses = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/courses", {
-        params: {
-          page: currentPage,
-          limit: pageSize,
-          search: search.trim() // Assuming you add search support in the backend
-        }
-      });
-      setCourses(res.data.courses);
-      setTotalPages(res.data.totalPages);
+      const res = await axios.get("http://localhost:4000/courses");
+      setCourses(res.data);
+      console.log(res.data)
+
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
@@ -100,15 +96,7 @@ function CourseListTable() {
         <div className="overflow-y-scroll max-h-[550px]">
           <table className="text-black text-sm rounded-xl w-full">
             <tbody>
-              {courses
-                .filter((item) => {
-                  return search.trim() === ""
-                    ? true
-                    : item.coursename
-                        .toLowerCase()
-                        .includes(search.toLowerCase());
-                })
-                .map((item) => (
+              {courses.map((item) => (
                   <tr
                     key={item.courseid}
                     className="bg-white border-b border-Gray-400 w-[1120px] h-[88px]"

@@ -3,7 +3,7 @@ import upload from "../../../assets/image/upload.png";
 import pdf from "../../../assets/image/pdf.png";
 import axios from "axios";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import AddCourseSubLessonTable from "../addcourse-sublesson";
+import EditCourseSubLessonTable from "../editcourse-sublesson";
 import NavbarEditCourse from "../navbar/navbar-editcourse";
 import supabase from "../../../utils/supabaseClient";
 import { v4 as uuidv4 } from "uuid";
@@ -567,7 +567,7 @@ function EditCourseForm() {
           </form>
         </div>
       </div>
-      <AddCourseSubLessonTable />
+      <EditCourseSubLessonTable courseId={id} />
     </div>
   );
 }

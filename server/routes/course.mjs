@@ -4,7 +4,7 @@ import connectionPool from "../utils/db.mjs";
 const courseRouter = Router();
 
 //============Get all courses
-/*courseRouter.get("/", async (req, res) => {
+courseRouter.get("/", async (req, res) => {
   let result;
   try {
     result = await connectionPool.query(
@@ -13,36 +13,6 @@ const courseRouter = Router();
     res.status(200).json(result.rows);
   } catch {
     res.status(500).json({ message: `Internal server error` });
-  }
-});*/
-courseRouter.get("/", async (req, res) => {
-  const page = parseInt(req.query.page) || 1; // Current page number
-  const limit = parseInt(req.query.limit) || 10; // Number of items per page
-
-  try {
-    // Calculate the offset
-    const offset = (page - 1) * limit;
-
-    // Query to get the total count of records
-    const countResult = await connectionPool.query(`SELECT COUNT(*) AS total FROM courses`);
-    const totalRecords = parseInt(countResult.rows[0].total);
-    const totalPages = Math.ceil(totalRecords / limit);
-
-    // Query to get the paginated records
-    const result = await connectionPool.query(
-      `SELECT * FROM courses ORDER BY courseid ASC LIMIT $1 OFFSET $2`,
-      [limit, offset]
-    );
-
-    res.status(200).json({
-      courses: result.rows,
-      totalPages,
-      currentPage: page,
-      totalRecords
-    });
-  } catch (error) {
-    console.error("Error fetching courses:", error);
-    res.status(500).json({ message: "Internal server error" });
   }
 });
 

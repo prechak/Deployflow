@@ -2,7 +2,7 @@ import NavbarAddCourse from "../../components/admin/navbar/navbar-addcourse";
 import Sidebar from "../../components/admin/sidebar";
 import { Outlet } from "react-router-dom";
 import AddCourseForm from "../../components/admin/form/addcourseform";
-import AddCourseSubLessonTable from "../../components/admin/addcourse-sublesson";
+import AddCourseSubLessonTable from "../../components/admin/editcourse-sublesson";
 
 function AddCourseAdmin() {
   return (

@@ -10,15 +10,42 @@ function AssignmentListTable() {
   const [search, setSearch] = useState("");
   console.log(search);
 
+  const formatToBangkokTime = (isoTime) => {
+    const date = new Date(isoTime);
+    const bangkokTime = new Date(
+      date.toLocaleString("en-US", { timeZone: "Asia/Bangkok" })
+    );
+    const options = {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    };
+    const formattedTime = bangkokTime.toLocaleString("en-GB", options);
+
+    const [datePart, timePart] = formattedTime.split(" ");
+    const [day, month, year] = datePart.split("/");
+    const [hour, minute] = timePart.split(":");
+
+    return `${day}/${month}/${year.replace(",", "")} ${hour}:${minute}`;
+  };
+
+  const truncateText = (text, maxLength) => {
+    if (!text) return "";
+    return text.length > maxLength
+      ? text.substring(0, maxLength) + "..."
+      : text;
+  };
+
   useEffect(() => {
     fetchAssignments();
   }, []);
 
   const fetchAssignments = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:4000/admin/assignments"
-      );
+      const res = await axios.get("http://localhost:4000/admin/assignments");
       setAssignments(res.data);
       console.log(res);
     } catch (error) {
@@ -38,76 +65,82 @@ function AssignmentListTable() {
     }
   };
 
-  const truncateText = (text, maxLength) => {
-    if (!text) return "";
-    return text.length > maxLength
-      ? text.substring(0, maxLength) + "..."
-      : text;
-  };
-
   return (
     <div>
       <NavbarAssignmentList search={search} onSearchChange={setSearch} />
-      <table className="text-black text-sm m-20">
-        <thead className="w-[1120px] h-[41px] bg-slate-200 rounded-lg">
-          <tr>
-            <th className="w-[200px] text-left rounded-tl-lg pl-6">
-              Assignment detail
-            </th>
-            <th className="w-[200px] text-left">Course</th>
-            <th className="w-[200px] text-left">Lesson</th>
-            <th className="w-[200px] text-left">Sub-lesson</th>
-            <th className="w-[200px] text-left">Created date</th>
-            <th className="w-[120px] text-left rounded-tr-lg">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {assignments
-            .filter((item) => {
-              if (search.trim() === "") {
-                return true;
-              }
-              const searchText = search.toLowerCase();
-              return (
-                (item.description &&
-                  item.description.toLowerCase().includes(searchText)) ||
-                (item.coursename &&
-                  item.coursename.toLowerCase().includes(searchText)) ||
-                (item.modulename &&
-                  item.modulename.toLowerCase().includes(searchText)) ||
-                (item.sublessonname &&
-                  item.sublessonname.toLowerCase().includes(searchText))
-              );
-            })
-            .map((item) => (
-              <tr key={item.assignmentid} className="w-[1120px] h-[88px]">
-                <td className="w-[200px] text-left pl-6">
-                  {truncateText(item.description, 25)}
-                </td>
-                <td className="w-[200px] text-left ">
-                  {truncateText(item.coursename, 25)}
-                </td>
-                <td className="w-[200px] text-left">
-                  {truncateText(item.modulename, 25)}
-                </td>
-                <td className="w-[200px] text-left">
-                  {truncateText(item.sublessonname, 25)}
-                </td>
-                <td className="w-[200px] text-left">{item.createddate}</td>
-                <td className="w-[120px] text-left">
-                  <button onClick={() => deleteAssignment(item.assignmentid)}>
-                    <img src={bin} alt="delete" />
-                  </button>
-                  <button>
-                    <Link to={`/admin/editaddassignment/${item.assignmentid}`}>
-                      <img src={edit} alt="edit" />
-                    </Link>
-                  </button>
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+      <div className="m-10 ">
+        <table className="text-slate-600 text-sm rounded-xl w-full">
+          <thead className="w-[100px] h-[41px] bg-Gray-400 ">
+            <tr className="font-thin ">
+              <th className="w-[200px] text-left pl-10 ">Assignment detail</th>
+              <th className="w-[200px] text-left">Course</th>
+              <th className="w-[200px] text-left">Lesson</th>
+              <th className="w-[200px] text-left">Sub-lesson</th>
+              <th className="w-[200px] text-left">Created date</th>
+              <th className="w-[120px] text-center">Actions</th>
+            </tr>
+          </thead>
+        </table>
+        <div className="overflow-y-scroll max-h-[700px]">
+          <table className="text-black text-sm rounded-xl w-full">
+            <tbody>
+              {assignments
+                .filter((item) => {
+                  if (search.trim() === "") {
+                    return true;
+                  }
+                  const searchText = search.toLowerCase();
+                  return (
+                    (item.detail &&
+                      item.detail.toLowerCase().includes(searchText)) ||
+                    (item.title &&
+                      item.title.toLowerCase().includes(searchText)) ||
+                    (item.modulename &&
+                      item.modulename.toLowerCase().includes(searchText)) ||
+                    (item.sublessonname &&
+                      item.sublessonname.toLowerCase().includes(searchText))
+                  );
+                })
+                .map((item) => (
+                  <tr
+                    key={item.assignmentid}
+                    className="bg-white border-b border-Gray-400 w-[1120px] h-[88px]"
+                  >
+                    <td className="w-[200px] text-left pl-10">
+                      {truncateText(item.title, 20)}
+                    </td>
+                    <td className="w-[200px] text-left">
+                      {truncateText(item.coursename, 20)}
+                    </td>
+                    <td className="w-[200px] text-left">
+                      {truncateText(item.modulename, 20)}
+                    </td>
+                    <td className="w-[200px] text-left">
+                      {truncateText(item.sublessonname, 20)}
+                    </td>
+                    <td className="w-[200px] text-left">
+                      {formatToBangkokTime(item.createddate)}
+                    </td>
+                    <td className="w-[120px] text-center">
+                      <button
+                        onClick={() => deleteAssignment(item.assignmentid)}
+                      >
+                        <img src={bin} alt="delete" />
+                      </button>
+                      <button>
+                        <Link
+                          to={`/admin/editaddassignment/${item.assignmentid}`}
+                        >
+                          <img src={edit} alt="edit" className="pl-4" />
+                        </Link>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }
