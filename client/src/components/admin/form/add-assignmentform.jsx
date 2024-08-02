@@ -87,7 +87,7 @@ function AddAssignmentForm() {
       if (response.status === 201) {
         console.log("data send", response);
         alert("Assignment created successfully");
-        // navigate("/admin/assignmentlist");
+        navigate("/admin/assignmentlist");
         setSelectedCourse("");
         setSelectedLesson("");
         setSelectedSubLesson("");

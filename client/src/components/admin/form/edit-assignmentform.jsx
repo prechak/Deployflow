@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import CancelButton from "../button/cancel-button";
 import SubButton from "../button/sub-button";
+import ConfirmationModal from "../modal/delete-course-confirmation";
 
 function EditAssignmentForm() {
   const navigate = useNavigate();
@@ -14,8 +15,9 @@ function EditAssignmentForm() {
   const [selectedLesson, setSelectedLesson] = useState("");
   const [selectedSubLesson, setSelectedSubLesson] = useState("");
   const [assignmentDetail, setAssignmentDetail] = useState("");
-  const [assignmentDuration, setAssignmentDuration] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [selectedAssignmentId, setSelectedAssignmentId] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
 
   const { id } = useParams();
 
@@ -115,6 +117,30 @@ function EditAssignmentForm() {
   const filterSubLessons = subLessons.filter(
     (subLesson) => subLesson.moduleid === parseInt(selectedLesson)
   );
+
+  const deleteAssignment = async (id) => {
+    try {
+      await axios.delete(`http://localhost:4000/admin/assignments/${id}`);
+      navigate("/admin/assignmentlist");
+      setOpenModal(false);
+    } catch (error) {
+      console.error("Error deleting assignment:", error);
+    }
+  };
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const handleConfirmDelete = () => {
+    if (id) {
+      deleteAssignment(id);
+    }
+  };
 
   return (
     <>
@@ -271,6 +297,21 @@ function EditAssignmentForm() {
             </div>
           </section>
         </form>
+        <div className="rounded-2xl px-2 py-1 ml-[1010px]">
+          <button
+            className="text-blue-500 font-bold text-base"
+            onClick={handleOpenModal}
+          >
+            Delete Assignment
+          </button>
+        </div>
+        <ConfirmationModal
+          text="Are you sure you want to delete this assignment ?"
+          textname="Yes, I want to delete"
+          open={openModal}
+          onClose={handleCloseModal}
+          onConfirm={handleConfirmDelete}
+        />
       </div>
     </>
   );

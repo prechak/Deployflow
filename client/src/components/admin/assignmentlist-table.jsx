@@ -4,11 +4,13 @@ import edit from "../../assets/image/edit.png";
 import bin from "../../assets/image/Bin.png";
 import { Link } from "react-router-dom";
 import NavbarAssignmentList from "./navbar/navbar-assignmentlist";
+import ConfirmationModal from "./modal/delete-course-confirmation";
 
 function AssignmentListTable() {
   const [assignments, setAssignments] = useState([]);
   const [search, setSearch] = useState("");
-  console.log(search);
+  const [selectedAssignmentId, setSelectedAssignmentId] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
 
   const formatToBangkokTime = (isoTime) => {
     const date = new Date(isoTime);
@@ -49,19 +51,31 @@ function AssignmentListTable() {
       setAssignments(res.data);
       console.log(res);
     } catch (error) {
-      console.error("Error fetching courses:", error);
+      console.error("Error fetching assignments:", error);
     }
   };
 
-  const deleteAssignment = async (id) => {
+ const deleteAssignment = async (id) => {
     try {
       await axios.delete(`http://localhost:4000/admin/assignments/${id}`);
-      setAssignments(
-        assignments.filter((assignment) => assignment.assignmentid !== id)
-      );
+      navigate("/admin/assignmentlist");
+      setOpenModal(false);
     } catch (error) {
       console.error("Error deleting assignment:", error);
-      console.log(error);
+    }
+  };
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const handleConfirmDelete = () => {
+    if (id) {
+      deleteAssignment(id);
     }
   };
 
@@ -123,7 +137,7 @@ function AssignmentListTable() {
                     </td>
                     <td className="w-[120px] text-center">
                       <button
-                        onClick={() => deleteAssignment(item.assignmentid)}
+                        onClick={() => handleOpenModal(item.assignmentid)}
                       >
                         <img src={bin} alt="delete" />
                       </button>
@@ -141,6 +155,13 @@ function AssignmentListTable() {
           </table>
         </div>
       </div>
+      <ConfirmationModal
+        text="Are you sure you want to delete this assignment ?"
+        textname="Yes, I want to delete"
+        open={openModal}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }
