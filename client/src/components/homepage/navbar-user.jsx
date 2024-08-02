@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate ,useParams } from "react-router-dom";
 import logo from "/src/assets/icons/logo.png";
 import Profile from "/src/assets/images/sm/profile/profile.png";
 import iconProfile from "/src/assets/icons/icon-profile.png";
@@ -12,9 +12,10 @@ import { useAuth } from "../../contexts/authentication";
 import axios from "axios";
 
 function NavbarUser() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [userData, setUserData] = useState({});
-  // const history = useHistory();
+
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -38,10 +39,10 @@ function NavbarUser() {
     getUserData();
   }, []);
 
-  // const handleLogout = () => {
-  //   localStorage.removeItem("token");
-  //   setState({ ...state, user: null });
-  // };
+  const handleNavigate = () => {
+    navigate("/courselist");
+    window.scrollTo(0, 0);
+  };
 
   return (
     <div className="navbar z-40  sticky top-0 bg-white">
