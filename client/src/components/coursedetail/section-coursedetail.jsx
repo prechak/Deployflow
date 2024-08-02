@@ -1,16 +1,17 @@
 import arrow_back from "../../assets/icons/coursedetail/arrow_back.png";
 import arrow_drop from "../../assets/icons/coursedetail/arrow_drop.png";
 import React, { useState, useEffect } from "react";
-import modal_vector from "../../assets/icons/coursedetail/modal_vector.png";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../contexts/authentication";
+import ModalCoursedetail from "../../components/coursedetail/modacoursedetaill.desktop";
 
 function SectionCourseDetail() {
   const navigate = useNavigate();
   const userId = useAuth();
-  const [modal, setModal] = useState(false);
   const [coursedetail, setCoursedetail] = useState({});
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedCourseId, setSelectedCourseId] = useState(null);
   const params = useParams();
   const getCourses = async () => {
     const result = await axios.get(
@@ -39,15 +40,23 @@ function SectionCourseDetail() {
       `http://localhost:4000/courses/${userId.UserIdFromLocalStorage}/${params.Id}/subscribe`
     ),
       {};
+    handleCloseModal();
     navigate(`/user/subscribe/coursedetail/${params.Id}`);
   };
-  const handlePostSubscribe = (event) => {
-    event.preventDefault();
-    postSubscribe();
-  };
 
-  const toggleModal = () => {
-    setModal(!modal);
+  ///modal
+  const handleConfirmSubscribe = () => {
+    if (selectedCourseId) {
+      postSubscribe(selectedCourseId);
+    }
+  };
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedCourseId(null);
+  };
+  const handleOpenModal = (id) => {
+    setSelectedCourseId(id);
+    setOpenModal(true);
   };
 
   const [isCoursevisible1, setIsCourseVisible1] = useState(false);
@@ -78,11 +87,9 @@ function SectionCourseDetail() {
   return (
     <div>
       <section
-        className={`h-fit flex flex-row pt-[16px] pl-[16px] pr-[16px] xl:pl-[144px] ${
-          modal ? "bg-gray-300 bg-opacity-50" : "opacity-100 bg-white"
-        } `}
+        className={`h-fit flex flex-row pt-[16px] pl-[16px] pr-[16px] xl:pl-[144px] `}
       >
-        <div className={`${modal ? "opacity-25" : "opacity-100"}`}>
+        <div>
           <header className="w-[100%] h-[261.5px] md:h-[450px] xl:h-[500px] flex justify-center xl:justify-start xl:w-[739px]">
             <div className="flex flex-col">
               <div className="w-[79px] h-[32px] flex items-center gap-[8px] pl-[4px] pr-[4px]">
@@ -350,9 +357,7 @@ function SectionCourseDetail() {
         </div>
         <div>
           <aside
-            className={`${
-              modal ? "opacity-25" : "opacity-100"
-            } shadow-lg xl:w-[375px] xl:h-[449px] xl:block hidden sticky top-[105px] ml-[24px] mt-[40px]`}
+            className={`shadow-lg xl:w-[375px] xl:h-[449px] xl:block hidden sticky top-[105px] ml-[24px] mt-[40px]`}
           >
             <div className="flex flex-col w-[309px] h-[95%] gap-[10px] mt-[11px] ml-[33px]">
               <h1 className="w-[309px] h-[21px] text-Orange-500 text-[14px] font-[400] ">
@@ -381,7 +386,7 @@ function SectionCourseDetail() {
                   Get in Desire Course
                 </button>
                 <button
-                  onClick={toggleModal}
+                  onClick={handleOpenModal}
                   className="border-solid border-[1px] border-Blue-500 bg-Blue-500 rounded-[12px] text-[16px] font-[700] text-white text-center w-[309px] h-[60px]"
                 >
                   Subscribe This Course
@@ -389,46 +394,11 @@ function SectionCourseDetail() {
               </div>
             </div>
           </aside>
-          <aside
-            className={`${
-              modal ? "block" : "hidden"
-            } mt-[16px] sticky top-[520px]`}
-          >
-            <div className="flex items-center justify-center relative right-[100px]">
-              <div className="border-solid border-2 bg-white sm:h-[304px] sm:w-[343px] rounded-[16px] xl:w-[528px] xl:h-[212px]">
-                <div className="flex items-center justify-between pl-[16px] pr-[16px] sm:h-[56px] border-solid border-b-[1px] border-[#E4E6ED] xl:pl-[24px] xl:pr-[24px]">
-                  <h1 className="text-Body1 font-Body1 text-black">
-                    Confirmation
-                  </h1>
-                  <button onClick={toggleModal}>
-                    <img
-                      className="w-[9.94px] h-[9.7px]"
-                      src={modal_vector}
-                    ></img>
-                  </button>
-                </div>
-                <div className="sm:w-[343px] sm:h-[248px] pl-[16px] pr-[16px] xl:w-[528px] xl:pl-[24px] xl:pr-[24px]">
-                  <h1 className="text-Body2 font-Body2 text-[#646D89] pt-[24px] pb-[24px]">
-                    Do you sure to subscribe Service Design Essentials Course?
-                  </h1>
-                  <div className="border-solid border-1 sm:w-[311px] sm:h-[128px] flex flex-col gap-[16px] xl:w-[528px] xl:flex-row">
-                    <button
-                      onClick={toggleModal}
-                      className="sm:w-[311px] sm:h-[56px] rounded-[12px] border-solid border-[1px] border-Orange-500 text-Orange-500 xl:text-[16px] xl:font-[700] xl:w-[142px] xl:h-[60px]"
-                    >
-                      No, I don't
-                    </button>
-                    <button
-                      onClick={handlePostSubscribe}
-                      className="sm:w-[311px] sm:h-[56px] rounded-[12px] border-solid border-[1px] bg-Blue-500 text-white xl:text-[16px] xl:font-[700] xl:w-[250px] xl:h-[60px]"
-                    >
-                      Yes, I want to subscribe
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </aside>
+          <ModalCoursedetail
+            open={openModal}
+            onClose={handleCloseModal}
+            onConfirm={handleConfirmSubscribe}
+          />
         </div>
       </section>
     </div>

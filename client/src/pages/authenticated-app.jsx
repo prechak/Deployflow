@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Userhomepage from "./authorized/user-homepage";
 import Usercourse from "./authorized/user-course";
 import UserMycourse from "./authorized/user-mycourse";
-import Modal from "../components/coursedetail/modal";
+import Modal from "../components/coursedetail/modalcoursedetail-mobile";
 import SubscribeCourse from "./authorized/user-subscribe";
 import UserDesireCoursedetail from "./authorized/user-desirecoursedetail";
 import StartLearning from "./authorized/user-courselearning";
