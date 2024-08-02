@@ -1,7 +1,10 @@
 import SubButton from "../button/sub-button";
 import CancelButton from "../button/cancel-button";
 import { Link } from "react-router-dom";
-function NavbarAddCourse({ onCreateCourseClick }) {
+import { useNavigate } from "react-router-dom";
+
+function NavbarAddCourse({ createCourse }) {
+  const navigate = useNavigate()
   return (
     <div className="w-full">
       <nav className="border-b-2 border-gray-300 md:p-4 bg-white text-base text-slate-800 flex flex-col md:flex-row md:justify-between items-center">
@@ -10,7 +13,9 @@ function NavbarAddCourse({ onCreateCourseClick }) {
           <Link to="/admin/courselist">
             <CancelButton text="Cancel" />
           </Link>
-          <SubButton text="Create" onClick={onCreateCourseClick} />
+          <SubButton text="Create"  onClick={async(e) => {
+              await createCourse(e)
+              navigate(`/admin/courselist`)}} />
         </div>
       </nav>
     </div>

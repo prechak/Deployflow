@@ -5,42 +5,64 @@ import edit from "../../assets/image/edit.png";
 import drag from "../../assets/image/drag.png";
 import { Link, useParams, useNavigate } from "react-router-dom";
 
-function AddCourseSubLessonTable({ createCourse }) {
+function EditCourseSubLessonTable({ createCourse }) {
   const navigate = useNavigate();
+  const [courses, setCourses] = useState([]);
   const [subLesson, setSublesson] = useState([]);
   const [draggedItemIndex, setDraggedItemIndex] = useState(null);
   const param = useParams();
+
   
   useEffect(() => {
-    const savedOrder = localStorage.getItem('subLessonOrder');
-    if (savedOrder) {
-      setSublesson(JSON.parse(savedOrder));
-    } else {
       fetchSubLesson();
-    }
   }, []);
 
   const fetchSubLesson = async () => {
+    console.log(param.id)
     try {
-      const res = await axios.get("http://localhost:4000/admin/sublessonlist");
+      const res = await axios.get(`http://localhost:4000/admin/sublessonlist/${param.id}`);
       setSublesson(res.data);
-      localStorage.setItem('subLessonOrder', JSON.stringify(res.data));
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
   };
 
-  /*const deleteLesson = async (id) => {
+  //Delete lesson
+  const deleteLesson = async (id,index) => {
     try {
       await axios.delete(`http://localhost:4000/admin/lesson/${id}`);
-      const updatedSubLesson = subLesson.filter((lesson) => lesson.moduleid !== id);
-      setSublesson(updatedSubLesson);
-      localStorage.setItem('subLessonOrder', JSON.stringify(updatedSubLesson));
+      setSublesson(subLesson.toSpliced(index,1))
     } catch (error) {
       console.error("Error deleting lesson:", error);
       console.log(error);
     }
-  };*/
+  };
+
+  //Delete course//
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const fetchCourses = async () => {
+    console.log(param.id);
+    try {
+      const res = await axios.get(`http://localhost:4000/courses/${param.id}`);
+      setCourses(res.data.data);
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+    }
+  };
+
+  const deleteCourse = async () => {
+    console.log(param.id)
+    try {
+      await axios.delete(`http://localhost:4000/courses/${param.id}`);
+      console.log("Course deleted successfully");
+      navigate("/admin/courselist")
+    } catch (error) {
+      console.error("Error deleting course:", error);
+    }
+  };
 
   const onDragStart = (index) => {
     setDraggedItemIndex(index);
@@ -50,19 +72,24 @@ function AddCourseSubLessonTable({ createCourse }) {
     e.preventDefault();
   };
 
-  const onDrop = (dropIndex) => {
+  const onDrop = async (dropIndex) => {
     const updatedSubLesson = [...subLesson];
     const [draggedItem] = updatedSubLesson.splice(draggedItemIndex, 1);
     updatedSubLesson.splice(dropIndex, 0, draggedItem);
     setSublesson(updatedSubLesson);
     setDraggedItemIndex(null);
-    localStorage.setItem('subLessonOrder', JSON.stringify(updatedSubLesson));
+    console.log(updatedSubLesson)
+    try{ await axios.put(`http://localhost:4000/admin/moduleorderlist/${param.id}`,updatedSubLesson)
+
+    }catch {
+
+    }fetchSubLesson()
   };
 
   const handleAddLessonClick = async (e) => {
     const courseid = await createCourse(e);
     console.log(courseid);
-    if(typeof courseid === "number"){navigate(`/admin/editcourse/${courseid}`);}
+    navigate(`/admin/editcourse/${courseid}`);
   };
 
   return (
@@ -71,7 +98,7 @@ function AddCourseSubLessonTable({ createCourse }) {
         <div className="text-lg justify-center">Lesson</div>
         <div className="justify-center">
           <button
-            onClick={handleAddLessonClick}
+            onClick={()=>navigate(`/admin/${param.id}/addsublesson`)}
             className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition w-[171px] h-[60px]"
           >
             +Add lesson
@@ -90,7 +117,7 @@ function AddCourseSubLessonTable({ createCourse }) {
             </tr>
           </thead>
         </table>
-        <div className="overflow-y-scroll max-h-[0px]">
+        <div className="overflow-y-scroll max-h-[400px]">
           <table className="text-black text-sm rounded-xl w-full">
             <tbody>
               {subLesson.map((item, index) => (
@@ -102,28 +129,30 @@ function AddCourseSubLessonTable({ createCourse }) {
                   onDragOver={onDragOver}
                   onDrop={() => onDrop(index)}
                 >
-                  <td className="w-[56px] h-[88px]">{/*<img src={drag} alt="drag" />*/}</td>
-                  <td className="w-[56px]">{/*index + 1*/}</td>
-                  <td className="w-[500px]">{/*item.modulename*/}</td>
-                  <td className="w-[396px]">{/*item.count_sublesson*/}</td>
+                  <td className="w-[56px] h-[88px]"><img src={drag} alt="drag" /></td>
+                  <td className="w-[56px]">{index + 1}</td>
+                  <td className="w-[500px]">{item.modulename}</td>
+                  <td className="w-[396px]">{item.count_sublesson}</td>
                   <td>
-                    {/*<button onClick={() => deleteLesson(item.moduleid)}>
+                    <button onClick={()=>deleteLesson(item.moduleid,index)}>
                       <img src={bin} alt="delete" />
                     </button>
+                    
                     <button>
                       <Link to={`/admin/${param.id}/${item.moduleid}/editsublesson`}>
                         <img src={edit} alt="edit" />
                       </Link>
-                    </button>*/}
+                    </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+        <div className="mt-12 flex flex-row justify-end"><button onClick={deleteCourse} className="text-blue-900 text-sm">Delete Course</button></div>
       </div>
     </div>
   );
 }
 
-export default AddCourseSubLessonTable;
+export default EditCourseSubLessonTable;

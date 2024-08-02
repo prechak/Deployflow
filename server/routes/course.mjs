@@ -16,6 +16,7 @@ courseRouter.get("/", async (req, res) => {
   }
 });
 
+
 //=============Get all user subscribed
 courseRouter.get("/user/:id/subscribed", async (req, res) => {
   const { id } = req.params;
@@ -364,6 +365,7 @@ courseRouter.put("/:id", async (req, res) => {
     videofile,
     imagefile,
     pdffile,
+    updateddate,
   } = req.body;
 
   if (
@@ -377,6 +379,9 @@ courseRouter.put("/:id", async (req, res) => {
   }
 
   try {
+    console.log("Received update request for course ID:", courseIdFromClient);
+    console.log("Request body:", req.body);
+
     const result = await connectionPool.query(
       `UPDATE courses
        SET coursename = $2, 

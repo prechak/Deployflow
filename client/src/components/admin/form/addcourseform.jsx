@@ -59,8 +59,50 @@ function AddCourseFrom() {
     });
   };
 
+  //validate
+  const validateForm = () => {
+    const {
+      coursename,
+      price,
+      courselearningtime,
+      coursesummary,
+      description,
+      videofile,
+      imagefile,
+    } = createForm;
+
+    if (!coursename.trim()) {
+      alert("Course name is required");
+      return false;
+    }
+    if (!price.trim()) {
+      alert("Price is required");
+      return false;
+    }
+    if (!courselearningtime.trim()) {
+      alert("Total learning time is required");
+      return false;
+    }
+    if (!coursesummary.trim()) {
+      alert("Course summary is required");
+      return false;
+    }
+    if (!description.trim()) {
+      alert("Course detail is required");
+      return false;
+    }
+
+    // Additional checks for specific formats can be added here (e.g., number for price)
+
+    return true;
+  };
+
   const createCourse = async (e) => {
     e.preventDefault();
+    if (!validateForm()) {
+      return; // Stop execution if form is not valid
+    }
+    let collectCourseid;
     setLoading(true); // Start the spinner
     try {
       // Check if required files are present
@@ -83,8 +125,9 @@ function AddCourseFrom() {
       };
 
       const res = await axios.post("http://localhost:4000/courses", formData);
-
-      console.log(res);
+      const { courseid } = res.data.data[0];
+      console.log(res.data.data[0]); //log data
+      collectCourseid = courseid;
 
       setCreateForm({
         coursename: "",
@@ -96,15 +139,19 @@ function AddCourseFrom() {
         imagefile: "",
         pdffile: "",
       });
+
       console.log(setCreateForm);
-      alert("Add course successfully");
-      setLoading(false);
-      navigate("/admin/courselist");
+      alert("Course added successfully");
+
+      // Navigate to the edit course page
+      //navigate(`/admin/editcourse/${courseid}`);
     } catch (error) {
       console.error("Error creating course:", error);
       alert("Failed to create course. Please try again.");
-      setLoading(false);
+    } finally {
+      setLoading(false); // Stop the spinner
     }
+    return collectCourseid || null;
   };
 
   const deletecourse = async (_id) => {
@@ -118,9 +165,12 @@ function AddCourseFrom() {
   };
 
   const handleCreateCourseClick = () => {
+    let collectCourseid;
     if (formRef.current) {
-      formRef.current.requestSubmit(); // Trigger form submission
+      collectCourseid = formRef.current.requestSubmit(); // Trigger form submission
+      console.log(collectCourseid);
     }
+    return collectCourseid || null;
   };
 
   // Replace any non-alphanumeric characters in the course name with underscores
@@ -323,7 +373,7 @@ function AddCourseFrom() {
     <div>
       {/* Loading Section */}
       {loading && <PendingSvg text="Creating Course..." />}
-      <NavbarAddCourse onCreateCourseClick={handleCreateCourseClick} />
+      <NavbarAddCourse createCourse={createCourse} />
       <div className="mt-8 mx-8 w-[1120px] bg-white rounded-md border-2">
         <div className="mx-8 p-8">
           <form ref={formRef} onSubmit={createCourse}>
@@ -516,7 +566,7 @@ function AddCourseFrom() {
           </form>
         </div>
       </div>
-      <AddCourseSubLessonTable />
+      <AddCourseSubLessonTable createCourse={createCourse} />
     </div>
   );
 }
