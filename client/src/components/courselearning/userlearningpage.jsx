@@ -20,8 +20,8 @@ import {
   PlayingIcon,
   FinishedIcon,
 } from "../../assets/icons/videoicon/status-icon";
-import { Assignment } from "./assignment";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const UserLearningPage = () => {
   // State and Hooks
@@ -52,6 +52,15 @@ const UserLearningPage = () => {
   const [currentModuleName, setCurrentModuleName] = useState("");
   const [currentSubmoduleName, setCurrentSubmoduleName] = useState("");
   const [hoveredSublessonId, setHoveredSublessonId] = useState(null);
+  const [assignmentStatus, setAssignmentStatus] = useState("");
+  const [assignment, setAssignment] = useState(null);
+  const [submissionStatus, setSubmissionStatus] = useState("");
+  const [userAnswer, setUserAnswer] = useState("");
+  const [submissionStatuses, setSubmissionStatuses] = useState({});
+  const [overallSubmissionStatus, setOverallSubmissionStatus] =
+    useState("Pending");
+  const [submissionAnswer, setSubmissionAnswer] = useState("");
+  const [submissionDetails, setSubmissionDetails] = useState({});
 
   const navigate = useNavigate();
 
@@ -232,6 +241,67 @@ const UserLearningPage = () => {
     }
   }, [selectedSublesson, sidebarData]);
 
+  // Fetch Assignment
+  // useEffect(() => {
+  //   const fetchAssignmentData = async (assignmentid) => {
+  //     try {
+  //       console.log(`Fetching assignment data for ID: ${assignmentid}`);
+  //       const response = await axios.get(
+  //         `http://localhost:4000/users/assignment/${assignmentid}`
+  //       );
+  //       const assignmentData = response.data;
+
+  //       if (Array.isArray(assignmentData) && assignmentData.length > 0) {
+  //         console.log("Assignment data fetched:", assignmentData);
+  //         setAssignment(assignmentData[0]);
+  //       } else {
+  //         console.log("No assignment data found.");
+  //         setAssignment(null);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching assignment data:", error);
+  //       setAssignment(null); // Handle the error by clearing assignment
+  //     }
+  //   };
+
+  //   const findSelectedSublessonData = () => {
+  //     if (selectedSublesson && sidebarData) {
+  //       const selectedModule = sidebarData.modules.find((module) =>
+  //         module.sublessons.some(
+  //           (sublesson) => sublesson.sublessonid === selectedSublesson
+  //         )
+  //       );
+
+  //       if (selectedModule) {
+  //         const selectedSublessonData = selectedModule.sublessons.find(
+  //           (sublesson) => sublesson.sublessonid === selectedSublesson
+  //         );
+
+  //         if (selectedSublessonData) {
+  //           console.log("Selected Sublesson Data:", selectedSublessonData);
+  //           setSelectedVideoUrl(selectedSublessonData.videofile);
+  //           setCurrentModuleName(selectedModule.modulename);
+  //           setCurrentSubmoduleName(selectedSublessonData.sublessonname);
+
+  //           if (selectedSublessonData.assignmentid) {
+  //             fetchAssignmentData(selectedSublessonData.assignmentid);
+  //           } else {
+  //             setAssignment(null);
+  //           }
+  //         } else {
+  //           console.log("No matching sublesson data found.");
+  //           setAssignment(null);
+  //         }
+  //       } else {
+  //         console.log("No matching module found.");
+  //         setAssignment(null);
+  //       }
+  //     }
+  //   };
+
+  //   findSelectedSublessonData();
+  // }, [selectedSublesson, sidebarData]);
+
   // Helper Functions
   const getNextVideoDetails = () => {
     let nextSublessonId = null;
@@ -326,6 +396,21 @@ const UserLearningPage = () => {
     }));
   };
 
+  const handleSendAssignmentClick = async () => {
+    // if (assignment) {
+    //   try {
+    //     await axios.post(`http://localhost:4000/users/submit-assignment`, {
+    //       assignmentId: assignment.assignmentid,
+    //       userAnswer: userAnswer,
+    //     });
+    //     alert("Assignment submitted successfully!");
+    //   } catch (error) {
+    //     console.error("Error submitting assignment:", error);
+    //   }
+    // }
+    setAssignmentStatus("Submitted");
+  };
+
   const getVideoIcon = (submoduleid) => {
     const state = videoStates[submoduleid] || {
       isPlaying: false,
@@ -350,6 +435,162 @@ const UserLearningPage = () => {
   const selectedSubmoduleData = sidebarData.modules
     ?.flatMap((module) => module.sublessons)
     .find((sublesson) => sublesson.sublessonid === selectedSublesson);
+
+  // Fetch Profile
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const token = localStorage.getItem("token");
+      let userDataFromToken = null; // Initialize userDataFromToken
+
+      if (token) {
+        userDataFromToken = jwtDecode(token);
+        setProfile(userDataFromToken);
+      }
+
+      // console.log("token " + token);
+      console.log("userDataFromToken ", userDataFromToken); // Fix the variable name and log properly
+    };
+
+    fetchProfile();
+  }, []);
+
+  // Fetch Submission
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      fetchUserSubmissions(decodedToken.userid);
+    }
+  }, []);
+
+  const fetchUserSubmissions = async (userId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/submissions/user/${userId}`
+      );
+
+      if (response.status === 200) {
+        const data = response.data;
+        const statuses = {};
+        const details = {};
+
+        if (Array.isArray(data) && data.length > 0) {
+          let hasSubmitted = false;
+
+          data.forEach((submission) => {
+            statuses[submission.assignmentid] = submission.status;
+            details[submission.assignmentid] = submission;
+            if (submission.status === "Submitted") {
+              hasSubmitted = true;
+            }
+          });
+
+          setSubmissionStatuses(statuses);
+          setSubmissionDetails(details);
+          setOverallSubmissionStatus(hasSubmitted ? "Submitted" : "Pending");
+        } else {
+          console.log("No data or data is not an array.");
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching user submissions:", error);
+    }
+  };
+
+  const fetchAssignmentData = async (assignmentid) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/users/assignment/${assignmentid}`
+      );
+      const assignmentData = response.data;
+
+      if (Array.isArray(assignmentData) && assignmentData.length > 0) {
+        setAssignment(assignmentData[0]);
+      } else {
+        setAssignment(null);
+      }
+    } catch (error) {
+      console.error("Error fetching assignment data:", error);
+      setAssignment(null); // Handle the error by clearing assignment
+    }
+  };
+
+  const findSelectedSublessonData = () => {
+    if (selectedSublesson && sidebarData) {
+      const selectedModule = sidebarData.modules.find((module) =>
+        module.sublessons.some(
+          (sublesson) => sublesson.sublessonid === selectedSublesson
+        )
+      );
+
+      if (selectedModule) {
+        const selectedSublessonData = selectedModule.sublessons.find(
+          (sublesson) => sublesson.sublessonid === selectedSublesson
+        );
+
+        if (selectedSublessonData) {
+          setSelectedVideoUrl(selectedSublessonData.videofile);
+          setCurrentModuleName(selectedModule.modulename);
+          setCurrentSubmoduleName(selectedSublessonData.sublessonname);
+
+          if (selectedSublessonData.assignmentid) {
+            fetchAssignmentData(selectedSublessonData.assignmentid);
+          } else {
+            setAssignment(null);
+          }
+        } else {
+          setAssignment(null);
+        }
+      } else {
+        setAssignment(null);
+      }
+    }
+  };
+
+  useEffect(() => {
+    findSelectedSublessonData();
+  }, [selectedSublesson, sidebarData]);
+
+  useEffect(() => {
+    console.log("This is submission statuses", submissionStatuses);
+    console.log("This is assignment data", assignment);
+  }, [submissionStatuses, assignment]);
+
+  // UI Handlers
+  const handleSubmission = async () => {
+    const token = localStorage.getItem("token");
+    const decodedToken = jwtDecode(token);
+    const userId = decodedToken.userid;
+
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/submissions/user/${userId}/assignment/${assignment.assignmentid}/submit`,
+        {
+          answer: userAnswer,
+        }
+      );
+
+      if (response.status === 201) {
+        setSubmissionAnswer((prevStatuses) => ({
+          ...prevStatuses,
+          [assignment.assignmentid]: "Submitted",
+        }));
+
+        setSubmissionDetails((prevDetails) => ({
+          ...prevDetails,
+          [assignment.assignmentid]: {
+            ...prevDetails[assignment.assignmentid],
+            answer: userAnswer,
+            status: "Submitted",
+          },
+        }));
+      }
+    } catch (error) {
+      console.error("Error submitting assignment:", error);
+    }
+  };
 
   return (
     <>
@@ -492,7 +733,58 @@ const UserLearningPage = () => {
               ></video>
             )}
           </div>
-          <Assignment />
+          {/* Assignment Section */}
+          {assignment && (
+            <div
+              className="bg-blue-50 border border-gray-300 rounded-lg p-4 lg:p-6 shadow-md"
+              key={assignment.assignmentid}
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold">Assignment</h2>
+                <span className="bg-yellow-200 text-yellow-800 text-sm font-medium px-2 py-1 rounded">
+                  {submissionStatuses[assignment.assignmentid] ||
+                    "No status available"}
+                </span>
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-semibold mb-2">
+                  {assignment.title}
+                </label>
+                <textarea
+                  className={`w-full px-3 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 ${
+                    submissionDetails[assignment.assignmentid]?.answer
+                      ? "bg-blue-200"
+                      : "bg-white"
+                  }`}
+                  rows="3"
+                  placeholder="Answer..."
+                  value={
+                    submissionDetails[assignment.assignmentid]?.answer ||
+                    userAnswer
+                  }
+                  onChange={(e) =>
+                    !submissionDetails[assignment.assignmentid]?.answer &&
+                    setUserAnswer(e.target.value)
+                  }
+                  readOnly={
+                    !!submissionDetails[assignment.assignmentid]?.answer
+                  }
+                ></textarea>
+              </div>
+              <div className="flex justify-between items-center">
+                <button
+                  className="bg-[#2F5FAC] text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  onClick={handleSubmission}
+                >
+                  Send Assignment
+                </button>
+                <span className="text-gray-500 text-sm">
+                  Assign within 2 days
+                </span>
+              </div>
+            </div>
+          )}
+          {/* Assignment Section */}
         </div>
       </div>
       {/* Footer */}
