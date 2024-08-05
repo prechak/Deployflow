@@ -3,9 +3,12 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import SubButton from "../button/sub-button";
 import CancelButton from "../button/cancel-button";
+import { useAuth } from "../../../contexts/authentication.jsx";
 
 function AddAssignmentForm() {
   const navigate = useNavigate();
+  const { UserIdFromLocalStorage } = useAuth();
+
   const [courses, setCourses] = useState([]);
   const [lessons, setLessons] = useState([]);
   const [subLessons, setSubLessons] = useState([]);
@@ -19,7 +22,6 @@ function AddAssignmentForm() {
   const fetchCourses = async () => {
     try {
       const result = await axios.get(`http://localhost:4000/courses`);
-      console.log(result);
       setCourses(result.data);
     } catch (error) {
       console.error("Error fetching courses:", error);
@@ -29,7 +31,6 @@ function AddAssignmentForm() {
   const fetchLessons = async () => {
     try {
       const result = await axios.get(`http://localhost:4000/admin/lesson`);
-      console.log(result);
       setLessons(result.data);
     } catch (error) {
       console.error("Error fetching lessons:", error);
@@ -41,7 +42,8 @@ function AddAssignmentForm() {
       const result = await axios.get(`http://localhost:4000/admin/sublesson`, {
         params: { moduleid },
       });
-      setSubLessons(result.data);
+      const sortedSubLessons = result.data.sort((a, b) => a.sublessonid - b.sublessonid);
+      setSubLessons(sortedSubLessons);
     } catch (error) {
       console.error("Error fetching sublessons:", error);
     }
@@ -62,46 +64,41 @@ function AddAssignmentForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (
-      !selectedCourse ||
-      !selectedLesson ||
-      !selectedSubLesson ||
-      !assignmentDetail
-    ) {
-      setErrorMessage("All fields except duration are required");
+  
+    if (!selectedCourse || !selectedLesson || !selectedSubLesson || !assignmentDetail ) {
+      setErrorMessage("All fields are required");
       return;
     }
-
+  
     try {
       const response = await axios.post(
         "http://localhost:4000/admin/assignments",
         {
           course: selectedCourse,
-          lesson: selectedLesson,
+          lesson: selectedLesson, 
           sub_lesson: selectedSubLesson,
           title: assignmentDetail,
+          userId: UserIdFromLocalStorage,
         }
       );
-
+  
       if (response.status === 201) {
-        console.log("data send", response);
+        console.log("Data sent:", response);
         alert("Assignment created successfully");
-        // navigate("/admin/assignmentlist");
+        navigate("/admin/assignmentlist");
         setSelectedCourse("");
         setSelectedLesson("");
         setSelectedSubLesson("");
         setAssignmentDetail("");
         setErrorMessage("");
       } else {
-        setErrorMessage("Unexpected resp onse status");
+        setErrorMessage("Unexpected response status: " + response.status);
       }
     } catch (error) {
-      setErrorMessage(
-        `Failed to create assignment: ${
-          error.response ? error.response.data.error : error.message
-        }`
-      );
+      const errorMessage = error.response
+        ? `Failed to create assignment: ${error.response.data.error}`
+        : `Failed to create assignment: ${error.message}`;
+      setErrorMessage(errorMessage);
     }
   };
 

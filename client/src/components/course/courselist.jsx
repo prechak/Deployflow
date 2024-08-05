@@ -63,7 +63,7 @@ function Course() {
         <div className="sm:mt-8 sm:flex sm:justify-center z-20">
           <input
             type="text"
-            className="sm:border sm:rounded-lg sm:px-4 sm:w-[343px] sm:h-12 text-black xl:w-[357px]"
+            className="sm:border sm:rounded-lg sm:px-4 sm:w-[343px] sm:h-12 text-black xl:w-[500px] "
             value={searchCourse}
             onChange={handleChange}
             placeholder="Search courses..."
