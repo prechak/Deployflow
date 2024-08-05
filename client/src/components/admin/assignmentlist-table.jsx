@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 import edit from "../../assets/image/edit.png";
 import bin from "../../assets/image/Bin.png";
-import { Link } from "react-router-dom";
 import NavbarAssignmentList from "./navbar/navbar-assignmentlist";
 import ConfirmationModal from "./modal/delete-course-confirmation";
 
@@ -11,6 +11,7 @@ function AssignmentListTable() {
   const [search, setSearch] = useState("");
   const [selectedAssignmentId, setSelectedAssignmentId] = useState(null);
   const [openModal, setOpenModal] = useState(false);
+  const navigate = useNavigate();
 
   const formatToBangkokTime = (isoTime) => {
     const date = new Date(isoTime);
@@ -49,33 +50,34 @@ function AssignmentListTable() {
     try {
       const res = await axios.get("http://localhost:4000/admin/assignments");
       setAssignments(res.data);
-      console.log(res);
     } catch (error) {
       console.error("Error fetching assignments:", error);
     }
   };
 
- const deleteAssignment = async (id) => {
+  const deleteAssignment = async (id) => {
     try {
       await axios.delete(`http://localhost:4000/admin/assignments/${id}`);
-      navigate("/admin/assignmentlist");
+      fetchAssignments();
       setOpenModal(false);
     } catch (error) {
       console.error("Error deleting assignment:", error);
     }
   };
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (id) => {
+    setSelectedAssignmentId(id);
     setOpenModal(true);
   };
 
   const handleCloseModal = () => {
     setOpenModal(false);
+    setSelectedAssignmentId(null);
   };
 
   const handleConfirmDelete = () => {
-    if (id) {
-      deleteAssignment(id);
+    if (selectedAssignmentId) {
+      deleteAssignment(selectedAssignmentId);
     }
   };
 
@@ -156,7 +158,7 @@ function AssignmentListTable() {
         </div>
       </div>
       <ConfirmationModal
-        text="Are you sure you want to delete this assignment ?"
+        text="Are you sure you want to delete this assignment?"
         textname="Yes, I want to delete"
         open={openModal}
         onClose={handleCloseModal}
