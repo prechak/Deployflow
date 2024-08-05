@@ -88,12 +88,12 @@ function AssignmentListTable() {
         <table className="text-slate-600 text-sm rounded-xl w-full">
           <thead className="w-[100px] h-[41px] bg-Gray-400 ">
             <tr className="font-thin ">
-              <th className="w-[200px] text-left pl-10 ">Assignment detail</th>
+              <th className="w-[200px] text-left pl-10 rounded-tl-lg">Assignment detail</th>
               <th className="w-[200px] text-left">Course</th>
               <th className="w-[200px] text-left">Lesson</th>
               <th className="w-[200px] text-left">Sub-lesson</th>
               <th className="w-[200px] text-left">Created date</th>
-              <th className="w-[120px] text-center">Actions</th>
+              <th className="w-[120px] text-center rounded-tr-lg">Actions</th>
             </tr>
           </thead>
         </table>
@@ -141,7 +141,7 @@ function AssignmentListTable() {
                       <button
                         onClick={() => handleOpenModal(item.assignmentid)}
                       >
-                        <img src={bin} alt="delete" />
+                        <img src={bin} alt="delete" className="pl-8" />
                       </button>
                       <button>
                         <Link

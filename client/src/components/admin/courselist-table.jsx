@@ -35,15 +35,14 @@ function CourseListTable() {
 
   useEffect(() => {
     fetchCourses();
-    console.log(courses)
+    console.log(courses);
   }, []);
 
   const fetchCourses = async () => {
     try {
       const res = await axios.get("http://localhost:4000/courses");
       setCourses(res.data);
-      console.log(res.data)
-
+      console.log(res.data);
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
@@ -79,24 +78,32 @@ function CourseListTable() {
     <div>
       <NavbarCourseList search={search} onSearchChange={setSearch} />
       <div className="m-10">
-        <table className="text-black text-sm rounded-xl w-full">
-          <thead className="w-[100px] h-[41px] bg-Gray-400 rounded-xl ">
+        <table className="text-black text-sm w-full">
+          <thead className="w-[100px] h-[41px] bg-Gray-400 ">
             <tr className="font-thin ">
-              <th className="text-left w-[48px]"></th>
+              <th className="text-left w-[48px] rounded-tl-lg"></th>
               <th className="text-left w-[6rem]">Image</th>
               <th className="text-left w-[17rem]">Course name</th>
               <th className="text-left w-[6.4rem]">Lesson</th>
               <th className="text-left w-[6.4rem]">Price</th>
               <th className="text-left w-[11.5rem]">Created date</th>
-              <th className="text-left">Updated Date</th>
-              <th className="text-left">Actions</th>
+              <th className="text-left w-[11.5rem]">Updated Date</th>
+              <th className="text-left rounded-tr-lg">Actions</th>
             </tr>
           </thead>
         </table>
         <div className="overflow-y-scroll max-h-[550px]">
           <table className="text-black text-sm rounded-xl w-full">
             <tbody>
-              {courses.map((item) => (
+              {courses
+                .filter((item) => {
+                  return search.trim() === ""
+                    ? true
+                    : item.coursename
+                        .toLowerCase()
+                        .includes(search.toLowerCase());
+                })
+                .map((item) => (
                   <tr
                     key={item.courseid}
                     className="bg-white border-b border-Gray-400 w-[1120px] h-[88px]"
@@ -116,15 +123,15 @@ function CourseListTable() {
                     <td className="w-[105px] text-left">
                       {item.price.toFixed(2)}
                     </td>
-                    <td className="w-[188px] text-left">
+                    <td className="w-[11.5rem] text-left">
                       {formatToBangkokTime(item.createddate)}
                     </td>
-                    <td className="w-[188px] text-left">
+                    <td className="w-[11.5rem] text-left">
                       {formatToBangkokTime(item.updateddate)}
                     </td>
                     <td className="w-[120px] flex items-center justify-center gap-5 ml-[1.5rem] mt-8">
                       <button onClick={() => handleOpenModal(item.courseid)}>
-                        <TrashIcon className="w-6 text-Blue-300 hover:text-Blue-700  " />
+                        <TrashIcon className="w-6 text-Blue-300 hover:text-Blue-700  text-left" />
                       </button>
                       <button>
                         <Link to={`/admin/editcourse/${item.courseid}`}>
@@ -139,6 +146,8 @@ function CourseListTable() {
         </div>
       </div>
       <ConfirmationModal
+        text="Are you sure you want to delete this course"
+        textname="Yes, I want to delete"
         open={openModal}
         onClose={handleCloseModal}
         onConfirm={handleConfirmDelete}
