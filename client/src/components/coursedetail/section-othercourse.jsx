@@ -38,7 +38,8 @@ function SectionOtherCourse() {
                 >
                   <button
                     onClick={() => {
-                      navigate(`/user/coursedetail/${item.courseid}`);
+                      // navigate(`/user/coursedetail/${item.courseid}`);
+                      window.location.href = `/user/coursedetail/${item.courseid}`;
                     }}
                   >
                     <img
@@ -46,7 +47,7 @@ function SectionOtherCourse() {
                       src={item.imagefile}
                     ></img>
                   </button>
-                  <div className="flex flex-col pl-[16px] mt-[5px] mb-[10px] sm:w-[343px] xl:mt-[20px]">
+                  <div className="flex flex-col pl-[16px] mt-[15px] mb-[10px] sm:w-[343px] xl:mt-[20px]">
                     <h1 className="text-Body4 font-Body4 text-Orange-500 xl:text-Body3 xl:font-Body3 xl:mb-[10px]">
                       Course
                     </h1>
@@ -57,7 +58,7 @@ function SectionOtherCourse() {
                       {item.description}
                     </p>
                   </div>
-                  <div className="flex flex-row border-t-[1px] border-t-Gray-500 h-[53px] p-[16px]">
+                  <div className="flex flex-row border-t-[1px] border-t-Gray-500 h-[53px] p-[16px] mt-[30px]">
                     <div className="flex w-[88px] gap-2">
                       <img
                         className="w-[20px] h-[20px]"

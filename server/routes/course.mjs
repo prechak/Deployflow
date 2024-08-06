@@ -239,13 +239,16 @@ courseRouter.post("/:userid/:id/desire", async (req, res) => {
   });
 });
 
-courseRouter.get("/:id", async (req, res) => {
-  const coursesId = req.params.id;
+courseRouter.get("/:courseid", async (req, res) => {
+  const coursesId = req.params.courseid;
   let result;
   try {
     result = await connectionPool.query(
-      `select * from courses
-      where courseid=$1`,
+      `select courses.*, modules.* 
+       from modules
+       inner join courses
+       on modules.courseid = courses.courseid
+       where modules.courseid = $1`,
       [coursesId]
     );
   } catch {
@@ -262,6 +265,34 @@ courseRouter.get("/:id", async (req, res) => {
     data: result.rows,
   });
 });
+
+courseRouter.get("/modules/:courseid", async(req,res) => {
+  const coursesId = req.params.courseid;
+  let result;
+  try{
+    result = await connectionPool.query(
+      `select modules.*, sublesson.*
+       from modules
+       inner join sublesson 
+       on modules.moduleid = sublesson.moduleid
+       where modules.courseid = $1
+       order by modules.moduleid asc`,
+       [coursesId]
+    )
+  }catch {
+    return res.status(500).json({
+      message: "Server could not read course because database connection",
+    });
+  }
+  if (!result.rows[0]) {
+    return res.status(404).json({
+      message: "Server could not find a requested course",
+    });
+  }
+  return res.status(200).json({
+    data: result.rows,
+  });
+})
 
 //*Add course admin*//
 
