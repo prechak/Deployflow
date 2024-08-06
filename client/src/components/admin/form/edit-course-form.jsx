@@ -41,7 +41,7 @@ function EditCourseForm() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:4000/courses/${id}`)
+      .get(`http://localhost:4000/courses/list/${id}`)
       .then((res) => {
         // console.log("Response received:", res.data.data[0]);
         // console.log(id);

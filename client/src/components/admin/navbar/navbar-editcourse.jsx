@@ -14,7 +14,7 @@ function NavbarEditCourse({ text, handleSubmit }) {
 
   const getCourseData = async () => {
     try {
-      const result = await axios.get(`http://localhost:4000/courses/${id}`);
+      const result = await axios.get(`http://localhost:4000/courses/list/${id}`);
       // console.log(result.data.data[0]);
       setCourseData(result.data.data[0]);
     } catch (error) {

@@ -46,7 +46,7 @@ function EditCourseSubLessonTable({ createCourse }) {
   const fetchCourses = async () => {
     console.log(param.id);
     try {
-      const res = await axios.get(`http://localhost:4000/courses/${param.id}`);
+      const res = await axios.get(`http://localhost:4000/courses/list/${param.id}`);
       setCourses(res.data.data);
     } catch (error) {
       console.error("Error fetching courses:", error);
