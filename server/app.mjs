@@ -11,14 +11,9 @@ import submissionRouter from "./routes/submission.mjs";
 import subscriptionRouter from "./routes/subscriptions.mjs";
 import assignmentRouter from "./routes/assignments.mjs";
 
-const corsOptions = {
-  origin: "https://deployflow.vercel.app", // Allow your client origin
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true,
-  optionsSuccessStatus: 204,
-};
-app.use(cors(corsOptions));
-
+const app = express();
+app.use(express.json());
+app.use(cors());
 const port = process.env.PORT || 4000;
 
 //Connection test
