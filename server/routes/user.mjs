@@ -2,6 +2,7 @@ import { Router } from "express";
 import connectionPool from "../utils/db.mjs";
 import userRegisterValidation from "../middlewares/postuser.validation.mjs";
 import userLoginValidation from "../middlewares/userlogin.validation.mjs";
+import authenticateJWT from "../middlewares/authentication.mjs";
 import jwt from "jsonwebtoken";
 
 const userRouter = Router();
@@ -19,7 +20,28 @@ userRouter.get("/", async (req, res) => {
   }
 });
 
-//===============Get user by id
+// Route to get user-specific data using userid from the JWT
+userRouter.get("/myprofile", authenticateJWT, async (req, res) => {
+  const { userId } = req.user;
+
+  try {
+    const result = await connectionPool.query(
+      `SELECT * FROM users WHERE userid = $1`,
+      [userId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// ===============Get user by id
 userRouter.get("/:id", async (req, res) => {
   let result;
   const userId = req.params.id;
@@ -106,9 +128,14 @@ userRouter.post("/login", [userLoginValidation], async (req, res) => {
     // generate token
     const user = result.rows[0];
     const token = jwt.sign(
-      { userId: user.userid, fullname: user.fullname, role: user.role },
+      {
+        userid: user.userid,
+        fullname: user.fullname,
+        email: user.email,
+        role: user.role,
+      },
       process.env.SECRET_KEY,
-      { expiresIn: "900000" } // 15 minutes
+      { expiresIn: "1d" } // 1d
     );
 
     return res.status(200).json({
@@ -184,6 +211,27 @@ userRouter.get("/courseinfo/:courseid", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("Server error");
+  }
+});
+
+//===========Get Assignment Data
+userRouter.get("/assignment/:assignmentid", async (req, res) => {
+  const { assignmentid } = req.params;
+
+  try {
+    const query = "SELECT * FROM assignments WHERE assignmentid = $1";
+    const value = [assignmentid];
+    const result = await connectionPool.query(query, value);
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No assignment found for the given assignment ID" });
+    }
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(`Error fetching assignment data: ${error.message}`);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 

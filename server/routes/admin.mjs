@@ -347,9 +347,9 @@ adminRouter.get("/assignments", async (req, res) => {
   }
 });
 
-//*post assignments(add)*//
+//*post assignments(add)*/Tao/
 adminRouter.post("/assignments", async (req, res) => {
-  const { course, lesson, sub_lesson, title, userid } = req.body;
+  const { course, lesson, sub_lesson, title } = req.body;
   if (!course || !lesson || !sub_lesson || !title) {
     return res
       .status(400)
@@ -376,25 +376,31 @@ adminRouter.post("/assignments", async (req, res) => {
 
     const assignmentId = assignmentRows[0].assignmentid;
 
-    // Insert submission
-    await connectionPool.query(
-      `INSERT INTO submissions (assignmentid, userid, submissiondate, status, grade, answer)
-       VALUES ($1, $2, $3, $4, $5, $6)`,
-      [assignmentId, userid || null, new Date(), "Pending", null, null]
+    // Fetch all user IDs
+    const { rows: users } = await connectionPool.query(
+      `SELECT userid FROM users`
     );
+
+    // Insert a submission for each user
+    for (const user of users) {
+      await connectionPool.query(
+        `INSERT INTO submissions (assignmentid, userid, submissiondate, status, grade, answer)
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [assignmentId, user.userid, new Date(), "Pending", null, null]
+      );
+    }
 
     await connectionPool.query("COMMIT");
 
     res
       .status(201)
-      .json({ message: "Assignment and submission created successfully" });
+      .json({ message: "Assignment and submissions created successfully" });
   } catch (error) {
     await connectionPool.query("ROLLBACK");
     console.error("Error occurred while saving the assignment:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
 
 //*get assignments by id//
 adminRouter.get("/assignment/:id", async (req, res) => {
@@ -581,15 +587,15 @@ adminRouter.delete("/assignments/:id", async (req, res) => {
   const assignmentId = req.params.id;
 
   try {
-    await connectionPool.query("BEGIN"); 
-    
+    await connectionPool.query("BEGIN");
+
     const result = await connectionPool.query(
       `DELETE FROM assignments WHERE assignmentid = $1`,
       [assignmentId]
     );
 
     if (result.rowCount === 0) {
-      await connectionPool.query("ROLLBACK"); 
+      await connectionPool.query("ROLLBACK");
       return res.status(404).json({ error: "Assignment not found" });
     }
 
@@ -597,7 +603,7 @@ adminRouter.delete("/assignments/:id", async (req, res) => {
       `UPDATE sublesson SET assignmentid = NULL WHERE assignmentid = $1`,
       [assignmentId]
     );
-  
+
     await connectionPool.query(
       `DELETE FROM submissions WHERE assignmentid = $1`,
       [assignmentId]
@@ -605,7 +611,8 @@ adminRouter.delete("/assignments/:id", async (req, res) => {
 
     await connectionPool.query("COMMIT");
     return res.status(200).json({
-      message: "Deleted assignment, cleared related assignment ID in sublesson, and deleted related submissions successfully",
+      message:
+        "Deleted assignment, cleared related assignment ID in sublesson, and deleted related submissions successfully",
     });
   } catch (error) {
     await connectionPool.query("ROLLBACK");
