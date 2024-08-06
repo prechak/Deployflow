@@ -564,6 +564,19 @@ const UserLearningPage = () => {
     const decodedToken = jwtDecode(token);
     const userId = decodedToken.userid;
 
+    const currentStatus = submissionStatuses[assignment.assignmentid];
+    const currentAnswer = submissionDetails[assignment.assignmentid]?.answer;
+
+    if (currentStatus === "Submitted" && currentAnswer) {
+      alert("You already submitted this assignment.");
+      return;
+    }
+
+    if (userAnswer.length < 20) {
+      alert("Please type at least 20 characters before submitting.");
+      return;
+    }
+
     try {
       const response = await axios.put(
         `http://localhost:4000/submissions/user/${userId}/assignment/${assignment.assignmentid}/submit`,
@@ -573,7 +586,7 @@ const UserLearningPage = () => {
       );
 
       if (response.status === 201) {
-        setSubmissionAnswer((prevStatuses) => ({
+        setSubmissionStatuses((prevStatuses) => ({
           ...prevStatuses,
           [assignment.assignmentid]: "Submitted",
         }));
@@ -586,6 +599,9 @@ const UserLearningPage = () => {
             status: "Submitted",
           },
         }));
+
+        setUserAnswer(""); // Clear the userAnswer input after submission
+        alert("Assignment submitted successfully.");
       }
     } catch (error) {
       console.error("Error submitting assignment:", error);
@@ -736,12 +752,21 @@ const UserLearningPage = () => {
           {/* Assignment Section */}
           {assignment && (
             <div
-              className="bg-blue-50 border border-gray-300 rounded-lg p-4 lg:p-6 shadow-md"
+              className="bg-[#E5ECF8] border border-gray-300 rounded-lg p-4 lg:p-6 shadow-md"
               key={assignment.assignmentid}
             >
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-semibold">Assignment</h2>
-                <span className="bg-yellow-200 text-yellow-800 text-sm font-medium px-2 py-1 rounded">
+                <span
+                  className={`text-sm font-medium px-2 py-1 rounded ${
+                    submissionStatuses[assignment.assignmentid] === "Submitted"
+                      ? "bg-green-200 text-green-800"
+                      : submissionStatuses[assignment.assignmentid] ===
+                        "Pending"
+                      ? "bg-yellow-200 text-yellow-800"
+                      : "bg-gray-200 text-gray-800"
+                  }`}
+                >
                   {submissionStatuses[assignment.assignmentid] ||
                     "No status available"}
                 </span>
@@ -751,9 +776,9 @@ const UserLearningPage = () => {
                   {assignment.title}
                 </label>
                 <textarea
-                  className={`w-full px-3 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 ${
+                  className={`w-full px-3 py-2 text-[#646D89] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 ${
                     submissionDetails[assignment.assignmentid]?.answer
-                      ? "bg-blue-200"
+                      ? "bg-[#E5ECF8] focus:ring-0"
                       : "bg-white"
                   }`}
                   rows="3"
@@ -769,7 +794,7 @@ const UserLearningPage = () => {
                   readOnly={
                     !!submissionDetails[assignment.assignmentid]?.answer
                   }
-                ></textarea>
+                />
               </div>
               <div className="flex justify-between items-center">
                 <button
@@ -779,7 +804,7 @@ const UserLearningPage = () => {
                   Send Assignment
                 </button>
                 <span className="text-gray-500 text-sm">
-                  Assign within 2 days
+                  {/* Assign within 2 days */}
                 </span>
               </div>
             </div>
