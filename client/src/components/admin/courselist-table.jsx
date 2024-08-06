@@ -82,13 +82,13 @@ function CourseListTable() {
           <thead className="w-[100px] h-[41px] bg-Gray-400 ">
             <tr className="font-thin ">
               <th className="text-left w-[48px] rounded-tl-lg"></th>
-              <th className="text-left w-[6rem]">Image</th>
-              <th className="text-left w-[17rem]">Course name</th>
-              <th className="text-left w-[6.4rem]">Lesson</th>
-              <th className="text-left w-[6.4rem]">Price</th>
-              <th className="text-left w-[11.5rem]">Created date</th>
-              <th className="text-left w-[11.5rem]">Updated Date</th>
-              <th className="text-left rounded-tr-lg">Actions</th>
+              <th className="text-left w-[96px]">Image</th>
+              <th className="text-left w-[268px]">Course name</th>
+              <th className="text-left w-[105px]">Lesson</th>
+              <th className="text-left w-[105px]">Price</th>
+              <th className="text-left w-[188px]">Created date</th>
+              <th className="text-left w-[190px]">Updated Date</th>
+              <th className="text-left rounded-tr-lg w-[120px]">Actions</th>
             </tr>
           </thead>
         </table>
@@ -123,19 +123,19 @@ function CourseListTable() {
                     <td className="w-[105px] text-left">
                       {item.price.toFixed(2)}
                     </td>
-                    <td className="w-[11.5rem] text-left">
+                    <td className="w-[188px] text-left">
                       {formatToBangkokTime(item.createddate)}
                     </td>
-                    <td className="w-[11.5rem] text-left">
+                    <td className="w-[190px] text-left">
                       {formatToBangkokTime(item.updateddate)}
                     </td>
-                    <td className="w-[120px] flex items-center justify-center gap-5 ml-[1.5rem] mt-8">
+                    <td className="w-[120px] mt-8">
                       <button onClick={() => handleOpenModal(item.courseid)}>
-                        <TrashIcon className="w-6 text-Blue-300 hover:text-Blue-700  text-left" />
+                        <TrashIcon className="w-6 text-Blue-300 hover:text-Blue-700  text-left ml-4" />
                       </button>
                       <button>
                         <Link to={`/admin/editcourse/${item.courseid}`}>
-                          <PencilSquareIcon className="w-6 text-Blue-300 hover:text-Blue-700  " />
+                          <PencilSquareIcon className="w-6 text-Blue-300 hover:text-Blue-700 ml-4" />
                         </Link>
                       </button>
                     </td>
