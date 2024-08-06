@@ -38,7 +38,8 @@ function SectionOtherCourse() {
                 >
                   <button
                     onClick={() => {
-                      navigate(`/user/coursedetail/${item.courseid}`);
+                      // navigate(`/user/coursedetail/${item.courseid}`);
+                      window.location.href = `/user/coursedetail/${item.courseid}`;
                     }}
                   >
                     <img

@@ -19,13 +19,13 @@ const ModalCoursedetail = ({ open, onClose, onConfirm }) => {
             <div className="border-solid border-1 sm:w-[311px] sm:h-[128px] flex flex-col gap-[16px] xl:w-[528px] xl:flex-row">
               <button
                 onClick={onClose}
-                className="sm:w-[311px] sm:h-[56px] rounded-[12px] border-solid border-[1px] border-Orange-500 text-Orange-500 xl:text-[16px] xl:font-[700] xl:w-[142px] xl:h-[60px]"
+                className="sm:w-[311px] sm:h-[56px] rounded-[12px] shadow-md border-solid border-[1px] border-Orange-500 text-Orange-500 xl:text-[16px] xl:font-[700] xl:w-[142px] xl:h-[60px]"
               >
                 No, I don't
               </button>
               <button
                 onClick={onConfirm}
-                className="sm:w-[311px] sm:h-[56px] rounded-[12px] border-solid border-[1px] bg-Blue-500 text-white xl:text-[16px] xl:font-[700] xl:w-[250px] xl:h-[60px]"
+                className="sm:w-[311px] sm:h-[56px] rounded-[12px] shadow-md border-solid border-[1px] bg-Blue-500 text-white xl:text-[16px] xl:font-[700] xl:w-[250px] xl:h-[60px]"
               >
                 Yes, I want to subscribe
               </button>

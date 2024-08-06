@@ -54,7 +54,7 @@ function NavbarUser() {
           <img
             src={logo}
             alt="Logo"
-            className="sm:pl-[16px] md:p-[100px] xl:p-[160px]"
+            className="sm:pl-[16px] md:pl-[100px] xl:pl-[160px]"
           />
         </Link>
 
