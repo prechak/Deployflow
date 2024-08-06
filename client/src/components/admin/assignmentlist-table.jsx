@@ -49,6 +49,7 @@ function AssignmentListTable() {
   const fetchAssignments = async () => {
     try {
       const res = await axios.get("http://localhost:4000/admin/assignments");
+      console.log(res);
       setAssignments(res.data);
     } catch (error) {
       console.error("Error fetching assignments:", error);
@@ -88,7 +89,9 @@ function AssignmentListTable() {
         <table className="text-slate-600 text-sm rounded-xl w-full">
           <thead className="w-[100px] h-[41px] bg-Gray-400 ">
             <tr className="font-thin ">
-              <th className="w-[200px] text-left pl-10 rounded-tl-lg">Assignment detail</th>
+              <th className="w-[200px] text-left pl-10 rounded-tl-lg">
+                Assignment detail
+              </th>
               <th className="w-[200px] text-left">Course</th>
               <th className="w-[200px] text-left">Lesson</th>
               <th className="w-[200px] text-left">Sub-lesson</th>
@@ -117,9 +120,9 @@ function AssignmentListTable() {
                       item.sublessonname.toLowerCase().includes(searchText))
                   );
                 })
-                .map((item) => (
+                .map((item, index) => (
                   <tr
-                    key={item.assignmentid}
+                    key={`${item.assignmentid}-${index}`}
                     className="bg-white border-b border-Gray-400 w-[1120px] h-[88px]"
                   >
                     <td className="w-[200px] text-left pl-10">
