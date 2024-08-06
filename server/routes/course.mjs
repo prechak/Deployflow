@@ -16,7 +16,6 @@ courseRouter.get("/", async (req, res) => {
   }
 });
 
-
 //=============Get all user subscribed
 courseRouter.get("/user/:id/subscribed", async (req, res) => {
   const { id } = req.params;
@@ -266,10 +265,10 @@ courseRouter.get("/:courseid", async (req, res) => {
   });
 });
 
-courseRouter.get("/modules/:courseid", async(req,res) => {
+courseRouter.get("/modules/:courseid", async (req, res) => {
   const coursesId = req.params.courseid;
   let result;
-  try{
+  try {
     result = await connectionPool.query(
       `select modules.*, sublesson.*
        from modules
@@ -277,9 +276,9 @@ courseRouter.get("/modules/:courseid", async(req,res) => {
        on modules.moduleid = sublesson.moduleid
        where modules.courseid = $1
        order by modules.moduleid asc`,
-       [coursesId]
-    )
-  }catch {
+      [coursesId]
+    );
+  } catch {
     return res.status(500).json({
       message: "Server could not read course because database connection",
     });
@@ -292,7 +291,7 @@ courseRouter.get("/modules/:courseid", async(req,res) => {
   return res.status(200).json({
     data: result.rows,
   });
-})
+});
 
 //*Add course admin*//
 
@@ -459,6 +458,31 @@ courseRouter.put("/:id", async (req, res) => {
     console.error("Database query error:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
+});
+
+//Courses list table
+courseRouter.get("/list/:id", async (req, res) => {
+  const coursesId = req.params.id;
+  let result;
+  try {
+    result = await connectionPool.query(
+      `select * from courses
+      where courseid=$1`,
+      [coursesId]
+    );
+  } catch {
+    return res.status(500).json({
+      message: "Server could not read course because database connection",
+    });
+  }
+  if (!result.rows[0]) {
+    return res.status(404).json({
+      message: "Server could not find a requested course",
+    });
+  }
+  return res.status(200).json({
+    data: result.rows,
+  });
 });
 
 export default courseRouter;
