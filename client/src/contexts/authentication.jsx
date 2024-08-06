@@ -37,7 +37,10 @@ function AuthProvider(props) {
 
   //===========Register
   const register = async (data) => {
-    await axios.post("http://localhost:4000/users/register", data);
+    await axios.post(
+      "https://deployflow-server.vercel.app/users/register",
+      data
+    );
     navigate("/login");
   };
 

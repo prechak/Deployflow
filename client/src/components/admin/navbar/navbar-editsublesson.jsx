@@ -12,7 +12,7 @@ function NavbarEditSubLesson({ text, handleSubmit }) {
   const getLesson = async () => {
     try {
       const result = await axios.get(
-        `http://localhost:4000/admin/lesson/${params.lessonId}`
+        `https://deployflow-server.vercel.app/admin/lesson/${params.lessonId}`
       );
       setLessons(result.data.data[0]);
     } catch (error) {
@@ -22,7 +22,7 @@ function NavbarEditSubLesson({ text, handleSubmit }) {
   const getCourse = async () => {
     try {
       const result = await axios.get(
-        `http://localhost:4000/courses/${params.courseId}`
+        `https://deployflow-server.vercel.app/courses/${params.courseId}`
       );
       setCourse(result.data.data[0]);
     } catch (error) {

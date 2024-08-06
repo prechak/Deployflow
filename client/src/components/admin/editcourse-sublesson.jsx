@@ -20,7 +20,7 @@ function EditCourseSubLessonTable({ createCourse }) {
   const fetchSubLesson = async () => {
     console.log(param.id)
     try {
-      const res = await axios.get(`http://localhost:4000/admin/sublessonlist/${param.id}`);
+      const res = await axios.get(`https://deployflow-server.vercel.app/admin/sublessonlist/${param.id}`);
       setSublesson(res.data);
     } catch (error) {
       console.error("Error fetching courses:", error);
@@ -30,7 +30,7 @@ function EditCourseSubLessonTable({ createCourse }) {
   //Delete lesson
   const deleteLesson = async (id,index) => {
     try {
-      await axios.delete(`http://localhost:4000/admin/lesson/${id}`);
+      await axios.delete(`https://deployflow-server.vercel.app/admin/lesson/${id}`);
       setSublesson(subLesson.toSpliced(index,1))
     } catch (error) {
       console.error("Error deleting lesson:", error);
@@ -46,7 +46,7 @@ function EditCourseSubLessonTable({ createCourse }) {
   const fetchCourses = async () => {
     console.log(param.id);
     try {
-      const res = await axios.get(`http://localhost:4000/courses/list/${param.id}`);
+      const res = await axios.get(`https://deployflow-server.vercel.app/courses/list/${param.id}`);
       setCourses(res.data.data);
     } catch (error) {
       console.error("Error fetching courses:", error);
@@ -56,7 +56,7 @@ function EditCourseSubLessonTable({ createCourse }) {
   const deleteCourse = async () => {
     console.log(param.id)
     try {
-      await axios.delete(`http://localhost:4000/courses/${param.id}`);
+      await axios.delete(`https://deployflow-server.vercel.app/courses/${param.id}`);
       console.log("Course deleted successfully");
       navigate("/admin/courselist")
     } catch (error) {
@@ -79,7 +79,7 @@ function EditCourseSubLessonTable({ createCourse }) {
     setSublesson(updatedSubLesson);
     setDraggedItemIndex(null);
     console.log(updatedSubLesson)
-    try{ await axios.put(`http://localhost:4000/admin/moduleorderlist/${param.id}`,updatedSubLesson)
+    try{ await axios.put(`https://deployflow-server.vercel.app/admin/moduleorderlist/${param.id}`,updatedSubLesson)
 
     }catch {
 

@@ -22,7 +22,7 @@ function LoginAdmin() {
 
     try {
       const result = await axios.post(
-        "http://localhost:4000/admin/login",
+        "https://deployflow-server.vercel.app/admin/login",
         { email, password } // Pass email and password as object
       );
 
